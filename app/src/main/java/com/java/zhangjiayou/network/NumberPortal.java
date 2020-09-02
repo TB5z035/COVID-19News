@@ -1,12 +1,9 @@
-package com.java.zhangjiayou.Portal;
+package com.java.zhangjiayou.network;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,30 +12,21 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
+
 /**
- * Transit
+ * This class provide multiple methods to obtain epidemic data from Web.
+ * @author 田倍闻
+ * @version 1.0
  */
-public class NumberPortal {
+public class NumberPortal extends Portal {
 
     public enum NumberType {CONFIRMED, SUSPECTED, CURED, DEAD, SEVERE, RISK, inc24}
 
-    private static String getRawData() {
-        StringBuilder output = new StringBuilder();
-        try {
-            URL host = new URL("https://covid-dashboard.aminer.cn/api/dist/epidemic.json");
-            BufferedReader in = new BufferedReader(new InputStreamReader(host.openStream()));
-            String input;
-            while ((input = in.readLine()) != null) {
-                output.append(input);
-            }
-            in.close();
-        } catch (Exception e) {
-            System.out.println(e.getStackTrace().toString());
-        }
-        return output.toString();
+    protected String getURL() {
+        return "https://covid-dashboard.aminer.cn/api/dist/epidemic.json";
     }
 
-    public static Integer getData(String region, String date, NumberType type)
+    public Integer getData(String region, String date, NumberType type)
             throws DateParseException, DateOutOfRangeException {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
@@ -49,8 +37,9 @@ public class NumberPortal {
         }
     }
 
-    public static Integer getData(String region, Date date, NumberType type)
-            throws DateParseException, DateOutOfRangeException {
+    @org.jetbrains.annotations.Nullable
+    public Integer getData(String region, Date date, NumberType type)
+            throws DateOutOfRangeException {
         //TODO
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -60,7 +49,7 @@ public class NumberPortal {
         Date begin = null;
         String data;
 
-        data = getRawData();
+        data = getRawData(getURL(),null);
         try {
             dataMap = objectMapper.readValue(data, new TypeReference<Map<String, Map<String, Object>>>() {
             });
@@ -70,9 +59,10 @@ public class NumberPortal {
         }
 
         try {
-            begin = dateFormat.parse(dataMap.get("China|Hong Kong").get("begin").toString());
+            begin = dateFormat.parse(dataMap.get(region).get("begin").toString());
         } catch (ParseException e) {
-            throw new DateParseException();
+            System.out.println("Server Error: Illegal beginning date provided.");
+            return null;
         }
         calendar.setTime(begin);
         ArrayList<ArrayList<Integer>> a =
