@@ -1,6 +1,7 @@
 package com.java.zhangjiayou;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.java.zhangjiayou.network.NoResponseError;
 import com.java.zhangjiayou.network.Passage;
 import com.java.zhangjiayou.network.PassagePortal;
 
@@ -17,7 +18,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class ExampleUnitTest {
     @Test
-    public void addition_isCorrect() throws JsonProcessingException {
+    public void addition_isCorrect() throws JsonProcessingException, NoResponseError {
         System.out.println("Hello!");
 
         List<Passage> list = new PassagePortal().getNewsFromType("news",4,40);
@@ -30,9 +31,19 @@ public class ExampleUnitTest {
     }
 
     @Test
-    public void simple_test()
-    {
-        System.out.println(Long.parseLong("5eb4df22212e216209c3e37ce6bd5d0a",16));
+    public void simple_test() {
+        System.out.println(Long.parseLong("5eb4df22212e216209c3e37ce6bd5d0a", 16));
+
+    }
+
+    @Test
+    public void more_test() throws NoResponseError {
+        PassagePortal portal = new PassagePortal();
+        List<Passage> news = portal.getNewsFromType("news", 1, 20);
+        for (Passage i :
+                news) {
+            System.out.println(i.getTitle());
+        }
 
     }
 }

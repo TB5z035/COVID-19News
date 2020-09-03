@@ -17,17 +17,16 @@ public class PassagePortal extends Portal {
 
     private static final String baseURL = "https://covid-dashboard.aminer.cn/api/events/list";
 
-    public List<Passage> getNewsFromType(String type) {
+    public List<Passage> getNewsFromType(String type) throws NoResponseError {
         return getNewsFromType(type, null, null);
     }
 
-    public List<Passage> getNewsFromType(String type, Integer index, Integer size) {
+    public List<Passage> getNewsFromType(String type, Integer index, Integer size) throws NoResponseError {
         HashMap<String, String> params = new HashMap<>();
         if (type != null) params.put("type", type);
         if (index != null) params.put("page", index.toString());
         if (size != null) params.put("size", size.toString());
         String response = getRawData(baseURL, params);
-
         List<Passage> data = null;
 
         try {

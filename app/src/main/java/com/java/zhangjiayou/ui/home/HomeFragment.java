@@ -17,68 +17,103 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.java.zhangjiayou.R;
+import com.java.zhangjiayou.network.NoResponseError;
+import com.java.zhangjiayou.network.Passage;
+import com.java.zhangjiayou.network.PassagePortal;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class HomeFragment extends Fragment {
+    private Integer index = 1;
 
     boolean modified = false;
     private HomeViewModel homeViewModel;
 
     private RecyclerView recyclerView;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private LoadMoreAdapter loadMoreAdapter;
+
     private List<String> dataList = new ArrayList<>();
 
     private void init(View view) {
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        swipeRefreshLayout = view.findViewById(R.id.SwipeRefresh);
+        swipeRefreshLayout.setRefreshing(true);
 
-        // 模拟获取数据
-        getData();
+        //Pull-to-refresh listener
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Toast.makeText(getContext(), R.string.toast_test, Toast.LENGTH_SHORT).show();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        getData(true);
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                loadMoreAdapter.setLoadState(loadMoreAdapter.LOADING_COMPLETE);
+                            }
+                        });
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                }).start();
+            }
+        });
+
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         loadMoreAdapter = new LoadMoreAdapter(dataList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(loadMoreAdapter);
+        getData(true);
 
-        // 设置加载更多监听
+        //Pull-to-load-more-listener
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onLoadMore() {
                 loadMoreAdapter.setLoadState(loadMoreAdapter.LOADING);
 
-                if (dataList.size() < 52) {
-                    // 模拟获取网络数据，延时1s
-                    new Timer().schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    getData();
-                                    loadMoreAdapter.setLoadState(loadMoreAdapter.LOADING_COMPLETE);
-                                }
-                            });
-                        }
-                    }, 1000);
+                if (dataList.size() < 100) {
+                    getData(false);
                 } else {
-                    // 显示加载到底的提示
                     loadMoreAdapter.setLoadState(loadMoreAdapter.LOADING_END);
                 }
             }
         });
     }
 
-    private void getData() {
-        char letter = 'A';
-        for (int i = 0; i < 26; i++) {
-            dataList.add(String.valueOf(letter));
-            letter++;
-        }
+    private void getData(final boolean mode) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (mode) {
+                        index = 1;
+                        updateList(new PassagePortal().getNewsFromType("news", index, 20), mode);
+                    } else {
+                        updateList(new PassagePortal().getNewsFromType("news", index, 20), mode);
+                    }
+                } catch (NoResponseError noResponseError) {
+                    noResponseError.printStackTrace();
+                }
+            }
+        }).start();
     }
 
+    private void updateList(List<Passage> list, boolean mode) {
+        if (mode) dataList.clear();
+        for (int i = 0; i < list.size(); i++) {
+            dataList.add(list.get(i).getTitle());
+        }
+        index++;
+        swipeRefreshLayout.setRefreshing(false);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                loadMoreAdapter.setLoadState(loadMoreAdapter.LOADING_COMPLETE);
+            }
+        });
+    }
 
     @Override
     public View onCreateView(@NonNull final LayoutInflater inflater,
@@ -92,34 +127,6 @@ public class HomeFragment extends Fragment {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);
-            }
-        });
-
-
-        final SwipeRefreshLayout swipeRefreshLayout = root.findViewById(R.id.SwipeRefresh);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                Toast.makeText(getContext(), R.string.toast_test, Toast.LENGTH_SHORT).show();
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Thread.sleep(500);
-                        } catch (InterruptedException e) {
-                        }
-                        if (!modified) dataList.clear();
-                        modified = true;
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                dataList.add(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-                                loadMoreAdapter.setLoadState(loadMoreAdapter.LOADING_COMPLETE);
-                            }
-                        });
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                }).start();
             }
         });
 

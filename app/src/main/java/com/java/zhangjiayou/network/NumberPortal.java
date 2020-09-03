@@ -49,7 +49,12 @@ public class NumberPortal extends Portal {
         Date begin = null;
         String data;
 
-        data = getRawData(getURL(),null);
+        try {
+            data = getRawData(getURL(),null);
+        } catch (NoResponseError noResponseError) {
+            System.out.println("Server Error: No Response");
+            return null;
+        }
         try {
             dataMap = objectMapper.readValue(data, new TypeReference<Map<String, Map<String, Object>>>() {
             });

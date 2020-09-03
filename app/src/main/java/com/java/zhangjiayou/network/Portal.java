@@ -3,6 +3,7 @@ package com.java.zhangjiayou.network;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.text.Normalizer;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
@@ -15,7 +16,7 @@ abstract class Portal {
         return 3600000;
     }
 
-    String getRawData(String url, Map<String, String> params) {
+    String getRawData(String url, Map<String, String> params) throws NoResponseError {
         if (updateTime == null || Calendar.getInstance().getTime().getTime() - updateTime.getTime() > getExpirationDuration()) {
             StringBuilder urlBuilder = new StringBuilder(url);
             if (params != null) {
@@ -30,7 +31,7 @@ abstract class Portal {
                     }
                 }
             }
-            String debug = urlBuilder.toString();
+//            String debug = urlBuilder.toString();
             StringBuilder output = new StringBuilder();
             try {
                 URL host = new URL(urlBuilder.toString());
@@ -41,11 +42,12 @@ abstract class Portal {
                 }
                 in.close();
             } catch (Exception e) {
-                System.out.println(e.getStackTrace().toString());
+                System.out.println(e.getStackTrace());
             }
             rawData = output.toString();
             updateTime = Calendar.getInstance().getTime();
         }
+        if (rawData == null) throw new NoResponseError();
         return rawData;
     }
 }
