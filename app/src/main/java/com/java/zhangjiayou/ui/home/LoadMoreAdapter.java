@@ -38,6 +38,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public int getItemViewType(int position) {
         // 最后一个item设置为FooterView
         if (position + 1 == getItemCount()) {
+//        if (position % 2 == 0) {
             return TYPE_FOOTER;
         } else {
             return TYPE_ITEM;
@@ -64,7 +65,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof RecyclerViewHolder) {
             RecyclerViewHolder recyclerViewHolder = (RecyclerViewHolder) holder;
-            recyclerViewHolder.tvItem.setText(dataList.get(position));
+            recyclerViewHolder.titleView.setText(dataList.get(position));
 
         } else if (holder instanceof FootViewHolder) {
             FootViewHolder footViewHolder = (FootViewHolder) holder;
@@ -100,11 +101,14 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private class RecyclerViewHolder extends RecyclerView.ViewHolder {
 
-        TextView tvItem;
+        TextView titleView;
+        TextView contentView;
+
 
         RecyclerViewHolder(View itemView) {
             super(itemView);
-            tvItem = (TextView) itemView.findViewById(R.id.tv_item);
+            titleView = (TextView) itemView.findViewById(R.id.title_view);
+            contentView = (TextView) itemView.findViewById(R.id.content_view);
         }
     }
 
