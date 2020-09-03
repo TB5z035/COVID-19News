@@ -33,16 +33,15 @@ public class DashboardFragment extends Fragment {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Toast.makeText(getContext(),"Searching...",Toast.LENGTH_SHORT).show();
-                Intent params = new Intent(getActivity(), SearchableActivity.class);
-                params.putExtra("query",searchView.getQuery());
+                Intent params = new Intent(getActivity(),SearchableActivity.class);
+                params.setAction(Intent.ACTION_SEARCH);
+                params.putExtra("query",query);
                 startActivity(params);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                Toast.makeText(getContext(),"changed",Toast.LENGTH_SHORT);
                 return false;
             }
         });
