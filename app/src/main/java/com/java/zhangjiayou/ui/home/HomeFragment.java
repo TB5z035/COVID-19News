@@ -38,7 +38,6 @@ public class HomeFragment extends Fragment {
 
     private void getData(final boolean mode) {
         if (mode) {
-            dataList.clear();
             index = 1;
         }
         new Thread(new Runnable() {
@@ -46,7 +45,7 @@ public class HomeFragment extends Fragment {
             public void run() {
                 try {
                     Thread.sleep(1000);
-                    onUpdateList(new PassagePortal().getNewsFromType("news", index, 20));
+                    onUpdateList(new PassagePortal().getNewsFromType("news", index, 20), mode);
                 } catch (NoResponseError noResponseError) {
                     noResponseError.printStackTrace();
                 } catch (InterruptedException e) {
@@ -56,18 +55,24 @@ public class HomeFragment extends Fragment {
         }).start();
     }
 
-    private void onUpdateList(List<Passage> list) {
-        for (int i = 0; i < list.size(); i++) {
-            dataList.add(list.get(i).getTitle());
-        }
-        index++;
-        swipeRefreshLayout.setRefreshing(false);
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                loadMoreAdapter.setLoadState(loadMoreAdapter.LOADING_COMPLETE);
+    private void onUpdateList(List<Passage> list, boolean mode) {
+        try {
+            if (mode) dataList.clear();
+            for (int i = 0; i < list.size(); i++) {
+                dataList.add(list.get(i).getTitle());
             }
-        });
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    swipeRefreshLayout.setRefreshing(false);
+                    loadMoreAdapter.setLoadState(loadMoreAdapter.LOADING_COMPLETE);
+                }
+            });
+            index++;
+        } catch (NullPointerException e) {
+//            Toast.makeText(null, "You clicked too fast!", Toast.LENGTH_SHORT).show();
+            System.out.println(e.getStackTrace());
+        }
     }
 
     @Override

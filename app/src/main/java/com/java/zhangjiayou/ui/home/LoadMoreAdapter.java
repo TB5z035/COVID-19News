@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.java.zhangjiayou.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -66,6 +68,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (holder instanceof RecyclerViewHolder) {
             RecyclerViewHolder recyclerViewHolder = (RecyclerViewHolder) holder;
             recyclerViewHolder.titleView.setText(dataList.get(position));
+            recyclerViewHolder.contentView.setText(new SimpleDateFormat("hh:mm:ss").format(new Date()));
 
         } else if (holder instanceof FootViewHolder) {
             FootViewHolder footViewHolder = (FootViewHolder) holder;
