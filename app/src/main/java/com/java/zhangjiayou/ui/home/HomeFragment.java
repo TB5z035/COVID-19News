@@ -34,7 +34,7 @@ public class HomeFragment extends Fragment {
     private SwipeRefreshLayout swipeRefreshLayout;
     private LoadMoreAdapter loadMoreAdapter;
 
-    private List<String> dataList = new ArrayList<>();
+    private List<Passage> dataList = new ArrayList<>();
 
     private void getData(final boolean mode) {
         if (mode) {
@@ -58,9 +58,7 @@ public class HomeFragment extends Fragment {
     private void onUpdateList(List<Passage> list, boolean mode) {
         try {
             if (mode) dataList.clear();
-            for (int i = 0; i < list.size(); i++) {
-                dataList.add(list.get(i).getTitle());
-            }
+            dataList.addAll(list);
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {

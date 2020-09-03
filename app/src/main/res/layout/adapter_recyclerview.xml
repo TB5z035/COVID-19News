@@ -25,8 +25,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="2dp"
-                android:singleLine="true"
+                android:singleLine="false"
                 android:text="A"
+                android:textAlignment="center"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="18sp" />
 

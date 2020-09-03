@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.java.zhangjiayou.R;
+import com.java.zhangjiayou.network.Passage;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -17,7 +18,7 @@ import java.util.List;
 
 public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<String> dataList;
+    private List<Passage> dataList;
 
     // 普通布局
     private final int TYPE_ITEM = 1;
@@ -32,7 +33,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     // 加载到底
     public final int LOADING_END = 3;
 
-    public LoadMoreAdapter(List<String> dataList) {
+    public LoadMoreAdapter(List<Passage> dataList) {
         this.dataList = dataList;
     }
 
@@ -67,8 +68,9 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof RecyclerViewHolder) {
             RecyclerViewHolder recyclerViewHolder = (RecyclerViewHolder) holder;
-            recyclerViewHolder.titleView.setText(dataList.get(position));
-            recyclerViewHolder.contentView.setText(new SimpleDateFormat("hh:mm:ss").format(new Date()));
+            recyclerViewHolder.titleView.setText(dataList.get(position).getTitle());
+            recyclerViewHolder.contentView.setText(dataList.get(position).getContent());
+//            recyclerViewHolder.contentView.setText(new SimpleDateFormat("hh:mm:ss").format(new Date()));
 
         } else if (holder instanceof FootViewHolder) {
             FootViewHolder footViewHolder = (FootViewHolder) holder;
