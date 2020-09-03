@@ -4,4 +4,6 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="toast_test">Hello!</string>
+    <string name="search_hint">Search…</string>
+    <string name="app_label">Search</string>
 </resources>
