@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:padding="15dp"
         android:text="正在加载..."
-        android:textColor="#4DB6AC"
+        android:textColor="@color/colorPrimary"
         android:textSize="16sp" />
 
     <LinearLayout
