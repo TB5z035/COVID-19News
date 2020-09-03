@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +27,7 @@ import java.util.TimerTask;
 
 public class HomeFragment extends Fragment {
 
+    boolean modified = false;
     private HomeViewModel homeViewModel;
 
     private RecyclerView recyclerView;
@@ -97,24 +97,27 @@ public class HomeFragment extends Fragment {
 
 
         final SwipeRefreshLayout swipeRefreshLayout = root.findViewById(R.id.SwipeRefresh);
-        final LinearLayout homeLayout = root.findViewById(R.id.HomeLayout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 Toast.makeText(getContext(), R.string.toast_test, Toast.LENGTH_SHORT).show();
-                final TextView innerText = new TextView(getContext());
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                innerText.setText(sdf.format(new Date()));
-                innerText.setHeight(600);
-                homeLayout.addView(innerText);
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
                         try {
-                            Thread.sleep(1000);
-                            swipeRefreshLayout.setRefreshing(false);
+                            Thread.sleep(500);
                         } catch (InterruptedException e) {
                         }
+                        if (!modified) dataList.clear();
+                        modified = true;
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                dataList.add(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+                                loadMoreAdapter.setLoadState(loadMoreAdapter.LOADING_COMPLETE);
+                            }
+                        });
+                        swipeRefreshLayout.setRefreshing(false);
                     }
                 }).start();
             }
