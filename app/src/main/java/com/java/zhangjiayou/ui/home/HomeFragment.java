@@ -21,23 +21,70 @@ import com.java.zhangjiayou.network.NoResponseError;
 import com.java.zhangjiayou.network.Passage;
 import com.java.zhangjiayou.network.PassagePortal;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
     private Integer index = 1;
 
-    boolean modified = false;
     private HomeViewModel homeViewModel;
-
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private LoadMoreAdapter loadMoreAdapter;
 
     private List<String> dataList = new ArrayList<>();
 
-    private void init(View view) {
-        swipeRefreshLayout = view.findViewById(R.id.SwipeRefresh);
+    private void getData(final boolean mode) {
+        if (mode) {
+            dataList.clear();
+            index = 1;
+        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(1000);
+                    onUpdateList(new PassagePortal().getNewsFromType("news", index, 20));
+                } catch (NoResponseError noResponseError) {
+                    noResponseError.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    private void onUpdateList(List<Passage> list) {
+        for (int i = 0; i < list.size(); i++) {
+            dataList.add(list.get(i).getTitle());
+        }
+        index++;
+        swipeRefreshLayout.setRefreshing(false);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                loadMoreAdapter.setLoadState(loadMoreAdapter.LOADING_COMPLETE);
+            }
+        });
+    }
+
+    @Override
+    public View onCreateView(@NonNull final LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
+        homeViewModel =
+                ViewModelProviders.of(this).get(HomeViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_home, container, false);
+        final TextView textView = root.findViewById(R.id.text_home);
+        homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String s) {
+                textView.setText(new SimpleDateFormat("mm:ss").format(new Date()));
+            }
+        });
+
+        swipeRefreshLayout = root.findViewById(R.id.SwipeRefresh);
         swipeRefreshLayout.setRefreshing(true);
 
         //Pull-to-refresh listener
@@ -45,23 +92,11 @@ public class HomeFragment extends Fragment {
             @Override
             public void onRefresh() {
                 Toast.makeText(getContext(), R.string.toast_test, Toast.LENGTH_SHORT).show();
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        getData(true);
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                loadMoreAdapter.setLoadState(loadMoreAdapter.LOADING_COMPLETE);
-                            }
-                        });
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                }).start();
+                getData(true);
             }
         });
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        recyclerView = (RecyclerView) root.findViewById(R.id.recycler_view);
         loadMoreAdapter = new LoadMoreAdapter(dataList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(loadMoreAdapter);
@@ -80,57 +115,6 @@ public class HomeFragment extends Fragment {
                 }
             }
         });
-    }
-
-    private void getData(final boolean mode) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if (mode) {
-                        index = 1;
-                        updateList(new PassagePortal().getNewsFromType("news", index, 20), mode);
-                    } else {
-                        updateList(new PassagePortal().getNewsFromType("news", index, 20), mode);
-                    }
-                } catch (NoResponseError noResponseError) {
-                    noResponseError.printStackTrace();
-                }
-            }
-        }).start();
-    }
-
-    private void updateList(List<Passage> list, boolean mode) {
-        if (mode) dataList.clear();
-        for (int i = 0; i < list.size(); i++) {
-            dataList.add(list.get(i).getTitle());
-        }
-        index++;
-        swipeRefreshLayout.setRefreshing(false);
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                loadMoreAdapter.setLoadState(loadMoreAdapter.LOADING_COMPLETE);
-            }
-        });
-    }
-
-    @Override
-    public View onCreateView(@NonNull final LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        System.out.println("Now onCreateView");
-        homeViewModel =
-                ViewModelProviders.of(this).get(HomeViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
-        final TextView textView = root.findViewById(R.id.text_home);
-        homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
-
-        init(root);
 
         return root;
     }
