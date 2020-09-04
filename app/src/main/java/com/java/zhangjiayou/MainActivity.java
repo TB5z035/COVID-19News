@@ -35,12 +35,4 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navView, navController);
 
     }
-
-    public void debug() {
-        List<Passage> passageList= PassageDatabase.getInstance(null).getPassageDao().getAllPassages();
-        for (Passage i:
-                passageList) {
-            System.out.println(i.getTitle());
-        }
-    }
 }

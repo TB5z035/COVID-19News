@@ -20,6 +20,8 @@ import com.java.zhangjiayou.network.PassagePortal;
 import com.java.zhangjiayou.util.Passage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
@@ -99,40 +101,40 @@ public class HomeFragment extends Fragment {
         });
 
         recyclerView = (RecyclerView) root.findViewById(R.id.recycler_view);
-        loadMoreAdapter = new LoadMoreAdapter(dataList);
+        loadMoreAdapter = new LoadMoreAdapter(dataList,new HashSet<String>());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(loadMoreAdapter);
         getData(true);
 
-        recyclerView.addOnItemTouchListener(new MyOnItemTouchListener() {
+//        recyclerView.addOnItemTouchListener(new MyOnItemTouchListener() {
+////            @Override
+////            void doOnItemClickListener(View view, int position) {
+////                Toast.makeText(getActivity(), "单击！" + position, Toast.LENGTH_SHORT).show();
+////            }
+//
 //            @Override
-//            void doOnItemClickListener(View view, int position) {
-//                Toast.makeText(getActivity(), "单击！" + position, Toast.LENGTH_SHORT).show();
+//            void doOnItemLongClickListener(final View view, int position) {
+//                Toast.makeText(getActivity(), "点击进入" + position, Toast.LENGTH_SHORT).show();
+//                final Passage[] passage = {loadMoreAdapter.getItem(position)};
+//                new Thread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Passage passageInDB = PassageDatabase.getInstance(null).getPassageDao().getPassageFromId(passage[0].getId());
+//                        if (passageInDB == null)
+//                            PassageDatabase.getInstance(null).getPassageDao().insert(passage[0]);
+//                        else
+//                            passage[0] = passageInDB;
+////                        getActivity().runOnUiThread(new Runnable() {
+////                            @Override
+////                            public void run() {
+////                                view.setBackgroundColor(R.color.colorInfoCardViewed);
+////                            }
+////                        });
+//                    }
+//                }).start();
+//
 //            }
-
-            @Override
-            void doOnItemLongClickListener(final View view, int position) {
-                Toast.makeText(getActivity(), "点击进入" + position, Toast.LENGTH_SHORT).show();
-                final Passage[] passage = {loadMoreAdapter.getItem(position)};
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Passage passageInDB = PassageDatabase.getInstance(null).getPassageDao().getPassageFromId(passage[0].getId());
-                        if (passageInDB == null)
-                            PassageDatabase.getInstance(null).getPassageDao().insert(passage[0]);
-                        else
-                            passage[0] = passageInDB;
-//                        getActivity().runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                view.setBackgroundColor(R.color.colorInfoCardViewed);
-//                            }
-//                        });
-                    }
-                }).start();
-
-            }
-        });
+//        });
 
         //Pull-to-load-more-listener
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {

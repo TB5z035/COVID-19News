@@ -7,19 +7,22 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.java.zhangjiayou.R;
-import com.java.zhangjiayou.database.PassageDatabase;
 import com.java.zhangjiayou.util.Passage;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<Passage> dataList;
+    private HashSet<String> viewedMap;
 
     // 普通布局
     private final int TYPE_ITEM = 1;
@@ -38,8 +41,9 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return dataList.get(position);
     }
 
-    public LoadMoreAdapter(List<Passage> dataList) {
+    public LoadMoreAdapter(List<Passage> dataList, HashSet<String> map) {
         this.dataList = dataList;
+        this.viewedMap = map;
     }
 
     @Override
@@ -59,8 +63,9 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (viewType == TYPE_ITEM) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.adapter_recyclerview, parent, false);
-            view.setLongClickable(true);
-            view.setClickable(true);
+//            view.setLongClickable(true);
+//            view.setClickable(true);
+
             return new RecyclerViewHolder(view);
 
         } else if (viewType == TYPE_FOOTER) {
@@ -75,7 +80,11 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof RecyclerViewHolder) {
             final RecyclerViewHolder recyclerViewHolder = (RecyclerViewHolder) holder;
+            holder.setIsRecyclable(false);
             recyclerViewHolder.titleView.setText(dataList.get(position).getTitle());
+
+            if (viewedMap.contains(dataList.get(position).getId()))
+                recyclerViewHolder.titleView.setTextColor(R.color.colorPrimaryDark);
             recyclerViewHolder.contentView.setText(
                     new SimpleDateFormat("yyyy-MM-dd hh:mm")
                             .format(dataList.get(position).getDate()));
@@ -125,12 +134,21 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         TextView titleView;
         TextView contentView;
+        CardView cardView;
 
 
         RecyclerViewHolder(View itemView) {
             super(itemView);
             titleView = (TextView) itemView.findViewById(R.id.title_view);
             contentView = (TextView) itemView.findViewById(R.id.time_view);
+            cardView = itemView.findViewById(R.id.passage_card_view);
+            cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    viewedMap.add(dataList.get(getLayoutPosition()).getId());
+                    notifyDataSetChanged();
+                }
+            });
         }
     }
 
