@@ -1,5 +1,6 @@
 package com.java.zhangjiayou.ui.home;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,18 +12,17 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.java.zhangjiayou.R;
+import com.java.zhangjiayou.database.PassageDatabase;
 import com.java.zhangjiayou.util.Passage;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<Passage> dataList;
-    private HashSet<String> viewedMap;
+    private Set<String> viewedMap;
 
     // 普通布局
     private final int TYPE_ITEM = 1;
@@ -41,9 +41,13 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return dataList.get(position);
     }
 
-    public LoadMoreAdapter(List<Passage> dataList, HashSet<String> map) {
+    public LoadMoreAdapter(List<Passage> dataList, Set<String> map) {
         this.dataList = dataList;
         this.viewedMap = map;
+    }
+
+    public Set<String> getViewedMap() {
+        return viewedMap;
     }
 
     @Override
@@ -76,6 +80,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return null;
     }
 
+    @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof RecyclerViewHolder) {
@@ -84,6 +89,9 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             recyclerViewHolder.titleView.setText(dataList.get(position).getTitle());
 
             if (viewedMap.contains(dataList.get(position).getId()))
+//            if (outside
+//                    .getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)
+//                    .getString(dataList.get(position).getId(), null) != null)
                 recyclerViewHolder.titleView.setTextColor(R.color.colorPrimaryDark);
             recyclerViewHolder.contentView.setText(
                     new SimpleDateFormat("yyyy-MM-dd hh:mm")
@@ -96,7 +104,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 //                        recyclerViewHolder.titleView.setTextColor(R.color.colorPrimaryDark);
 //                }
 //            }).start();
-            recyclerViewHolder.contentView.setText(new SimpleDateFormat("hh:mm:ss").format(new Date()));
+//            recyclerViewHolder.contentView.setText(new SimpleDateFormat("hh:mm:ss").format(new Date()));
 
         } else if (holder instanceof FootViewHolder) {
             FootViewHolder footViewHolder = (FootViewHolder) holder;
@@ -135,22 +143,42 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         TextView titleView;
         TextView contentView;
         CardView cardView;
+        View backup;
 
-
-        RecyclerViewHolder(View itemView) {
+        RecyclerViewHolder(final View itemView) {
             super(itemView);
+
+            backup = itemView;
+
             titleView = (TextView) itemView.findViewById(R.id.title_view);
             contentView = (TextView) itemView.findViewById(R.id.time_view);
             cardView = itemView.findViewById(R.id.passage_card_view);
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+//                    outside.getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)
+//                            .edit().putString(dataList.get(getLayoutPosition()).getId(), null)
+//                            .apply();
                     viewedMap.add(dataList.get(getLayoutPosition()).getId());
+
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Passage passageInDB = PassageDatabase.getInstance(null).getPassageDao().getPassageFromId(dataList.get(getLayoutPosition()).getId());
+                            if (passageInDB == null)
+                                PassageDatabase.getInstance(null).getPassageDao().insert(dataList.get(getLayoutPosition()));
+                        }
+                    }).start();
+
                     notifyDataSetChanged();
+                    //FIXME:call notifyDataSetChanged after return from detail activity
                 }
             });
+
+
         }
     }
+
 
     private class FootViewHolder extends RecyclerView.ViewHolder {
 

@@ -6,4 +6,5 @@
     <string name="toast_test">Hello!</string>
     <string name="search_hint">Search…</string>
     <string name="app_label">Search</string>
+    <string name="history_fileid_set_key">history</string>
 </resources>

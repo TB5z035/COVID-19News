@@ -1,5 +1,6 @@
 package com.java.zhangjiayou.ui.home;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,15 +15,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.java.zhangjiayou.R;
-import com.java.zhangjiayou.database.PassageDatabase;
 import com.java.zhangjiayou.network.NoResponseError;
 import com.java.zhangjiayou.network.PassagePortal;
 import com.java.zhangjiayou.util.Passage;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class HomeFragment extends Fragment {
     private Integer index = 1;
@@ -74,6 +74,16 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        getActivity()
+                .getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)
+                .edit()
+                .putStringSet(String.valueOf(R.string.history_fileid_set_key), loadMoreAdapter.getViewedMap())
+                .apply();
+    }
+
+    @Override
     public View onCreateView(@NonNull final LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel =
@@ -99,9 +109,13 @@ public class HomeFragment extends Fragment {
                 getData(true);
             }
         });
-
         recyclerView = (RecyclerView) root.findViewById(R.id.recycler_view);
-        loadMoreAdapter = new LoadMoreAdapter(dataList,new HashSet<String>());
+
+
+        Set<String> stringSet = getActivity()
+                .getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)
+                .getStringSet(String.valueOf(R.string.history_fileid_set_key), new HashSet<String>());
+        loadMoreAdapter = new LoadMoreAdapter(dataList, new HashSet<>(stringSet));
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(loadMoreAdapter);
         getData(true);

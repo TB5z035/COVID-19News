@@ -37,19 +37,6 @@ public class NotificationsFragment extends Fragment {
 
         final TextView test = root.findViewById(R.id.test_text);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final String text = PassageDatabase.getInstance(getContext()).getPassageDao().getPassageFromId("123").getTitle();
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        test.setText(text);
-                    }
-                });
-            }
-        }).start();
-
         root.findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
