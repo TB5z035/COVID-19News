@@ -1,10 +1,12 @@
 package com.java.zhangjiayou.ui.notifications;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,6 +18,8 @@ import com.java.zhangjiayou.R;
 import com.java.zhangjiayou.database.PassageDatabase;
 import com.java.zhangjiayou.sharing.SharePortWeibo;
 import com.java.zhangjiayou.util.Passage;
+import com.sina.weibo.sdk.common.UiError;
+import com.sina.weibo.sdk.share.WbShareCallback;
 
 import java.util.List;
 
@@ -57,12 +61,16 @@ public class NotificationsFragment extends Fragment {
         root.findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new SharePortWeibo(getContext()).setText("本地测试").share();
+                SharePortWeibo.initSDK(getActivity());
+                new SharePortWeibo(getActivity()).setText("本地测试").share();
             }
         });
 
         return root;
     }
+
+
+
 
 
 }

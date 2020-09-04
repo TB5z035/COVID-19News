@@ -3,24 +3,20 @@ package com.java.zhangjiayou.sharing;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.widget.Toast;
 
 import com.sina.weibo.sdk.api.ImageObject;
 import com.sina.weibo.sdk.api.TextObject;
-import com.sina.weibo.sdk.api.VideoSourceObject;
 import com.sina.weibo.sdk.api.WebpageObject;
 import com.sina.weibo.sdk.api.WeiboMultiMessage;
 import com.sina.weibo.sdk.auth.AuthInfo;
-import com.sina.weibo.sdk.common.UiError;
 import com.sina.weibo.sdk.openapi.IWBAPI;
 import com.sina.weibo.sdk.openapi.WBAPIFactory;
-import com.sina.weibo.sdk.share.WbShareCallback;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
-public class SharePortWeibo implements WbShareCallback {
+public class SharePortWeibo {
     private static final String APP_KY = "3280537319";
     private static final String REDIRECT_URL = "http://www.sina.com";
     private static final String SCOPE =
@@ -28,6 +24,10 @@ public class SharePortWeibo implements WbShareCallback {
                     + "friendships_groups_read,friendships_groups_write,statuses_to_me_read,"
                     + "follow_app_official_microblog," + "invitation_write";
     private static IWBAPI mWBAPI;
+
+    public static final IWBAPI getAPI() {
+        return mWBAPI;
+    }
 
     private Context context;
     private WeiboMultiMessage message;
@@ -100,20 +100,5 @@ public class SharePortWeibo implements WbShareCallback {
         mWBAPI.shareMessage(message, false);
     }
 
-    @Override
-    public void onComplete() {
-        Toast.makeText(context, "分享成功", Toast.LENGTH_SHORT).show();
 
-    }
-
-    @Override
-    public void onError(UiError uiError) {
-        Toast.makeText(context, "分享失败", Toast.LENGTH_SHORT).show();
-
-    }
-
-    @Override
-    public void onCancel() {
-        Toast.makeText(context, "分享取消", Toast.LENGTH_SHORT).show();
-    }
 }

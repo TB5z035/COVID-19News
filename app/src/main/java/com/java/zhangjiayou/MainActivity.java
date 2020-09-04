@@ -1,7 +1,10 @@
 package com.java.zhangjiayou;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -11,13 +14,9 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.java.zhangjiayou.database.PassageDatabase;
 import com.java.zhangjiayou.sharing.SharePortWeibo;
-import com.java.zhangjiayou.util.Passage;
-import com.sina.weibo.sdk.auth.AuthInfo;
-import com.sina.weibo.sdk.openapi.IWBAPI;
-import com.sina.weibo.sdk.openapi.WBAPIFactory;
+import com.sina.weibo.sdk.common.UiError;
+import com.sina.weibo.sdk.share.WbShareCallback;
 
-import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,7 +39,30 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navView, navController);
 
         PassageDatabase.getInstance(this);
+    }
 
-        SharePortWeibo.initSDK(this);
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        System.out.println("Callback success.");
+        if (SharePortWeibo.getAPI() != null)
+            SharePortWeibo.getAPI().doResultIntent(data, new WbShareCallback() {
+                @Override
+                public void onComplete() {
+                    Toast.makeText(getApplicationContext(), "分享成功", Toast.LENGTH_SHORT).show();
+
+                }
+
+                @Override
+                public void onError(UiError uiError) {
+                    Toast.makeText(getApplicationContext(), "分享失败", Toast.LENGTH_SHORT).show();
+
+                }
+
+                @Override
+                public void onCancel() {
+                    Toast.makeText(getApplicationContext(), "分享取消", Toast.LENGTH_SHORT).show();
+                }
+            });
     }
 }
