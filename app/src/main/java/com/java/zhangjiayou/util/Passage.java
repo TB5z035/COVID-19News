@@ -1,4 +1,9 @@
-package com.java.zhangjiayou.network;
+package com.java.zhangjiayou.util;
+
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -12,13 +17,19 @@ import java.util.Map;
  * This class provide interfaces to access the title, the content and other properties of a passage.
  *
  * @author 田倍闻
- * @version 1.0
+ * @version 1.1
  */
+@Entity(tableName = "Passages")
 public class Passage {
+    @PrimaryKey
+    @NonNull
     private String id;
+
     private String title;
     private String content;
     private Date date;
+
+    @Ignore
     private Map<String, Object> properties = new HashMap<>();
 
     /**
@@ -57,34 +68,54 @@ public class Passage {
 
     /**
      * This method returns the id of the passage.
+     *
      * @return The id of the passage
      */
-    final public String getId() {
+    public String getId() {
         return this.id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     /**
      * This method returns the id of the passage.
+     *
      * @return The title of the passage
      */
-    final public String getTitle() {
+    public String getTitle() {
         return this.title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     /**
      * This method returns the content of the passage.
+     *
      * @return The content of the passage
      */
-    final public String getContent() {
+    public String getContent() {
         return this.content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     /**
      * This method returns the date of the passage.
+     *
      * @return The publishing date of the passage
      */
-    final public Date getDate() {
+    public Date getDate() {
         return this.date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     /**
@@ -93,9 +124,12 @@ public class Passage {
      * authors, category, doi, entities, geoInfo, influence, lang, pdf,
      * regionIDs, related_events, seg_text, source, tflag, time, type,
      * urls, year,
+     *
      * @return A map containing all additional properties of the passage
      */
     final public Map<String, Object> getProperties() {
         return properties;
     }
 }
+
+

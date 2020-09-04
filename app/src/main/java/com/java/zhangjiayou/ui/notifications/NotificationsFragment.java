@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.java.zhangjiayou.R;
+import com.java.zhangjiayou.database.PassageDatabase;
 
 public class NotificationsFragment extends Fragment {
 
@@ -30,6 +31,23 @@ public class NotificationsFragment extends Fragment {
                 textView.setText(s);
             }
         });
+
+        final TextView test = root.findViewById(R.id.test_text);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final String text = PassageDatabase.getInstance(getContext()).getPassageDao().getPassageFromId("123").getTitle();
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        test.setText(text);
+                    }
+                });
+            }
+        }).start();
+
+
         return root;
     }
 }

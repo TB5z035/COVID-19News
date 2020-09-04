@@ -1,8 +1,11 @@
 package com.java.zhangjiayou.network;
 
+import android.util.Pair;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.java.zhangjiayou.util.Passage;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +22,11 @@ public class PassagePortal extends Portal {
 
     public List<Passage> getNewsFromType(String type) throws NoResponseError {
         return getNewsFromType(type, null, null);
+    }
+
+    //TODO:implement PassagePortal.getNewsTitleAndId
+    public List<Pair<String, String>> getNewsTitleAndId(String type, Integer index, Integer size) {
+        throw new UnsupportedOperationException();
     }
 
     public List<Passage> getNewsFromType(String type, Integer index, Integer size) throws NoResponseError {
@@ -39,7 +47,8 @@ public class PassagePortal extends Portal {
         return data;
     }
 
-    public Passage getNewsFromID(String id){
+    public Passage getNewsFromId(String id) {
+        //TODO:implement PassagePortal.getNewsFromId
         throw new UnsupportedOperationException();
     }
 }

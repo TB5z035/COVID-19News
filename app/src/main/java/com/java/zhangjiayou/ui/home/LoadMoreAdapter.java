@@ -10,10 +10,10 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.java.zhangjiayou.R;
-import com.java.zhangjiayou.network.Passage;
+import com.java.zhangjiayou.database.PassageDatabase;
+import com.java.zhangjiayou.util.Passage;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -65,11 +65,21 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof RecyclerViewHolder) {
-            RecyclerViewHolder recyclerViewHolder = (RecyclerViewHolder) holder;
+            final RecyclerViewHolder recyclerViewHolder = (RecyclerViewHolder) holder;
             recyclerViewHolder.titleView.setText(dataList.get(position).getTitle());
-            recyclerViewHolder.contentView.setText(dataList.get(position).getContent());
+            recyclerViewHolder.contentView.setText(
+                    new SimpleDateFormat("yyyy-MM-dd hh:mm")
+                            .format(dataList.get(position).getDate()));
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    //TODO:need debug
+                    if (PassageDatabase.getInstance(null).getPassageDao().getPassageFromId(dataList.get(position).getId()) != null)
+                        recyclerViewHolder.titleView.setTextColor(R.color.colorPrimaryDark);
+                }
+            }).start();
 //            recyclerViewHolder.contentView.setText(new SimpleDateFormat("hh:mm:ss").format(new Date()));
 
         } else if (holder instanceof FootViewHolder) {
@@ -113,7 +123,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         RecyclerViewHolder(View itemView) {
             super(itemView);
             titleView = (TextView) itemView.findViewById(R.id.title_view);
-            contentView = (TextView) itemView.findViewById(R.id.content_view);
+            contentView = (TextView) itemView.findViewById(R.id.time_view);
         }
     }
 

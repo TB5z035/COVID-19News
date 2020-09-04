@@ -1,19 +1,18 @@
 package com.java.zhangjiayou;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Window;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.java.zhangjiayou.database.PassageDatabase;
+import com.java.zhangjiayou.util.Passage;
 
+import java.util.Date;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,5 +33,13 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                PassageDatabase.getInstance(getApplicationContext())
+                        .getPassageDao()
+                        .insert(new Passage("123", "Hello!", "not happy", new Date()));
+            }
+        }).start();
     }
 }

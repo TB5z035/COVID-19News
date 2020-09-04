@@ -1,12 +1,16 @@
 package com.java.zhangjiayou;
 
+import android.content.Context;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.java.zhangjiayou.database.PassageDatabase;
 import com.java.zhangjiayou.network.NoResponseError;
-import com.java.zhangjiayou.network.Passage;
 import com.java.zhangjiayou.network.PassagePortal;
+import com.java.zhangjiayou.util.Passage;
 
 import org.junit.Test;
 
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -45,5 +49,10 @@ public class ExampleUnitTest {
             System.out.println(i.getTitle());
         }
 
+    }
+
+    @Test
+    public void database_test() {
+        Passage p = new Passage("123","Hello!","Not happy",new Date());
     }
 }
