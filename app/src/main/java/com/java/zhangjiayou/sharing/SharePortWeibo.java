@@ -1,0 +1,119 @@
+package com.java.zhangjiayou.sharing;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.widget.Toast;
+
+import com.sina.weibo.sdk.api.ImageObject;
+import com.sina.weibo.sdk.api.TextObject;
+import com.sina.weibo.sdk.api.VideoSourceObject;
+import com.sina.weibo.sdk.api.WebpageObject;
+import com.sina.weibo.sdk.api.WeiboMultiMessage;
+import com.sina.weibo.sdk.auth.AuthInfo;
+import com.sina.weibo.sdk.common.UiError;
+import com.sina.weibo.sdk.openapi.IWBAPI;
+import com.sina.weibo.sdk.openapi.WBAPIFactory;
+import com.sina.weibo.sdk.share.WbShareCallback;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.UUID;
+
+public class SharePortWeibo implements WbShareCallback {
+    private static final String APP_KY = "3280537319";
+    private static final String REDIRECT_URL = "http://www.sina.com";
+    private static final String SCOPE =
+            "email,direct_messages_read,direct_messages_write,"
+                    + "friendships_groups_read,friendships_groups_write,statuses_to_me_read,"
+                    + "follow_app_official_microblog," + "invitation_write";
+    private static IWBAPI mWBAPI;
+
+    private Context context;
+    private WeiboMultiMessage message;
+
+    public static void initSDK(Context context) {
+        AuthInfo authInfo = new AuthInfo(context, APP_KY, REDIRECT_URL, SCOPE);
+        mWBAPI = WBAPIFactory.createWBAPI(context);
+        mWBAPI.registerApp(context, authInfo);
+    }
+
+    public SharePortWeibo(Context context) {
+        this.context = context;
+        message = new WeiboMultiMessage();
+        TextObject textObject = new TextObject();
+        textObject.text = "我正在使用微博进行分享!";
+        message.textObject = textObject;
+    }
+
+    public SharePortWeibo appendText(String text) {
+        message.textObject.text = message.textObject.text + text;
+        return this;
+    }
+
+    public SharePortWeibo setText(String text) {
+        message.textObject.text = text;
+        return this;
+    }
+
+    public SharePortWeibo addImage(int resId) {
+        ImageObject imageObject = new ImageObject();
+        imageObject.setImageData(BitmapFactory.decodeResource(context.getResources(), resId));
+        message.imageObject = imageObject;
+        return this;
+    }
+
+    public SharePortWeibo setWebpage(String title, String description, String actionUrl) {
+        //TODO:add default logo
+        throw new UnsupportedOperationException();
+    }
+
+    public SharePortWeibo setWebpage(int resLogoId, String title, String description, String actionUrl) {
+        WebpageObject webObject = new WebpageObject();
+        webObject.identify = UUID.randomUUID().toString();
+        webObject.title = title;
+        webObject.description = description;
+        webObject.actionUrl = actionUrl;
+        webObject.defaultText = "分享网页";
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resLogoId);
+        ByteArrayOutputStream os = null;
+        try {
+            os = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 85, os);
+            webObject.thumbData = os.toByteArray();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (os != null) {
+                    os.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        message.mediaObject = webObject;
+        return this;
+    }
+
+    public void share() {
+        mWBAPI.shareMessage(message, false);
+    }
+
+    @Override
+    public void onComplete() {
+        Toast.makeText(context, "分享成功", Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    public void onError(UiError uiError) {
+        Toast.makeText(context, "分享失败", Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    public void onCancel() {
+        Toast.makeText(context, "分享取消", Toast.LENGTH_SHORT).show();
+    }
+}

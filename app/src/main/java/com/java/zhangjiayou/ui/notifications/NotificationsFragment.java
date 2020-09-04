@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.java.zhangjiayou.R;
 import com.java.zhangjiayou.database.PassageDatabase;
+import com.java.zhangjiayou.sharing.SharePortWeibo;
 import com.java.zhangjiayou.util.Passage;
 
 import java.util.List;
@@ -50,6 +51,13 @@ public class NotificationsFragment extends Fragment {
                         }
                     }
                 }).start();
+            }
+        });
+
+        root.findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new SharePortWeibo(getContext()).setText("本地测试").share();
             }
         });
 

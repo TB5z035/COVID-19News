@@ -10,13 +10,18 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.java.zhangjiayou.database.PassageDatabase;
+import com.java.zhangjiayou.sharing.SharePortWeibo;
 import com.java.zhangjiayou.util.Passage;
+import com.sina.weibo.sdk.auth.AuthInfo;
+import com.sina.weibo.sdk.openapi.IWBAPI;
+import com.sina.weibo.sdk.openapi.WBAPIFactory;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+
         PassageDatabase.getInstance(this);
+
+        SharePortWeibo.initSDK(this);
     }
 }
