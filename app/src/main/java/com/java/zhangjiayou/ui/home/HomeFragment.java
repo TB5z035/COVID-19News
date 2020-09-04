@@ -14,15 +14,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.java.zhangjiayou.R;
+import com.java.zhangjiayou.database.PassageDatabase;
 import com.java.zhangjiayou.network.NoResponseError;
-import com.java.zhangjiayou.util.Passage;
 import com.java.zhangjiayou.network.PassagePortal;
+import com.java.zhangjiayou.util.Passage;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
     private Integer index = 1;
+
 
     private HomeViewModel homeViewModel;
     private RecyclerView recyclerView;
@@ -54,6 +56,7 @@ public class HomeFragment extends Fragment {
         try {
             if (mode) dataList.clear();
             dataList.addAll(list);
+
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -73,6 +76,7 @@ public class HomeFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel =
                 ViewModelProviders.of(this).get(HomeViewModel.class);
+
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 //        final TextView textView = root.findViewById(R.id.text_home);
 //        homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
@@ -99,6 +103,36 @@ public class HomeFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(loadMoreAdapter);
         getData(true);
+
+        recyclerView.addOnItemTouchListener(new MyOnItemTouchListener() {
+//            @Override
+//            void doOnItemClickListener(View view, int position) {
+//                Toast.makeText(getActivity(), "单击！" + position, Toast.LENGTH_SHORT).show();
+//            }
+
+            @Override
+            void doOnItemLongClickListener(final View view, int position) {
+                Toast.makeText(getActivity(), "点击进入" + position, Toast.LENGTH_SHORT).show();
+                final Passage[] passage = {loadMoreAdapter.getItem(position)};
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Passage passageInDB = PassageDatabase.getInstance(null).getPassageDao().getPassageFromId(passage[0].getId());
+                        if (passageInDB == null)
+                            PassageDatabase.getInstance(null).getPassageDao().insert(passage[0]);
+                        else
+                            passage[0] = passageInDB;
+//                        getActivity().runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                view.setBackgroundColor(R.color.colorInfoCardViewed);
+//                            }
+//                        });
+                    }
+                }).start();
+
+            }
+        });
 
         //Pull-to-load-more-listener
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {

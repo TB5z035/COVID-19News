@@ -13,6 +13,7 @@ import com.java.zhangjiayou.database.PassageDatabase;
 import com.java.zhangjiayou.util.Passage;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
@@ -33,13 +34,13 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                PassageDatabase.getInstance(getApplicationContext())
-                        .getPassageDao()
-                        .insert(new Passage("123", "Hello!", "not happy", new Date()));
-            }
-        }).start();
+    }
+
+    public void debug() {
+        List<Passage> passageList= PassageDatabase.getInstance(null).getPassageDao().getAllPassages();
+        for (Passage i:
+                passageList) {
+            System.out.println(i.getTitle());
+        }
     }
 }

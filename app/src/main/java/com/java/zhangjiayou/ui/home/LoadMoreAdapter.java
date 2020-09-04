@@ -14,6 +14,7 @@ import com.java.zhangjiayou.database.PassageDatabase;
 import com.java.zhangjiayou.util.Passage;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -32,6 +33,10 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public final int LOADING_COMPLETE = 2;
     // 加载到底
     public final int LOADING_END = 3;
+
+    public Passage getItem(int position) {
+        return dataList.get(position);
+    }
 
     public LoadMoreAdapter(List<Passage> dataList) {
         this.dataList = dataList;
@@ -54,6 +59,8 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (viewType == TYPE_ITEM) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.adapter_recyclerview, parent, false);
+            view.setLongClickable(true);
+            view.setClickable(true);
             return new RecyclerViewHolder(view);
 
         } else if (viewType == TYPE_FOOTER) {
@@ -72,15 +79,15 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             recyclerViewHolder.contentView.setText(
                     new SimpleDateFormat("yyyy-MM-dd hh:mm")
                             .format(dataList.get(position).getDate()));
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    //TODO:need debug
-                    if (PassageDatabase.getInstance(null).getPassageDao().getPassageFromId(dataList.get(position).getId()) != null)
-                        recyclerViewHolder.titleView.setTextColor(R.color.colorPrimaryDark);
-                }
-            }).start();
-//            recyclerViewHolder.contentView.setText(new SimpleDateFormat("hh:mm:ss").format(new Date()));
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    //TODO:need debug
+//                    if (PassageDatabase.getInstance(null).getPassageDao().getPassageFromId(dataList.get(position).getId()) != null)
+//                        recyclerViewHolder.titleView.setTextColor(R.color.colorPrimaryDark);
+//                }
+//            }).start();
+            recyclerViewHolder.contentView.setText(new SimpleDateFormat("hh:mm:ss").format(new Date()));
 
         } else if (holder instanceof FootViewHolder) {
             FootViewHolder footViewHolder = (FootViewHolder) holder;

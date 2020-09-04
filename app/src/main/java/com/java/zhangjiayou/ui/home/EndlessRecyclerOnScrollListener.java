@@ -33,6 +33,7 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
         isSlidingUpward = dy > 0;
     }
 
+
     /**
      * 加载更多回调
      */

@@ -14,6 +14,9 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.java.zhangjiayou.R;
 import com.java.zhangjiayou.database.PassageDatabase;
+import com.java.zhangjiayou.util.Passage;
+
+import java.util.List;
 
 public class NotificationsFragment extends Fragment {
 
@@ -47,7 +50,24 @@ public class NotificationsFragment extends Fragment {
             }
         }).start();
 
+        root.findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        List<Passage> passageList = PassageDatabase.getInstance(null).getPassageDao().getAllPassages();
+                        for (Passage i :
+                                passageList) {
+                            System.out.println(i.getTitle());
+                        }
+                    }
+                }).start();
+            }
+        });
 
         return root;
     }
+
+
 }
