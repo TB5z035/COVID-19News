@@ -7,8 +7,8 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.java.zhangjiayou.ui.home.HomeFragment"
-        tools:layout="@layout/fragment_home" />
+        android:name="com.java.zhangjiayou.ui.home.FrameFragment"
+        tools:layout="@layout/fragment_frame" />
 
     <fragment
         android:id="@+id/navigation_dashboard"

@@ -17,6 +17,7 @@ import com.java.zhangjiayou.util.Passage;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -91,7 +92,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (viewedMap.contains(dataList.get(position).getId()))
                 recyclerViewHolder.titleView.setTextColor(R.color.colorPrimaryDark);
             recyclerViewHolder.contentView.setText(
-                    new SimpleDateFormat("yyyy-MM-dd hh:mm")
+                    new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA)
                             .format(dataList.get(position).getDate()));
 //            new Thread(new Runnable() {
 //                @Override
