@@ -19,6 +19,8 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -141,12 +143,9 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         TextView titleView;
         TextView contentView;
         CardView cardView;
-        View backup;
 
         RecyclerViewHolder(final View itemView) {
             super(itemView);
-
-            backup = itemView;
 
             titleView = (TextView) itemView.findViewById(R.id.title_view);
             contentView = (TextView) itemView.findViewById(R.id.time_view);
@@ -167,13 +166,19 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                 PassageDatabase.getInstance(null).getPassageDao().insert(dataList.get(getLayoutPosition()));
                         }
                     }).start();
-
-                    notifyDataSetChanged();
+                    itemView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            notifyDataSetChanged();
+                        }
+                    },200);
                     //FIXME:call notifyDataSetChanged after return from detail activity
                 }
             });
+        }
 
-
+        void onUpdateComplete() {
+            notifyDataSetChanged();
         }
     }
 

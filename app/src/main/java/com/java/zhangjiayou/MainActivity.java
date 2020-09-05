@@ -1,6 +1,7 @@
 package com.java.zhangjiayou;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -17,8 +18,6 @@ import com.java.zhangjiayou.sharing.SharePortWeibo;
 import com.sina.weibo.sdk.common.UiError;
 import com.sina.weibo.sdk.share.WbShareCallback;
 
-import java.util.Objects;
-
 public class MainActivity extends AppCompatActivity {
 
 
@@ -27,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 //        Objects.requireNonNull(getSupportActionBar()).hide();
 //        getActionBar().hide();
-
         setContentView(R.layout.activity_main);
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
@@ -42,6 +40,12 @@ public class MainActivity extends AppCompatActivity {
 
         PassageDatabase.getInstance(this);
     }
+
+//    @Override
+//    public void onConfigurationChanged(Configuration newConfig) {
+//        // TODO Auto-generated method stub
+//        super.onConfigurationChanged(newConfig);
+//    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
