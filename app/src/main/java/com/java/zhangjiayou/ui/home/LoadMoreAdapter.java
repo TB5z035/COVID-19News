@@ -1,6 +1,8 @@
 package com.java.zhangjiayou.ui.home;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +28,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private List<Passage> dataList;
     private Set<String> viewedMap;
+    private Activity activity;
 
     // 普通布局
     private final int TYPE_ITEM = 1;
@@ -44,9 +47,10 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return dataList.get(position);
     }
 
-    public LoadMoreAdapter(List<Passage> dataList, Set<String> map) {
+    public LoadMoreAdapter(List<Passage> dataList, Set<String> map, Activity activity) {
         this.dataList = dataList;
         this.viewedMap = map;
+        this.activity = activity;
     }
 
     public Set<String> getViewedMap() {
@@ -172,7 +176,11 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             notifyDataSetChanged();
                         }
                     },200);
-                    //FIXME:call notifyDataSetChanged after return from detail activity
+                    //TODO:call detail page activity here
+                    Intent intent = new Intent();
+                    intent.setClass(activity.getApplicationContext(),DetailActivity.class);
+                    activity.startActivity(intent);
+
                 }
             });
         }

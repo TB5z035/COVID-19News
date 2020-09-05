@@ -1,6 +1,6 @@
 package com.java.zhangjiayou.ui.home;
 
-import android.content.res.ColorStateList;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,9 +21,12 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.java.zhangjiayou.R;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class FrameFragment extends Fragment {
     private static final int NUM_PAGES = 2;
-
+    private Set<String> historyId = new HashSet<>();
     private ViewPager2 viewPager2;
     private TabLayout tabLayout;
 
@@ -37,9 +41,9 @@ public class FrameFragment extends Fragment {
         @Override
         public Fragment createFragment(int position) {
             if (position == 0)
-                return new HomeFragment("news");
+                return new HomeFragment("news", historyId);
             else if (position == 1)
-                return new HomeFragment("paper");
+                return new HomeFragment("paper", historyId);
             else
                 throw new UnsupportedPassageType();
         }
@@ -52,9 +56,27 @@ public class FrameFragment extends Fragment {
 
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Toast.makeText(this.getActivity(), "boss destroy!!", Toast.LENGTH_SHORT).show();
+        getActivity()
+                .getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)
+                .edit()
+                .putStringSet(String.valueOf(R.string.history_fileid_set_key), historyId)
+                .apply();
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Toast.makeText(this.getActivity(), "boss create!", Toast.LENGTH_SHORT).show();
+
+        Set<String> list = getActivity()
+                .getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)
+                .getStringSet(String.valueOf(R.string.history_fileid_set_key), new HashSet<String>());
+        if (list != null) historyId = new HashSet<>(list);
+
         View root = inflater.inflate(R.layout.fragment_frame, container, false);
         viewPager2 = root.findViewById(R.id.view_pager);
         tabLayout = root.findViewById(R.id.tabLayout);

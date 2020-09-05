@@ -1,6 +1,7 @@
 package com.java.zhangjiayou.ui.home;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,10 +33,16 @@ public class HomeFragment extends Fragment {
     private LoadMoreAdapter loadMoreAdapter;
     private String type;
     private Integer size = 20;
+    private Set<String> historyId;
 
     private List<Passage> dataList = new ArrayList<>();
 
-    public HomeFragment(String type) {
+    public LoadMoreAdapter getLoadMoreAdapter() {
+        return loadMoreAdapter;
+    }
+
+    public HomeFragment(String type, Set<String> historyId) {
+        this.historyId = historyId;
         if (type.equals("news") || type.equals("paper")) this.type = type;
         else throw new UnsupportedPassageType();
     }
@@ -69,20 +77,12 @@ public class HomeFragment extends Fragment {
     }
 
 
-    @Override
-    public void onDestroyView() {
-        Toast.makeText(this.getActivity(),"Destroyed!",Toast.LENGTH_SHORT).show();
-        super.onDestroyView();
-        getActivity()
-                .getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)
-                .edit()
-                .putStringSet(String.valueOf(R.string.history_fileid_set_key), loadMoreAdapter.getViewedMap())
-                .apply();
-    }
 
     @Override
     public View onCreateView(@NonNull final LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        Toast.makeText(this.getActivity(), "createdView!", Toast.LENGTH_SHORT).show();
+
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
         swipeRefreshLayout = root.findViewById(R.id.SwipeRefresh);
@@ -98,11 +98,7 @@ public class HomeFragment extends Fragment {
         });
         recyclerView = (RecyclerView) root.findViewById(R.id.recycler_view);
 
-
-        Set<String> stringSet = getActivity()
-                .getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)
-                .getStringSet(String.valueOf(R.string.history_fileid_set_key), new HashSet<String>());
-        loadMoreAdapter = new LoadMoreAdapter(dataList, new HashSet<>(stringSet));
+        loadMoreAdapter = new LoadMoreAdapter(dataList, historyId, getActivity());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(loadMoreAdapter);
         getData(true);
@@ -112,17 +108,10 @@ public class HomeFragment extends Fragment {
             @Override
             public void onLoadMore() {
                 loadMoreAdapter.setLoadState(loadMoreAdapter.LOADING);
-
-                if (dataList.size() < 100) {
-                    getData(false);
-                } else {
-                    loadMoreAdapter.setLoadState(loadMoreAdapter.LOADING_END);
-                }
+                getData(false);
             }
         });
 
         return root;
     }
-
-
 }
