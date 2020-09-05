@@ -33,7 +33,7 @@ public class HomeFragment extends Fragment {
     private LoadMoreAdapter loadMoreAdapter;
     private String type;
     private Integer size = 20;
-    private Set<String> historyId;
+    private Set<String> historyIds;
 
     private List<Passage> dataList = new ArrayList<>();
 
@@ -41,8 +41,8 @@ public class HomeFragment extends Fragment {
         return loadMoreAdapter;
     }
 
-    public HomeFragment(String type, Set<String> historyId) {
-        this.historyId = historyId;
+    public HomeFragment(String type, Set<String> historyIds) {
+        this.historyIds = historyIds;
         if (type.equals("news") || type.equals("paper")) this.type = type;
         else throw new UnsupportedPassageType();
     }
@@ -81,8 +81,6 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull final LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        Toast.makeText(this.getActivity(), "createdView!", Toast.LENGTH_SHORT).show();
-
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
         swipeRefreshLayout = root.findViewById(R.id.SwipeRefresh);
@@ -98,7 +96,7 @@ public class HomeFragment extends Fragment {
         });
         recyclerView = (RecyclerView) root.findViewById(R.id.recycler_view);
 
-        loadMoreAdapter = new LoadMoreAdapter(dataList, historyId, getActivity());
+        loadMoreAdapter = new LoadMoreAdapter(dataList, historyIds, getActivity());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(loadMoreAdapter);
         getData(true);

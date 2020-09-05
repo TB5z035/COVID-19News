@@ -13,7 +13,6 @@ public class HistoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public HistoryViewAdapter(Set<String> ids) {
         historyIds = ids;
-
     }
 
     @NonNull

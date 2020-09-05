@@ -26,7 +26,7 @@ import java.util.Set;
 
 public class FrameFragment extends Fragment {
     private static final int NUM_PAGES = 2;
-    private Set<String> historyId = new HashSet<>();
+    private Set<String> historyIds = new HashSet<>();
     private ViewPager2 viewPager2;
     private TabLayout tabLayout;
 
@@ -41,9 +41,9 @@ public class FrameFragment extends Fragment {
         @Override
         public Fragment createFragment(int position) {
             if (position == 0)
-                return new HomeFragment("news", historyId);
+                return new HomeFragment("news", historyIds);
             else if (position == 1)
-                return new HomeFragment("paper", historyId);
+                return new HomeFragment("paper", historyIds);
             else
                 throw new UnsupportedPassageType();
         }
@@ -52,30 +52,25 @@ public class FrameFragment extends Fragment {
         public int getItemCount() {
             return NUM_PAGES;
         }
-
-
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Toast.makeText(this.getActivity(), "boss destroy!!", Toast.LENGTH_SHORT).show();
         getActivity()
                 .getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)
                 .edit()
-                .putStringSet(String.valueOf(R.string.history_fileid_set_key), historyId)
+                .putStringSet(String.valueOf(R.string.history_fileid_set_key), historyIds)
                 .apply();
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Toast.makeText(this.getActivity(), "boss create!", Toast.LENGTH_SHORT).show();
-
         Set<String> list = getActivity()
                 .getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)
                 .getStringSet(String.valueOf(R.string.history_fileid_set_key), new HashSet<String>());
-        if (list != null) historyId = new HashSet<>(list);
+        if (list != null) historyIds = new HashSet<>(list);
 
         View root = inflater.inflate(R.layout.fragment_frame, container, false);
         viewPager2 = root.findViewById(R.id.view_pager);

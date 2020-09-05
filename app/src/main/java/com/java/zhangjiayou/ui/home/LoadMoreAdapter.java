@@ -2,6 +2,7 @@ package com.java.zhangjiayou.ui.home;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,10 +52,6 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         this.dataList = dataList;
         this.viewedMap = map;
         this.activity = activity;
-    }
-
-    public Set<String> getViewedMap() {
-        return viewedMap;
     }
 
     @Override
@@ -157,9 +154,9 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    outside.getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)
-//                            .edit().putString(dataList.get(getLayoutPosition()).getId(), null)
-//                            .apply();
+                    itemView.getContext().getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)
+                            .edit().putString(dataList.get(getLayoutPosition()).getId(), null)
+                            .apply();
                     viewedMap.add(dataList.get(getLayoutPosition()).getId());
 
                     new Thread(new Runnable() {

@@ -44,12 +44,6 @@ public class MainActivity extends AppCompatActivity {
         PassageDatabase.getInstance(this);
     }
 
-//    @Override
-//    public void onConfigurationChanged(Configuration newConfig) {
-//        // TODO Auto-generated method stub
-//        super.onConfigurationChanged(newConfig);
-//    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
