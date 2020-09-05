@@ -89,9 +89,6 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             recyclerViewHolder.titleView.setText(dataList.get(position).getTitle());
 
             if (viewedMap.contains(dataList.get(position).getId()))
-//            if (outside
-//                    .getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)
-//                    .getString(dataList.get(position).getId(), null) != null)
                 recyclerViewHolder.titleView.setTextColor(R.color.colorPrimaryDark);
             recyclerViewHolder.contentView.setText(
                     new SimpleDateFormat("yyyy-MM-dd hh:mm")

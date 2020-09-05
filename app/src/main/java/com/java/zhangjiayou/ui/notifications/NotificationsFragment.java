@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.java.zhangjiayou.R;
 import com.java.zhangjiayou.database.PassageDatabase;
 import com.java.zhangjiayou.sharing.SharePortWeibo;
+import com.java.zhangjiayou.sharing.SharePortWeixin;
 import com.java.zhangjiayou.util.Passage;
 import com.sina.weibo.sdk.common.UiError;
 import com.sina.weibo.sdk.share.WbShareCallback;
@@ -62,7 +63,15 @@ public class NotificationsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 SharePortWeibo.initSDK(getActivity());
-                new SharePortWeibo(getActivity()).setText("本地测试").share();
+                new SharePortWeibo().setText("本地测试").share();
+            }
+        });
+
+        root.findViewById(R.id.button3).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharePortWeixin.initSDK(getActivity());
+                new SharePortWeixin().setText("本地测试").share();
             }
         });
 

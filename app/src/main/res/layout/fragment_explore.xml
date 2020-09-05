@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.dashboard.DashboardFragment">
+    tools:context=".ui.Explore.ExploreFragment">
 
     <FrameLayout
         android:id="@+id/search_frame"
@@ -21,5 +21,18 @@
             android:layout_margin="2dp"
             tools:layout_constraintBottom_toBottomOf="@id/SwipeRefresh" />
     </FrameLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/history_view"
+        android:layout_width="409dp"
+        android:layout_height="677dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_frame" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

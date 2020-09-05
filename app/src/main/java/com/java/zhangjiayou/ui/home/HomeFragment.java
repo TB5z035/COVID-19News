@@ -75,6 +75,7 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
+        Toast.makeText(this.getActivity(),"Destroyed!",Toast.LENGTH_SHORT).show();
         super.onDestroyView();
         getActivity()
                 .getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)

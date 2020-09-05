@@ -1,16 +1,16 @@
-package com.java.zhangjiayou.ui.dashboard;
+package com.java.zhangjiayou.ui.Explore;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class DashboardViewModel extends ViewModel {
+public class ExploreViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public DashboardViewModel() {
+    public ExploreViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is dashboard fragment");
+        mText.setValue("This is search fragment");
     }
 
     public LiveData<String> getText() {

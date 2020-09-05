@@ -16,7 +16,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
-public class SharePortWeibo {
+public class SharePortWeibo implements ShareAPI<SharePortWeibo> {
     private static final String APP_KY = "3280537319";
     private static final String REDIRECT_URL = "http://www.sina.com";
     private static final String SCOPE =
@@ -29,7 +29,7 @@ public class SharePortWeibo {
         return mWBAPI;
     }
 
-    private Context context;
+    //    private Context context;
     private WeiboMultiMessage message;
 
     public static void initSDK(Context context) {
@@ -38,8 +38,7 @@ public class SharePortWeibo {
         mWBAPI.registerApp(context, authInfo);
     }
 
-    public SharePortWeibo(Context context) {
-        this.context = context;
+    public SharePortWeibo() {
         message = new WeiboMultiMessage();
         TextObject textObject = new TextObject();
         textObject.text = "我正在使用微博进行分享!";
@@ -56,19 +55,19 @@ public class SharePortWeibo {
         return this;
     }
 
-    public SharePortWeibo addImage(int resId) {
+    public SharePortWeibo setImage(Context context, int resId) {
         ImageObject imageObject = new ImageObject();
         imageObject.setImageData(BitmapFactory.decodeResource(context.getResources(), resId));
         message.imageObject = imageObject;
         return this;
     }
 
-    public SharePortWeibo setWebpage(String title, String description, String actionUrl) {
+    public SharePortWeibo setWebPage(String title, String description, String actionUrl) {
         //TODO:add default logo
         throw new UnsupportedOperationException();
     }
 
-    public SharePortWeibo setWebpage(int resLogoId, String title, String description, String actionUrl) {
+    public SharePortWeibo setWebPage(Context context, int resLogoId, String title, String description, String actionUrl) {
         WebpageObject webObject = new WebpageObject();
         webObject.identify = UUID.randomUUID().toString();
         webObject.title = title;

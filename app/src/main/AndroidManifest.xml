@@ -37,6 +37,18 @@
                 android:name="android.app.default_searchable"
                 android:value=".SearchableActivity" />
         </activity>
+        <activity
+            android:name="com.java.zhangjiayou.wxapi.WXEntryActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:taskAffinity="com.java.zhangjiayou"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

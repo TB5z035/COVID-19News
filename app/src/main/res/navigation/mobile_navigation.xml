@@ -12,8 +12,8 @@
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.java.zhangjiayou.ui.dashboard.DashboardFragment"
-        tools:layout="@layout/fragment_dashboard" />
+        android:name="com.java.zhangjiayou.ui.Explore.ExploreFragment"
+        tools:layout="@layout/fragment_explore" />
 
     <fragment
         android:id="@+id/navigation_notifications"
