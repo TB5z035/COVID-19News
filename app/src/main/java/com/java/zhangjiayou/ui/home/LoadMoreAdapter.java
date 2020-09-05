@@ -16,20 +16,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.java.zhangjiayou.R;
 import com.java.zhangjiayou.database.PassageDatabase;
+import com.java.zhangjiayou.network.NoResponseError;
+import com.java.zhangjiayou.network.PassagePortal;
 import com.java.zhangjiayou.util.Passage;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
+    private Integer index = 1;
     private List<Passage> dataList;
-    private Set<String> viewedMap;
-    private Activity activity;
+    private Set<String> historyIds;
+    //    private Activity activity;
+    private HomeFragment fragment;
 
     // 普通布局
     private final int TYPE_ITEM = 1;
@@ -48,10 +50,33 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return dataList.get(position);
     }
 
-    public LoadMoreAdapter(List<Passage> dataList, Set<String> map, Activity activity) {
-        this.dataList = dataList;
-        this.viewedMap = map;
-        this.activity = activity;
+    public LoadMoreAdapter(Set<String> map, HomeFragment fragment) {
+        this.dataList = new ArrayList<>();
+        this.historyIds = map;
+//        this.activity = activity;
+        this.fragment = fragment;
+    }
+
+     void getData(final boolean mode, String type, int size) {
+        if (mode) {
+            index = 1;
+        }
+        new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+
+                if (mode) dataList.clear();
+                dataList.addAll(new PassagePortal().getNewsFromType(type, index, size));
+                index++;
+                fragment.onDataGot();
+            } catch (NullPointerException e) {
+                System.out.println(e.getStackTrace());
+            } catch (NoResponseError noResponseError) {
+                noResponseError.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     @Override
@@ -71,8 +96,6 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (viewType == TYPE_ITEM) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.adapter_recyclerview, parent, false);
-//            view.setLongClickable(true);
-//            view.setClickable(true);
 
             return new RecyclerViewHolder(view);
 
@@ -92,20 +115,11 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             holder.setIsRecyclable(false);
             recyclerViewHolder.titleView.setText(dataList.get(position).getTitle());
 
-            if (viewedMap.contains(dataList.get(position).getId()))
+            if (historyIds.contains(dataList.get(position).getId()))
                 recyclerViewHolder.titleView.setTextColor(R.color.colorPrimaryDark);
             recyclerViewHolder.contentView.setText(
                     new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA)
                             .format(dataList.get(position).getDate()));
-//            new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    //TODO:need debug
-//                    if (PassageDatabase.getInstance(null).getPassageDao().getPassageFromId(dataList.get(position).getId()) != null)
-//                        recyclerViewHolder.titleView.setTextColor(R.color.colorPrimaryDark);
-//                }
-//            }).start();
-//            recyclerViewHolder.contentView.setText(new SimpleDateFormat("hh:mm:ss").format(new Date()));
 
         } else if (holder instanceof FootViewHolder) {
             FootViewHolder footViewHolder = (FootViewHolder) holder;
@@ -157,7 +171,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     itemView.getContext().getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)
                             .edit().putString(dataList.get(getLayoutPosition()).getId(), null)
                             .apply();
-                    viewedMap.add(dataList.get(getLayoutPosition()).getId());
+                    historyIds.add(dataList.get(getLayoutPosition()).getId());
 
                     new Thread(new Runnable() {
                         @Override
@@ -175,15 +189,11 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     },200);
                     //TODO:call detail page activity here
                     Intent intent = new Intent();
-                    intent.setClass(activity.getApplicationContext(),DetailActivity.class);
-                    activity.startActivity(intent);
+                    intent.setClass(fragment.getContext(),DetailActivity.class);
+                    fragment.startActivity(intent);
 
                 }
             });
-        }
-
-        void onUpdateComplete() {
-            notifyDataSetChanged();
         }
     }
 

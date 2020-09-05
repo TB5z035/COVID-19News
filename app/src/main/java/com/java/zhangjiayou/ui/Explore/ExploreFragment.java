@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -29,20 +30,22 @@ public class ExploreFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        historyIds = getActivity()
-                .getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)
-                .getStringSet(String.valueOf(R.string.history_fileid_set_key), new HashSet<String>());
 
 
         dashboardViewModel =
                 ViewModelProviders.of(this).get(ExploreViewModel.class);
         View root = inflater.inflate(R.layout.fragment_explore, container, false);
 
-        recyclerView = root.findViewById(R.id.recycler_view);
+        historyIds = getActivity()
+                .getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)
+                .getStringSet(String.valueOf(R.string.history_fileid_set_key), new HashSet<String>());
+        System.out.println(historyIds);
+        recyclerView = root.findViewById(R.id.history_view);
 
-        loadMoreAdapter = new HistoryViewAdapter(historyIds);
+        loadMoreAdapter = new HistoryViewAdapter(historyIds, getActivity());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(loadMoreAdapter);
+        loadMoreAdapter.refreshDataList();
 
         searchView = root.findViewById(R.id.search_box);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -64,4 +67,6 @@ public class ExploreFragment extends Fragment {
 
         return root;
     }
+
+
 }
