@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -17,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.java.zhangjiayou.R;
 import com.java.zhangjiayou.SearchableActivity;
+import com.java.zhangjiayou.ui.home.EndlessRecyclerOnScrollListener;
+import com.java.zhangjiayou.ui.home.LoadMoreAdapter;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -25,27 +26,32 @@ public class ExploreFragment extends Fragment {
     private SearchView searchView;
     private Set<String> historyIds;
     private RecyclerView recyclerView;
-    private HistoryViewAdapter loadMoreAdapter;
-    private ExploreViewModel dashboardViewModel;
+    private HistoryViewAdapter historyViewAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-
-
-        dashboardViewModel =
-                ViewModelProviders.of(this).get(ExploreViewModel.class);
         View root = inflater.inflate(R.layout.fragment_explore, container, false);
 
         historyIds = getActivity()
                 .getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)
                 .getStringSet(String.valueOf(R.string.history_fileid_set_key), new HashSet<String>());
-        System.out.println(historyIds);
+        System.out.println("I'm here#1"+historyIds);
         recyclerView = root.findViewById(R.id.history_view);
-
-        loadMoreAdapter = new HistoryViewAdapter(historyIds, getActivity());
+        historyViewAdapter = new HistoryViewAdapter(historyIds, getActivity());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(loadMoreAdapter);
-        loadMoreAdapter.refreshDataList();
+        recyclerView.setAdapter(historyViewAdapter);
+        historyViewAdapter.refreshDataList();
+
+        recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
+            @Override
+            public void onLoadMore() {
+                historyViewAdapter.setLoadState(historyViewAdapter.LOADING);
+                historyViewAdapter.refreshDataList();
+            }
+        });
+
+
+
 
         searchView = root.findViewById(R.id.search_box);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {

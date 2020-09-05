@@ -30,20 +30,14 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private Integer index = 1;
     private List<Passage> dataList;
     private Set<String> historyIds;
-    //    private Activity activity;
     private HomeFragment fragment;
 
-    // 普通布局
     private final int TYPE_ITEM = 1;
-    // 脚布局
     private final int TYPE_FOOTER = 2;
-    // 当前加载状态，默认为加载完成
     private int loadState = 2;
-    // 正在加载
+
     public final int LOADING = 1;
-    // 加载完成
     public final int LOADING_COMPLETE = 2;
-    // 加载到底
     public final int LOADING_END = 3;
 
     public Passage getItem(int position) {
@@ -53,7 +47,6 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public LoadMoreAdapter(Set<String> map, HomeFragment fragment) {
         this.dataList = new ArrayList<>();
         this.historyIds = map;
-//        this.activity = activity;
         this.fragment = fragment;
     }
 

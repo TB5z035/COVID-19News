@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -26,7 +27,7 @@ import java.util.Locale;
 import java.util.Set;
 
 public class HistoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
+    private Integer index = 1;
     private Set<String> historyIds;
     private List<Passage> dataList;
     private Activity activity;
@@ -46,21 +47,24 @@ public class HistoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     public void refreshDataList() {
+        Toast.makeText(activity,"refreshing Data List",Toast.LENGTH_SHORT);
+        System.out.println("I'm here#2"+historyIds);
         new Thread(() -> {
             for (String id :
                     historyIds) {
                 PassageDatabase db = PassageDatabase.getInstance(activity);
                 Passage passage = db.getPassageDao().getPassageFromId(id);
-                if (passage == null) System.out.println("null!");
+                System.out.println(passage.getContent());
                 dataList.add(passage);
-                activity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        notifyDataSetChanged();
-                    }
-                });
             }
-        });
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    notifyDataSetChanged();
+                    setLoadState(LOADING_COMPLETE);
+                }
+            });
+        }).start();
     }
 
     // 普通布局

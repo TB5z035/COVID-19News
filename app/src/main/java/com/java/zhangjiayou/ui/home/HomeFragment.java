@@ -52,9 +52,6 @@ public class HomeFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
         swipeRefreshLayout = root.findViewById(R.id.SwipeRefresh);
-        recyclerView = (RecyclerView) root.findViewById(R.id.recycler_view);
-        loadMoreAdapter = new LoadMoreAdapter(historyIds, this);
-
         swipeRefreshLayout.setRefreshing(true);
         //Pull-to-refresh listener
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -65,6 +62,9 @@ public class HomeFragment extends Fragment {
             }
         });
 
+
+        recyclerView = root.findViewById(R.id.recycler_view);
+        loadMoreAdapter = new LoadMoreAdapter(historyIds, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(loadMoreAdapter);
         loadMoreAdapter.getData(true, type, size);
