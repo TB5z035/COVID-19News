@@ -11,10 +11,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ui.home.TypeSettingActivity"></activity>
         <activity
             android:name=".ui.home.DetailActivity"
-            android:label="@string/title_activity_detail"
             android:configChanges="orientation|screenSize|keyboardHidden"
+            android:label="@string/title_activity_detail"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".SearchableActivity">
             <intent-filter>
