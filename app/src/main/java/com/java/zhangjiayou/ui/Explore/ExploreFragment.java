@@ -42,13 +42,13 @@ public class ExploreFragment extends Fragment {
         recyclerView.setAdapter(historyViewAdapter);
         historyViewAdapter.refreshDataList();
 
-        recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
-            @Override
-            public void onLoadMore() {
-                historyViewAdapter.setLoadState(historyViewAdapter.LOADING);
-                historyViewAdapter.refreshDataList();
-            }
-        });
+//        recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
+//            @Override
+//            public void onLoadMore() {
+////                historyViewAdapter.setLoadState(historyViewAdapter.LOADING);
+//                historyViewAdapter.refreshDataList();
+//            }
+//        });
 
 
 

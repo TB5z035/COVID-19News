@@ -161,9 +161,9 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    itemView.getContext().getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)
-                            .edit().putString(dataList.get(getLayoutPosition()).getId(), null)
-                            .apply();
+//                    itemView.getContext().getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)
+//                            .edit().putString(dataList.get(getLayoutPosition()).getId(), null)
+//                            .apply();
                     historyIds.add(dataList.get(getLayoutPosition()).getId());
 
                     new Thread(new Runnable() {
