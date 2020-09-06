@@ -28,7 +28,6 @@ public class Passage {
     private String title;
     private String content;
     private Date date;
-    private String originJSON;
 
     @Ignore
     private Map<String, Object> properties = new HashMap<>();

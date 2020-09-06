@@ -1,4 +1,4 @@
-package com.java.zhangjiayou.ui.Explore;
+package com.java.zhangjiayou.ui.history;
 
 import android.app.Activity;
 import android.content.Context;
@@ -21,7 +21,6 @@ import com.java.zhangjiayou.util.Passage;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;

@@ -1,4 +1,4 @@
-package com.java.zhangjiayou.ui.Explore;
+package com.java.zhangjiayou.ui.history;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,19 +10,16 @@ import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.java.zhangjiayou.R;
 import com.java.zhangjiayou.SearchableActivity;
-import com.java.zhangjiayou.ui.home.EndlessRecyclerOnScrollListener;
-import com.java.zhangjiayou.ui.home.LoadMoreAdapter;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class ExploreFragment extends Fragment {
+public class HistoryFragment extends Fragment {
     private SearchView searchView;
     private Set<String> historyIds;
     private RecyclerView recyclerView;
@@ -30,7 +27,7 @@ public class ExploreFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_explore, container, false);
+        View root = inflater.inflate(R.layout.fragment_history, container, false);
 
         historyIds = getActivity()
                 .getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)

@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -73,7 +72,7 @@ public class FrameFragment extends Fragment {
         if (list != null) historyIds = new HashSet<>(list);
 
         View root = inflater.inflate(R.layout.fragment_frame, container, false);
-        viewPager2 = root.findViewById(R.id.view_pager);
+        viewPager2 = root.findViewById(R.id.home_view_pager);
         tabLayout = root.findViewById(R.id.tabLayout);
         //TODO:really?
         pagerAdapter = new ScreenSlidePagerAdapter(this.getActivity());

@@ -12,11 +12,11 @@
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.java.zhangjiayou.ui.Explore.ExploreFragment"
-        tools:layout="@layout/fragment_explore" />
+        android:name="com.java.zhangjiayou.ui.history.HistoryFragment"
+        tools:layout="@layout/fragment_history" />
 
     <fragment
         android:id="@+id/navigation_notifications"
-        android:name="com.java.zhangjiayou.ui.notifications.NotificationsFragment"
-        tools:layout="@layout/fragment_notifications" />
+        android:name="com.java.zhangjiayou.ui.explore.ExploreFragment"
+        tools:layout="@layout/fragment_explore" />
 </navigation>

@@ -1,14 +1,14 @@
-package com.java.zhangjiayou.ui.notifications;
+package com.java.zhangjiayou.ui.explore;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class NotificationsViewModel extends ViewModel {
+public class ExploreViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public NotificationsViewModel() {
+    public ExploreViewModel() {
         mText = new MutableLiveData<>();
         mText.setValue("This is notifications fragment");
     }

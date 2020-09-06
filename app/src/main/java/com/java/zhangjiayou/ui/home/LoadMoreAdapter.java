@@ -1,8 +1,6 @@
 package com.java.zhangjiayou.ui.home;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -179,12 +177,12 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         public void run() {
                             notifyDataSetChanged();
                         }
-                    },200);
+                    }, 200);
                     //TODO:call detail page activity here
                     Intent intent = new Intent();
-                    intent.setClass(fragment.getContext(),DetailActivity.class);
-                    fragment.startActivity(intent);
+                    intent.setClass(fragment.getContext(), DetailActivity.class);
 
+                    LoadMoreAdapter.this.fragment.startActivity(intent);
                 }
             });
         }

@@ -51,4 +51,8 @@ public class PassagePortal extends Portal {
         //TODO:implement PassagePortal.getNewsFromId
         throw new UnsupportedOperationException();
     }
+
+    public String getNewsJSONFromId(String id) throws NoResponseError {
+        return getRawData("https://covid-dashboard.aminer.cn/api/event/" + id, null);
+    }
 }
