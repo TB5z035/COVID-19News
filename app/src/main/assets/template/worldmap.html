@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>最新世界疫情数据</title>
+    <!-- 下面两行的意思是，浏览器从网络上获取echart包，而不需要你配置任何编程环境  -->
+    <script type="text/javascript" src="../echarts/echarts.min.js"></script>
+    <script type="text/javascript" src="../echarts/maps/world.js"></script>
+    <script type="text/javascript" src="../js/epidemic.js"></script>
+</head>
+
+<body style="margin: 0;padding: 0;">
+    <!-- div标签表示一个块，它是我们的图片容器。所以属性style里 宽度和高度是可以自定义的，1800px代表1800像素，块的宽度和高度于生成图片的尺寸相关，在下面的饼状图中则同理。-->
+    <div id="container" class="chart-container" style="width:100%; height:100vh;"></div>
+    <script>
+        //  所有的脚本代码都写在script标签里
+        function drawMap(confirmed, cured, dead, colormap) {
+            function getVmax(arr) {
+                var vmax = 0;
+                for (i = 0; i < arr.length; i++) {
+                    vmax = Math.max(arr[i][1], vmax);
+                }
+                return vmax
+            }
+            var confVmax = getVmax(confirmed);
+            var cureVmax = getVmax(cured);
+            var deadVmax = getVmax(dead);
+            var colors = [...Array(101).keys()].map((x) => colormap(x, 0, 100));
+
+            var chart_container = echarts.init(
+                document.getElementById('container'), 'white', {
+                renderer: 'canvas'
+            });
+            // var option代表定义一个名为option的变量，后面花括号里的代表我们需要作图的参数设置
+            var option_container = {
+                "legend": {
+                    "data": [
+                        "累计确诊数",
+                        "累计治愈数",
+                        "累计死亡数",
+                    ],
+                    "selectedMode": "single"
+                },
+                // 默认的颜色数组 （如果不明确设置每个数据项的颜色，则会采用默认的数组
+                // 此处的颜色为十六进制表示，也可以使用rgb来表示。简单地理解就是一串字符就代表一个颜色，挑选喜欢的颜色可以自行搜索颜色
+                "series": [{
+                    // 图标类型为 地图
+                    "type": "map",
+                    "name": "累计确诊数",
+                    "label": {
+                        "show": false,
+                        "position": "top",
+                        "margin": 8
+                    },
+                    "mapType": "world", // 地图类型为 世界地图
+                    // data里的每一个{}中，是一项数据整体，标明了该项数据的名称，值，以及颜色等参数。注意：此处的字符串需要加双引号""(输入法切换至英文状态)
+                    "data": confirmed.map((x) => ({
+                        "name": x[0],
+                        "value": x[1],
+                        'itemStyle': {
+                            'color': colormap(x[1], 0, confVmax)
+                        }
+                    })),
+                    "roam": true,
+                    "zoom": 1.2,
+                    // 去除各个国家上的小红点
+                    "showLegendSymbol": false,
+                }, {
+                    // 图标类型为 地图
+                    "type": "map",
+                    "name": "累计治愈数",
+                    "label": {
+                        "show": false,
+                        "position": "top",
+                        "margin": 8
+                    },
+                    "mapType": "world", // 地图类型为 世界地图
+                    // data里的每一个{}中，是一项数据整体，标明了该项数据的名称，值，以及颜色等参数。注意：此处的字符串需要加双引号""(输入法切换至英文状态)
+                    "data": cured.map((x) => ({
+                        "name": x[0],
+                        "value": x[1],
+                        'itemStyle': {
+                            'color': colormap(x[1], 0, cureVmax)
+                        }
+                    })),
+                    "roam": true,
+                    "zoom": 1.2,
+                    // 去除各个国家上的小红点
+                    "showLegendSymbol": false,
+                }, {
+                    // 图标类型为 地图
+                    "type": "map",
+                    "name": "累计死亡数",
+                    "label": {
+                        "show": false,
+                        "position": "top",
+                        "margin": 8
+                    },
+                    "mapType": "world", // 地图类型为 世界地图
+                    // data里的每一个{}中，是一项数据整体，标明了该项数据的名称，值，以及颜色等参数。注意：此处的字符串需要加双引号""(输入法切换至英文状态)
+                    "data": dead.map((x) => ({
+                        "name": x[0],
+                        "value": x[1],
+                        'itemStyle': {
+                            'color': colormap(x[1], 0, deadVmax)
+                        }
+                    })),
+                    "roam": true,
+                    "zoom": 1.2,
+                    // 去除各个国家上的小红点
+                    "showLegendSymbol": false,
+                }],
+
+                // 鼠标悬浮，单击产生的效果（在网页上可以动态显示）
+                "tooltip": {
+                    "show": true,
+                    "trigger": "item",
+                    "triggerOn": "mousemove|click",
+                    "axisPointer": {
+                        "type": "line"
+                    },
+                    "textStyle": {
+                        "fontSize": 14
+                    },
+                    "borderWidth": 0
+                }
+            };
+            chart_container.setOption(option_container);
+        }
+
+        function rgbToHex(v) {
+            v = Math.floor(v * 255).toString(16);
+            v = v.length == 1 ? "0" + v : v;
+            return v
+        }
+
+        function colormap(x, vmin, vmax, gamma = 0.2) {
+            x = (x - vmin) / (vmax - vmin);
+            x = x ** gamma; // 近似log
+            r = x;
+            g = 0.2;
+            b = 0.4;
+            return "#" + rgbToHex(r) + rgbToHex(g) + rgbToHex(b);
+        }
+
+        function getUS(loc) {
+            maps = {'United States of America': 'United States',
+                    'South Korea':'Korea'}
+            for (var key in maps){
+                if (key === loc)
+                    loc = maps[key];
+            }
+            return loc;
+        }
+
+        var originjson = {{ jsonString }};
+        var json = getLatest(originjson);
+        var locations = [];
+        for (var loc in json) {
+            if (getCountry(loc) === loc)
+                locations.push(loc);
+        }
+        locations.sort();
+        var confirmed = locations.map((loc) => [getUS(loc), json[loc][0]]);
+        var cured = locations.map((loc) => [getUS(loc), json[loc][1]]);
+        var dead = locations.map((loc) => [getUS(loc), json[loc][2]]);
+
+        drawMap(confirmed, cured, dead, colormap);
+    </script>
+</body>
+
+</html>

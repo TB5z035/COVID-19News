@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>最新世界疫情数据</title>
+    <!-- 下面两行的意思是，浏览器从网络上获取echart包，而不需要你配置任何编程环境  -->
+    <script type="text/javascript" src="../echarts/echarts.min.js"></script>
+    <script type="text/javascript" src="../echarts/maps/world.js"></script>
+    <script type="text/javascript" src="../js/epidemic.js"></script>
+</head>
+
+<body style="margin: 0;padding: 0;">
+<!-- div标签表示一个块，它是我们的图片容器。所以属性style里 宽度和高度是可以自定义的，1800px代表1800像素，块的宽度和高度于生成图片的尺寸相关，在下面的饼状图中则同理。-->
+<div id="container" class="chart-container" style="width:100%; height:100vh;"></div>
+<script>
+        //  所有的脚本代码都写在script标签里
+        function drawPlot(json, locations, starts, confirmed, cured, dead) {
+            var chart_container = echarts.init(
+                document.getElementById('container'), 'white', {
+                renderer: 'canvas'
+            });
+
+            var option = {
+                baseOption: {
+                    timeline: {
+                        axisType: 'category',
+                        autoPlay: false,
+                        playInterval: 500,
+                        symbolSize: 1,
+                        orient: 'vertical',
+                        right: '3%',
+                        height: '100%',
+                        data: locations,
+                        label: {show: false}
+                    },
+                    legend: {
+                        data: ['确诊', '治愈', '死亡'],
+                        left: 'left',
+                        bottom: 'bottom',
+                    },
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    xAxis: {
+                        type: 'category',
+                        boundaryGap: false,
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [{
+                        name: '确诊',
+                        type: 'line',
+                    }, {
+                        name: '治愈',
+                        type: 'line',
+                    }, {
+                        name: '死亡',
+                        type: 'line',
+                    }]
+                },
+                options: []
+            };
+
+            for (var n = 0; n < locations.length; n++) {
+                option.options.push({
+                    title: {
+                        text: '疫情走向: ' + locations[n],
+                        subtext: "起始日期: " + starts[n]
+                    },
+                    series:
+                        [{ data: confirmed[n] },
+                        { data: cured[n] },
+                        { data: dead[n] }]
+                });
+            }
+            chart_container.setOption(option);
+        }
+
+
+        var originjson = {{ jsonString }};
+        var json = getAll(originjson);
+
+        // var locations = Object.keys(json).sort();
+        var locations = [];
+        for (var loc in json) {
+            if (getCountry(loc) === 'China')
+                locations.push(loc);
+        }
+        locations.sort();
+        var starts = locations.map((x) => originjson[x].begin);
+        var confirmed = locations.map((loc) => (json[loc].map((x) => x[0])));
+        var cured = locations.map((loc) => (json[loc].map((x) => x[1])));
+        var dead = locations.map((loc) => (json[loc].map((x) => x[2])));
+
+        drawPlot(json, locations, starts, confirmed, cured, dead);
+
+    </script>
+</body>
+
+</html>

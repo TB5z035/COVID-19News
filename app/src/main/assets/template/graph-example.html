@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+
+
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Basic sigma.js example</title>
+</head>
+
+<body>
+    <div id="container">
+        <style>
+            #graph-container {
+                background: #fff;
+                height: 600px;
+                max-width: 800px;
+                margin: auto;
+                position: relative;
+                overflow: hidden;
+            }
+
+            #disc {
+                position: absolute;
+                top: 100%;
+                bottom: 0;
+                left: 0;
+                right: 0;
+            }
+        </style>
+        <div id="graph-container">
+            <div id="disc"></div>
+        </div>
+    </div>
+    <script src="../sigmajs/sigma.min.js"></script>
+    <script src="../sigma.js-1.2.1/plugins/sigma.layout.forceAtlas2/worker.js"></script>
+    <script src="../sigma.js-1.2.1/plugins/sigma.layout.forceAtlas2/supervisor.js"></script>
+    <script src="../sigma.js-1.2.1/plugins/sigma.plugins.animate/sigma.plugins.animate.js"></script>
+    <script src="../sigma.js-1.2.1/plugins/sigma.layout.noverlap/sigma.layout.noverlap.js"></script>
+    <script>
+        (function () {
+            'use strict';
+
+            var s, c, dom, disc, ground, nId = 0, eId = 0, radius = 50,
+                nodeRadius = 8, inertia = 0.8, springForce = 0.01, springLength = 50, maxDisplacement = 15, gravity = 1.5;
+
+            /**
+             * INITIALIZATION SCRIPT:
+             * **********************
+             */
+            s = new sigma({
+                renderer: {
+                    container: document.getElementById('graph-container'), type: 'canvas'
+                }, settings: {
+                    autoRescale: false,
+                    mouseEnabled: true,
+                    touchEnabled: true,
+                    skipErrors: true,
+                    defaultEdgeColor: '#e88',
+                    defaultNodeColor: '#afb',
+                    edgeColor: 'default',
+                    defaultEdgeType: 'arrow',
+                    minArrowSize: 8,
+                }
+            });
+            dom = document.querySelector('#graph-container canvas:last-child');
+            disc = document.getElementById('disc');
+            c = s.camera;
+
+            // Initialize graph:
+            s.graph.read({
+                nodes: [{ id: (++nId) + '', size: nodeRadius, x: 0, y: -80, dX: 0, dY: 0, }, { id: (++nId) + '', size: nodeRadius, x: 10, y: -100, dX: 0, dY: 0, }, { id: (++nId) + '', size: nodeRadius, x: 20, y: -80, dX: 0, dY: 0, }],
+                edges: [{ id: (++eId) + '', source: '1', target: '2', }, { id: (++eId) + '', source: '1', target: '3', }, { id: (++eId) + '', source: '2', target: '3', }]
+            });
+
+            s.startForceAtlas2({
+                scalingRatio: 1000,
+                gravity: 0.1
+            });
+
+            /**
+             * EVENTS BINDING:
+             * ***************
+             */
+            dom.addEventListener('click', function (e) {
+                // Find neighbors:
+                var x, y, p, id, neighbors;
+
+                x = sigma.utils.getX(e) - dom.offsetWidth / 2;
+                y = sigma.utils.getY(e) - dom.offsetHeight / 2;
+
+                p = c.cameraPosition(x, y);
+                x = p.x;
+                y = p.y;
+
+                neighbors = s.graph.nodes().filter(function (n) {
+                    return (Math.sqrt(
+                        Math.pow(n.x - x, 2) +
+                        Math.pow(n.y - y, 2)
+                    ) - n.size) < radius;
+                });
+
+
+                s.graph.addNode({
+                    id: (id = (++nId) + ''), size: nodeRadius, x: x + Math.random() / 10, y: y + Math.random() / 10, dX: 0, dY: 0,
+                });
+
+                neighbors.forEach(function (n) {
+                    s.graph.addEdge({
+                        id: (++eId) + '', source: id, target: n.id,
+                    });
+                });
+                s.killForceAtlas2();
+                s.startForceAtlas2({
+                    scalingRatio: 100,
+                    gravity: 8
+                });
+            }, false);
+        })();
+    </script>
+
+</body>
+
+</html>
