@@ -8,10 +8,40 @@
     <script type="text/javascript" src="../echarts/echarts.min.js"></script>
     <script type="text/javascript" src="../echarts/maps/world.js"></script>
     <script type="text/javascript" src="../js/epidemic.js"></script>
+    <style type="text/css">
+        .lds-dual-ring {
+            display: inline-block;
+            width: 80px;
+            height: 80px;
+        }
+
+        .lds-dual-ring:after {
+            content: " ";
+            display: block;
+            width: 8px;
+            height: 8px;
+            margin: 8px;
+            border-radius: 50%;
+            border: 2px solid #424;
+            border-color: #424 transparent #424 transparent;
+            animation: lds-dual-ring 1.2s linear infinite;
+        }
+
+        @keyframes lds-dual-ring {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
 </head>
 
 <body style="margin: 0;padding: 0;">
     <!-- div标签表示一个块，它是我们的图片容器。所以属性style里 宽度和高度是可以自定义的，1800px代表1800像素，块的宽度和高度于生成图片的尺寸相关，在下面的饼状图中则同理。-->
+    <div class="lds-dual-ring"></div>
     <div id="container" class="chart-container" style="width:100%; height:100vh;"></div>
     <script>
         //  所有的脚本代码都写在script标签里
@@ -107,7 +137,7 @@
                         }
                     })),
                     "roam": true,
-                    "zoom": 1.2,
+                    "zoom": 2.0,
                     // 去除各个国家上的小红点
                     "showLegendSymbol": false,
                 }],
@@ -144,7 +174,7 @@
             return "#" + rgbToHex(r) + rgbToHex(g) + rgbToHex(b);
         }
 
-        function getUS(loc) {
+        function getMapped(loc) {
             maps = {'United States of America': 'United States',
                     'South Korea':'Korea'}
             for (var key in maps){
@@ -154,19 +184,32 @@
             return loc;
         }
 
-        var originjson = {{ jsonString }};
-        var json = getLatest(originjson);
-        var locations = [];
-        for (var loc in json) {
-            if (getCountry(loc) === loc)
-                locations.push(loc);
+        var originjson;
+        document.addEventListener('DOMContentLoaded', ready, false);
+        function ready() {
+            (fetch('https://covid-dashboard.aminer.cn/api/dist/epidemic.json')
+                .then(response => response.json())
+                .then(data => process(data)));
         }
-        locations.sort();
-        var confirmed = locations.map((loc) => [getUS(loc), json[loc][0]]);
-        var cured = locations.map((loc) => [getUS(loc), json[loc][1]]);
-        var dead = locations.map((loc) => [getUS(loc), json[loc][2]]);
 
-        drawMap(confirmed, cured, dead, colormap);
+        function process(data) {
+            originjson = data;
+            var json = getLatest(originjson);
+
+            // var locations = Object.keys(json).sort();
+            var locations = [];
+            for (var loc in json) {
+                if (getCountry(loc) === loc)
+                    locations.push(loc);
+            }
+            locations.sort();
+            var confirmed = locations.map((loc) => [getMapped(loc), json[loc][0]]);
+            var cured = locations.map((loc) => [getMapped(loc), json[loc][1]]);
+            var dead = locations.map((loc) => [getMapped(loc), json[loc][2]]);
+
+            document.getElementsByClassName("lds-dual-ring")[0].remove();
+            drawMap(confirmed, cured, dead, colormap);
+        }
     </script>
 </body>
 

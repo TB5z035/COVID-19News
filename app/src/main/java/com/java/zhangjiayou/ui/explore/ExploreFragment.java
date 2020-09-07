@@ -2,12 +2,14 @@ package com.java.zhangjiayou.ui.explore;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
@@ -22,11 +24,14 @@ public class ExploreFragment extends Fragment {
     private ExploreViewModel exploreViewModel;
     private ViewPager2 viewPager2;
     private TabLayout tabLayout;
-    private static Integer NUM_PAGES = 4;
-    final private String[] tabNames = {"Visual", "Domain", "Cluster", "Person"};
+    private static Integer NUM_PAGES = 6;
+    private String oldTitle;
+    final private String[] tabNames = {"中国疫情走势", "世界疫情走势", "世界热力图", "知识图谱", "新闻聚类", "知疫学者"};
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        storeTitle();
+
         exploreViewModel =
                 ViewModelProviders.of(this).get(ExploreViewModel.class);
         View root = inflater.inflate(R.layout.fragment_explore, container, false);
@@ -137,8 +142,25 @@ public class ExploreFragment extends Fragment {
         return root;
     }
 
+    private void storeTitle(){
+        try {
+            oldTitle = ((AppCompatActivity) getContext()).getTitle().toString();
+        } catch (ClassCastException e){
+            e.printStackTrace();
+            oldTitle = "COVID-19News";
+        }
+    }
 
-
-
-
+    @Override
+    public void onDestroy() {
+        try {
+            if (oldTitle == null){
+                oldTitle = "COVID-19News";
+            }
+            ((AppCompatActivity) getContext()).getSupportActionBar().setTitle(oldTitle);
+        } catch (ClassCastException e){
+            e.printStackTrace();
+        }
+        super.onDestroy();
+    }
 }

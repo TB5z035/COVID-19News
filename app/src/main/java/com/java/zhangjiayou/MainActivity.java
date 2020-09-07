@@ -3,6 +3,7 @@ package com.java.zhangjiayou;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.WebView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +22,8 @@ import com.sina.weibo.sdk.share.WbShareCallback;
 public class MainActivity extends AppCompatActivity {
 
     private View backup;
+    private BackPressedHandler backPressedHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,5 +70,26 @@ public class MainActivity extends AppCompatActivity {
                     Snackbar.make(backup, "分享取消", Snackbar.LENGTH_SHORT).show();
                 }
             });
+    }
+
+    public void setBackPressedHandler(BackPressedHandler backPressedHandler) {
+        this.backPressedHandler = backPressedHandler;
+    }
+
+    public void superOnBackPressed(){
+        super.onBackPressed();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (backPressedHandler == null){
+            superOnBackPressed();
+        } else {
+            backPressedHandler.onBackPressed();
+        }
+    }
+
+    public interface BackPressedHandler {
+        void onBackPressed();
     }
 }

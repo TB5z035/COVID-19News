@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,9 @@ import android.webkit.URLUtil;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.webkit.WebViewFragment;
 
+import com.java.zhangjiayou.MainActivity;
 import com.java.zhangjiayou.R;
 import com.java.zhangjiayou.ui.explore.htmlgenerator.HtmlGenerator;
 import com.java.zhangjiayou.ui.explore.utils.AssetsIO;
@@ -28,8 +31,11 @@ public class WebViewerFragment extends Fragment {
     private final static String ID_KEY = "id_key";
     private int id;
     private WebView webView;
-    private AppCompatActivity parentActivity;
+    private MainActivity parentActivity;
+    private static String oldTitle;
+    private String title;
     private String jsonString;
+    private static int nowId;
 
     public WebViewerFragment() {
         // Required empty public constructor
@@ -65,7 +71,17 @@ public class WebViewerFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        parentActivity = (AppCompatActivity) context;
+        parentActivity = (MainActivity) context;
+        parentActivity.setBackPressedHandler(new MainActivity.BackPressedHandler() {
+            @Override
+            public void onBackPressed() {
+                if (webView.canGoBack()){
+                    webView.goBack();
+                }else  {
+                    parentActivity.superOnBackPressed();
+                }
+            }
+        });
     }
 
     // 更新父activity
@@ -99,8 +115,12 @@ public class WebViewerFragment extends Fragment {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                // 更新action bar的标题
-                parentActivity.getSupportActionBar().setTitle(view.getTitle());
+                // 储存标题
+                title = view.getTitle();
+                if (nowId == id){
+                    parentActivity.getSupportActionBar().setTitle(title);
+                }
+
                 // 异步获取新闻正文
                 // TODO: 得到正文后, 把正文放在成员变量中
                 getContextDelayed(view);
@@ -132,25 +152,31 @@ public class WebViewerFragment extends Fragment {
 
     // 初始化网页内容
     public void updateWebView(){
-        if (id == 0){ // 折线图
-            if (jsonString == null){
-                return;
-            }
-            String template = AssetsIO.getFromAssets(parentActivity, "template/historyplot_with_all.html");
-            String html = HtmlGenerator.generateWithJson(jsonString, template);
+        if (id == 0){ // 中国折线图
+            String html = AssetsIO.getFromAssets(parentActivity, "template/history_china.html");
+            Log.e("FFFFFFFFFFFFF", "updateWebView: ");
             loadData(html);
-        } else if (id == 1){ // 世界地图
-            if (jsonString == null){
-                return;
-            }
-            String template = AssetsIO.getFromAssets(parentActivity, "template/worldmap.html");
-            String html = HtmlGenerator.generateWithJson(jsonString, template);
+        } else if (id == 1){ // 世界折线图
+            String html = AssetsIO.getFromAssets(parentActivity, "template/history_world.html");
             loadData(html);
-        } else if (id == 2) { // 聚类
+        } else if (id == 2){ // 世界热力图
+            String html = AssetsIO.getFromAssets(parentActivity, "template/worldmap.html");
+            loadData(html);
+        } else if (id == 3){ // 知识图谱
+            String html = AssetsIO.getFromAssets(parentActivity, "template/graph-example.html");
+            loadData(html);
+        } else if (id == 4) { // 新闻聚类
             loadUrl("https://www.baidu.com");
-        } else if (id == 3) { // 知疫学者
+        } else if (id == 5) { // 知疫学者
             loadUrl("https://www.bing.com");
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        nowId = id;
+        parentActivity.getSupportActionBar().setTitle(title);
     }
 
     // 把字符串解读为html

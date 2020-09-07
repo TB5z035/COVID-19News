@@ -5,15 +5,46 @@
     <meta charset="UTF-8">
     <title>最新世界疫情数据</title>
     <!-- 下面两行的意思是，浏览器从网络上获取echart包，而不需要你配置任何编程环境  -->
+    <meta content='width=device-width, initial-scale=1' name='viewport'/>
     <script type="text/javascript" src="../echarts/echarts.min.js"></script>
     <script type="text/javascript" src="../echarts/maps/world.js"></script>
     <script type="text/javascript" src="../js/epidemic.js"></script>
+    <style type="text/css">
+        .lds-dual-ring {
+            display: inline-block;
+            width: 80px;
+            height: 80px;
+        }
+
+        .lds-dual-ring:after {
+            content: " ";
+            display: block;
+            width: 8px;
+            height: 8px;
+            margin: 8px;
+            border-radius: 50%;
+            border: 2px solid #424;
+            border-color: #424 transparent #424 transparent;
+            animation: lds-dual-ring 1.2s linear infinite;
+        }
+
+        @keyframes lds-dual-ring {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
 </head>
 
 <body style="margin: 0;padding: 0;">
-<!-- div标签表示一个块，它是我们的图片容器。所以属性style里 宽度和高度是可以自定义的，1800px代表1800像素，块的宽度和高度于生成图片的尺寸相关，在下面的饼状图中则同理。-->
-<div id="container" class="chart-container" style="width:100%; height:100vh;"></div>
-<script>
+    <!-- div标签表示一个块，它是我们的图片容器。所以属性style里 宽度和高度是可以自定义的，1800px代表1800像素，块的宽度和高度于生成图片的尺寸相关，在下面的饼状图中则同理。-->
+    <div class="lds-dual-ring"></div>
+    <div id="container" class="chart-container" style="width:100%; height:100vh;"></div>
+    <script>
         //  所有的脚本代码都写在script标签里
         function drawPlot(json, locations, starts, confirmed, cured, dead) {
             var chart_container = echarts.init(
@@ -32,7 +63,7 @@
                         right: '3%',
                         height: '100%',
                         data: locations,
-                        label: {show: false}
+                        label: { show: false }
                     },
                     legend: {
                         data: ['确诊', '治愈', '死亡'],
@@ -82,22 +113,33 @@
         }
 
 
-        var originjson = {{ jsonString }};
-        var json = getAll(originjson);
-
-        // var locations = Object.keys(json).sort();
-        var locations = [];
-        for (var loc in json) {
-            if (getCountry(loc) === loc)
-                locations.push(loc);
+        var originjson;
+        document.addEventListener('DOMContentLoaded', ready, false);
+        function ready() {
+            (fetch('https://covid-dashboard.aminer.cn/api/dist/epidemic.json')
+                .then(response => response.json())
+                .then(data => process(data)));
         }
-        locations.sort();
-        var starts = locations.map((x) => originjson[x].begin);
-        var confirmed = locations.map((loc) => (json[loc].map((x) => x[0])));
-        var cured = locations.map((loc) => (json[loc].map((x) => x[1])));
-        var dead = locations.map((loc) => (json[loc].map((x) => x[2])));
 
-        drawPlot(json, locations, starts, confirmed, cured, dead);
+        function process(data) {
+            originjson = data;
+            var json = getAll(originjson);
+
+            // var locations = Object.keys(json).sort();
+            var locations = [];
+            for (var loc in json) {
+                if (getCountry(loc) === 'China')
+                    locations.push(loc);
+            }
+            locations.sort();
+            var starts = locations.map((x) => originjson[x].begin);
+            var confirmed = locations.map((loc) => (json[loc].map((x) => x[0])));
+            var cured = locations.map((loc) => (json[loc].map((x) => x[1])));
+            var dead = locations.map((loc) => (json[loc].map((x) => x[2])));
+
+            document.getElementsByClassName("lds-dual-ring")[0].remove();
+            drawPlot(json, locations, starts, confirmed, cured, dead);
+        }
 
     </script>
 </body>

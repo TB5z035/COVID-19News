@@ -1,81 +1,145 @@
-<!-- START SIGMA IMPORTS -->
-<script src="../sigmajs/sigma.min.js"></script>
-<script src="../sigmajs/sigma.require.js"></script>
-<!-- END SIGMA IMPORTS -->
-<div id="container">
-    <style>
-        #graph-container {
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            position: absolute;
+<!DOCTYPE html>
+
+
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Basic sigma.js example</title>
+</head>
+
+<body>
+    <div id="container">
+        <style>
+            #graph-container {
+                background: #fff;
+                height: 100vh;
+                max-width: 100%;
+                margin: auto;
+                position: relative;
+                overflow: hidden;
+            }
+
+            #disc {
+                position: absolute;
+                top: 100%;
+                bottom: 0;
+                left: 0;
+                right: 0;
+            }
+        </style>
+        <div id="graph-container">
+            <div id="disc"></div>
+        </div>
+    </div>
+    <script src="../js/kg.js"></script>
+    <script src="../sigmajs/sigma.min.js"></script>
+    <script src="../sigma.js-1.2.1/plugins/sigma.layout.forceAtlas2/worker.js"></script>
+    <script src="../sigma.js-1.2.1/plugins/sigma.layout.forceAtlas2/supervisor.js"></script>
+    <script src="../sigma.js-1.2.1/plugins/sigma.plugins.animate/sigma.plugins.animate.js"></script>
+    <script src="../sigma.js-1.2.1/plugins/sigma.layout.noverlap/sigma.layout.noverlap.js"></script>
+    <script>
+        var s, c, dom, disc, nId = 0, eId = 0, radius = 50,
+            nodeRadius = 8;
+        var timeoutID;
+
+        function updateSigma() {
+            s.killForceAtlas2();
+            s.startForceAtlas2({
+                scalingRatio: 100,
+                gravity: 0.1
+            });
+            timeoutID = setTimeout(() => { s.killForceAtlas2(); clearTimeout(timeoutID); }, 1000);
         }
-    </style>
-    <div id="graph-container"></div>
-</div>
-<script>
-    /**
-     * This example is a copy of "basic.html", but with event bindings after.
-     * Open your browser's console to see the "click", "overNode" and
-     * "outNode" events logged.
-     */
-    var g = {
-        nodes: [],
-        edges: [],
-        nodeDesc: {}
-    };
 
-    for (i = 0; i < N; i++)
-        g.nodes.push({
-            id: 'n' + i,
-            label: 'Node ' + i,
-            x: Math.random(),
-            y: Math.random(),
-            size: Math.random(),
-            color: '#666'
-        });
-
-    for (i = 0; i < E; i++)
-        g.edges.push({
-            id: 'e' + i,
-            source: 'n' + (Math.random() * N | 0),
-            target: 'n' + (Math.random() * N | 0),
-            size: Math.random(),
-            type: 'curve',
-            color: '#ccc',
-            hover_color: '#000'
-        });
-
-    s = new sigma({
-        graph: g,
-        renderer: {
-            container: document.getElementById('graph-container'),
-            type: 'canvas'
-        },
-        settings: {
-            doubleClickEnabled: false,
-            minEdgeSize: 0.5,
-            maxEdgeSize: 4,
-            enableEdgeHovering: true,
-            edgeHoverColor: 'edge',
-            defaultEdgeHoverColor: '#000',
-            edgeHoverSizeRatio: 1,
-            edgeHoverExtremities: true,
+        function initSigma() {
+            s = new sigma({
+                renderer: {
+                    container: document.getElementById('graph-container'), type: 'canvas'
+                }, settings: {
+                    autoRescale: false,
+                    mouseEnabled: true,
+                    touchEnabled: true,
+                    skipErrors: true,
+                    defaultEdgeColor: '#e88',
+                    defaultNodeColor: '#afb',
+                    edgeColor: 'default',
+                    defaultEdgeType: 'arrow',
+                    minArrowSize: 8,
+                }
+            });
+            dom = document.querySelector('#graph-container canvas:last-child');
+            disc = document.getElementById('disc');
+            c = s.camera;
         }
-    });
 
-    // Bind the events:
-    s.bind('overNode outNode clickNode doubleClickNode rightClickNode', function (e) {
-        console.log(e.type, e.data.node.label, e.data.captor);
-    });
-    s.bind('overEdge outEdge clickEdge doubleClickEdge rightClickEdge', function (e) {
-        console.log(e.type, e.data.edge, e.data.captor);
-    });
-    s.bind('clickStage', function (e) {
-        console.log(e.type, e.data.captor);
-    });
-    s.bind('doubleClickStage rightClickStage', function (e) {
-        console.log(e.type, e.data.captor);
-    });
-</script>
+        function generateRandomPos() {
+            var x, y;
+            x = Math.random();
+            y = Math.random();
+            p = c.cameraPosition(x, y);
+            x = p.x;
+            y = p.y;
+            return { x, y };
+        }
+
+        function getNodes() {
+            return s.graph.nodes().map((x) => x.id);
+        }
+
+        function addNode(node) {
+            if (!inArray(getNodes(), node)) {
+                var pos = generateRandomPos();
+                s.graph.addNode({ id: node, size: nodeRadius, x: pos.x, y: pos.y });
+            }
+        }
+
+        function addEdges(hrts) {
+            for (i = 0; i < hrts.length; i++) {
+                var h = hrts[i][0];
+                var r = hrts[i][1];
+                var t = hrts[i][2];
+                addNode(h);
+                addNode(t);
+                s.graph.addEdge({ id: (++eId) + '', source: h, target: t })
+            }
+        }
+
+        initSigma();
+        addEdges([['A', 'R1', 'B'], ['B', 'R2', 'C']]);
+        updateSigma();
+
+        dom.addEventListener('click',
+            function (e) {
+                var x, y, p, id, neighbors;
+
+                x = sigma.utils.getX(e) - dom.offsetWidth / 2;
+                y = sigma.utils.getY(e) - dom.offsetHeight / 2;
+
+                p = c.cameraPosition(x, y);
+                x = p.x;
+                y = p.y;
+
+                neighbors = s.graph.nodes().filter(function (n) {
+                    return (Math.sqrt(Math.pow(n.x - x, 2) + Math.pow(n.y - y, 2)) < n.size + 100);
+                });
+                if (neighbors.length == 0)
+                    return;
+                neighbors = neighbors[0];
+
+                s.graph.addNode({
+                    id: (id=(++nId) + ''), size: nodeRadius,
+                    x: x + Math.random() / 10, y: y + Math.random() / 10
+                });
+                s.graph.addEdge({
+                    id: (++eId) + '', source: id, target: neighbors.id
+                });
+
+                
+                updateSigma();
+            },
+            false);
+    </script>
+</body>
+
+</html>

@@ -74,14 +74,16 @@
             });
 
             s.startForceAtlas2({
-                scalingRatio: 1000,
+                scalingRatio: 100,
                 gravity: 0.1
             });
+            timeoutID = setTimeout(()=>{s.killForceAtlas2(); clearTimeout(timouteID);}, 3000);
 
             /**
              * EVENTS BINDING:
              * ***************
              */
+            var timeoutID;
             dom.addEventListener('click', function (e) {
                 // Find neighbors:
                 var x, y, p, id, neighbors;
@@ -113,8 +115,9 @@
                 s.killForceAtlas2();
                 s.startForceAtlas2({
                     scalingRatio: 100,
-                    gravity: 8
+                    gravity: 0.1
                 });
+                timeoutID = setTimeout(()=>{s.killForceAtlas2(); clearTimeout(timeoutID);}, 3000);
             }, false);
         })();
     </script>
