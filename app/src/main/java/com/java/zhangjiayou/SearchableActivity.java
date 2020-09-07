@@ -12,9 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.ansj.splitWord.analysis.ToAnalysis;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class SearchableActivity extends AppCompatActivity {
@@ -46,8 +44,8 @@ public class SearchableActivity extends AppCompatActivity {
         HashSet<String> ids = new HashSet<>();
 
         ToAnalysis.parse(query).forEach((v) -> {
-            Set<String> strings = getSharedPreferences(String.valueOf(R.string.search_seg_id_map_key), Context.MODE_PRIVATE)
-                    .getStringSet(v.getName(), new HashSet<>());
+            Set<String> strings = new HashSet<>(getSharedPreferences(String.valueOf(R.string.search_seg_id_map_key), Context.MODE_PRIVATE)
+                    .getStringSet(v.getName(), new HashSet<>()));
             ids.addAll(strings);
         });
 

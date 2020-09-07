@@ -3,7 +3,6 @@ package com.java.zhangjiayou;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.java.zhangjiayou.network.NoResponseError;
 import com.java.zhangjiayou.network.PassagePortal;
-import com.java.zhangjiayou.network.Portal;
 import com.java.zhangjiayou.util.Passage;
 
 import org.junit.Test;
@@ -51,7 +50,7 @@ public class ExampleUnitTest {
 
     @Test
     public void passage_test() {
-        new Portal()
+        new PassagePortal().getAllPassageIdTitle();
     }
 
 
