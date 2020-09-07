@@ -16,6 +16,7 @@ import com.java.zhangjiayou.R;
 import com.java.zhangjiayou.database.PassageDatabase;
 import com.java.zhangjiayou.network.NoResponseError;
 import com.java.zhangjiayou.network.PassagePortal;
+import com.java.zhangjiayou.ui.DetailActivity;
 import com.java.zhangjiayou.util.Passage;
 
 import java.text.SimpleDateFormat;
@@ -111,7 +112,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             recyclerViewHolder.contentView.setText(
                     new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA)
                             .format(dataList.get(position).getDate()));
-
+            recyclerViewHolder.rawJSON = dataList.get(position).rawJSON;
         } else if (holder instanceof FootViewHolder) {
             FootViewHolder footViewHolder = (FootViewHolder) holder;
             switch (loadState) {
@@ -149,10 +150,10 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         TextView titleView;
         TextView contentView;
         CardView cardView;
+        String rawJSON;
 
         RecyclerViewHolder(final View itemView) {
             super(itemView);
-
             titleView = (TextView) itemView.findViewById(R.id.title_view);
             contentView = (TextView) itemView.findViewById(R.id.time_view);
             cardView = itemView.findViewById(R.id.passage_card_view);
@@ -180,8 +181,9 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     }, 200);
                     //TODO:call detail page activity here
                     Intent intent = new Intent();
-//                    intent.setClass(fragment.getContext(), DetailActivity.class); // TODO: transfer to fragment
-
+                    intent.putExtra("id", -1);
+                    intent.putExtra("rawJSON", rawJSON);
+                    intent.setClass(fragment.getContext(), DetailActivity.class); // TODO: transfer to fragment
                     LoadMoreAdapter.this.fragment.startActivity(intent);
                 }
             });

@@ -17,7 +17,7 @@ public interface PassageDAO {
     @Query("SELECT * FROM passages")
     List<Passage> getAllPassages();
 
-    @Query("SELECT * FROM passages WHERE id=:id")
+    @Query("SELECT * FROM passages WHERE _id=:id")
     Passage getPassageFromId(String id);
 
     @Insert

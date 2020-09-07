@@ -38,6 +38,7 @@ public class ExploreFragment extends Fragment {
 
         viewPager2 = root.findViewById(R.id.explore_view_pager);
         tabLayout = root.findViewById(R.id.explore_tab_layout);
+        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
         viewPager2.setAdapter(new FragmentStateAdapter(this.getActivity()) {
             @NonNull
@@ -52,6 +53,7 @@ public class ExploreFragment extends Fragment {
             }
         });
         viewPager2.setUserInputEnabled(false);
+        viewPager2.setOffscreenPageLimit(1);
         viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {

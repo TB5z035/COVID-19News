@@ -44,6 +44,12 @@ public class PassagePortal extends Portal {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
+
+//        for (Passage item :
+//                data) {
+//            item.rawJSON = getNewsJSONFromId(item.getId());
+//        }
+        
         return data;
     }
 

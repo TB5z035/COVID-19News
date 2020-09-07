@@ -7,7 +7,10 @@ import androidx.room.PrimaryKey;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.java.zhangjiayou.network.NoResponseError;
+import com.java.zhangjiayou.network.PassagePortal;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -23,7 +26,7 @@ import java.util.Map;
 public class Passage {
     @PrimaryKey
     @NonNull
-    private String id;
+    private String _id;
 
     private String title;
     private String content;
@@ -31,27 +34,36 @@ public class Passage {
 
     @Ignore
     private Map<String, Object> properties = new HashMap<>();
+    @JsonIgnore
+    public String rawJSON;
 
     /**
      * This method aims to create a Passage instance from JSON text.
      * This method is meant to be called by Jackson module.
      * **Do not call this method manually!**
+     *
      * @param content The content of the passage
-     * @param id The id of the passage
-     * @param title The title of the passage
-     * @param date The publishing date of the passage
-     * */
+     * @param id      The id of the passage
+     * @param title   The title of the passage
+     * @param date    The publishing date of the passage
+     */
     @JsonCreator
     public Passage(
-            @JsonProperty("id") String id,
+            @JsonProperty("_id") String id,
             @JsonProperty("title") String title,
             @JsonProperty("content") String content,
             @JsonProperty("date") Date date
     ) {
-        this.id = id;
+        this._id = id;
         this.title = title;
         this.content = content;
         this.date = date;
+        try {
+            this.rawJSON = new PassagePortal().getNewsJSONFromId(id);
+        } catch (NoResponseError noResponseError) {
+            noResponseError.printStackTrace();
+        }
+
     }
 
     /**
@@ -72,11 +84,11 @@ public class Passage {
      * @return The id of the passage
      */
     public String getId() {
-        return this.id;
+        return this._id;
     }
 
     public void setId(String id) {
-        this.id = id;
+        this._id = id;
     }
 
     /**
@@ -130,6 +142,7 @@ public class Passage {
     final public Map<String, Object> getProperties() {
         return properties;
     }
+
 }
 
 

@@ -1,11 +1,9 @@
 package com.java.zhangjiayou;
 
-import android.content.Context;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.java.zhangjiayou.database.PassageDatabase;
 import com.java.zhangjiayou.network.NoResponseError;
 import com.java.zhangjiayou.network.PassagePortal;
+import com.java.zhangjiayou.network.Portal;
 import com.java.zhangjiayou.util.Passage;
 
 import org.junit.Test;
@@ -52,7 +50,13 @@ public class ExampleUnitTest {
     }
 
     @Test
+    public void passage_test() {
+        new Portal()
+    }
+
+
+    @Test
     public void database_test() {
-        Passage p = new Passage("123","Hello!","Not happy",new Date());
+        Passage p = new Passage("123", "Hello!", "Not happy", new Date());
     }
 }
