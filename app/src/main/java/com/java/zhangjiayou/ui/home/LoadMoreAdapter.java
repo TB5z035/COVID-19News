@@ -2,6 +2,7 @@ package com.java.zhangjiayou.ui.home;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import com.java.zhangjiayou.R;
 import com.java.zhangjiayou.database.PassageDatabase;
 import com.java.zhangjiayou.network.NoResponseError;
 import com.java.zhangjiayou.network.PassagePortal;
+import com.java.zhangjiayou.ui.DetailActivity;
 import com.java.zhangjiayou.util.Passage;
 
 import org.ansj.splitWord.analysis.ToAnalysis;
@@ -191,11 +193,11 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     itemView.postDelayed(() -> notifyDataSetChanged(), 200);
 
                     //TODO:call detail page activity here
-//                    Intent intent = new Intent();
-//                    intent.putExtra("id", -1);
-//                    intent.putExtra("rawJSON", rawJSON);
-//                    intent.setClass(fragment.getContext(), DetailActivity.class); // TODO: transfer to fragment
-//                    LoadMoreAdapter.this.fragment.startActivity(intent);
+                    Intent intent = new Intent();
+                    intent.putExtra("id", -1);
+                    intent.putExtra("rawJSON", rawJSON);
+                    intent.setClass(fragment.getContext(), DetailActivity.class); // TODO: transfer to fragment
+                    LoadMoreAdapter.this.fragment.startActivity(intent);
                 }
             });
         }

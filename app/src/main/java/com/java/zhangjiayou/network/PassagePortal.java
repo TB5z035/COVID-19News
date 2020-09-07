@@ -7,8 +7,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.java.zhangjiayou.util.Passage;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class provides multiple methods to acquire news from Web.
@@ -36,20 +41,25 @@ public class PassagePortal extends Portal {
         if (size != null) params.put("size", size.toString());
         String response = getRawData(baseURL, params);
         List<Passage> data = null;
+        ArrayList<Object> rawList;
 
         try {
             data = new ObjectMapper().readValue(response, new TypeReference<_tempMapForData>() {
             }).data;
-            System.out.println(data.get(0).getClass());
+            rawList = (ArrayList<Object>) new ObjectMapper().readValue(response, new TypeReference<Map<String, Object>>() {
+            }).get("data");
+
+            for (int i = 0; i < data.size(); i++) {
+                OutputStream outputStream = new ByteArrayOutputStream();
+                new ObjectMapper().writeValue(outputStream,rawList.get(i));
+                data.get(i).rawJSON = outputStream.toString();
+            }
         } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
-//        for (Passage item :
-//                data) {
-//            item.rawJSON = getNewsJSONFromId(item.getId());
-//        }
-        
         return data;
     }
 
