@@ -6,41 +6,9 @@
 <head>
     <meta charset="utf-8">
     <title>Basic sigma.js example</title>
-    <style type="text/css">
-        .lds-dual-ring {
-            z-index: 2;
-            position: absolute;
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-        }
-
-        .lds-dual-ring:after {
-            content: " ";
-            display: block;
-            width: 8px;
-            height: 8px;
-            margin: 8px;
-            border-radius: 50%;
-            border: 2px solid #424;
-            border-color: #424 transparent #424 transparent;
-            animation: lds-dual-ring 1.2s linear infinite;
-        }
-
-        @keyframes lds-dual-ring {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-    </style>
 </head>
 
 <body style="margin: 0;padding: 0;">
-    <div class="lds-dual-ring"></div>
     <div id="container">
         <style>
             #graph-container {
@@ -69,19 +37,17 @@
     <script src="../sigma.js-1.2.1/plugins/sigma.layout.forceAtlas2/worker.js"></script>
     <script src="../sigma.js-1.2.1/plugins/sigma.layout.forceAtlas2/supervisor.js"></script>
     <script src="../sigma.js-1.2.1/plugins/sigma.plugins.animate/sigma.plugins.animate.js"></script>
-
-    <script src="../sigma.js-1.2.1/plugins/sigma.renderers.edgeLabels/settings.js"></script>
-    <script src="../sigma.js-1.2.1/plugins/sigma.renderers.edgeLabels/sigma.canvas.edges.labels.def.js"></script>
+    <script src="../sigma.js-1.2.1/plugins/sigma.layout.noverlap/sigma.layout.noverlap.js"></script>
     <script>
-        var s, c, dom, disc, nId = 0, eId = 0, radius = 4,
+        var s, c, dom, disc, nId = 0, eId = 0, radius = 50,
             nodeRadius = 8;
         var timeoutID;
 
         function updateSigma() {
             s.killForceAtlas2();
             s.startForceAtlas2({
-                scalingRatio: 10,
-                gravity: 0
+                scalingRatio: 1000,
+                gravity: 0.1
             });
             timeoutID = setTimeout(() => { s.killForceAtlas2(); clearTimeout(timeoutID); }, 1000);
         }
@@ -100,7 +66,6 @@
                     edgeColor: 'default',
                     defaultEdgeType: 'arrow',
                     minArrowSize: 8,
-                    edgeLabels: true,
                 }
             });
             dom = document.querySelector('#graph-container canvas:last-child');
@@ -125,10 +90,7 @@
         function addNode(node) {
             if (!inArray(getNodes(), node)) {
                 var pos = generateRandomPos();
-                s.graph.addNode({
-                    id: node.url, label: node.label,
-                    size: nodeRadius, x: pos.x, y: pos.y
-                });
+                s.graph.addNode({ id: node, size: nodeRadius, x: pos.x, y: pos.y });
             }
         }
 
@@ -139,7 +101,7 @@
                 var t = hrts[i][2];
                 addNode(h);
                 addNode(t);
-                s.graph.addEdge({ id: (++eId) + '', source: h.url, target: t.url, label: r });
+                s.graph.addEdge({ id: (++eId) + '', source: h, target: t });
             }
         }
 
@@ -159,39 +121,24 @@
             return neighbors[0];
         }
 
-        function safeGrowGraph(label) {
-            document.getElementsByClassName("lds-dual-ring")[0].style.visibility='visible';
-            searchEnt(label, (data) => {
-                if (data.msg !== "success") {
-                    alert("网络不佳请重试");
-                    return;
-                } else {
-                    data = data.data;
-                    if (data.length === 0) {
-                        alert("检索不到结果");
-                        return;
-                    }
-                    data = data[0];
-                    var edges = parseEdges(data);
-                    // TODO: 展示图片和摘要
-                    addEdges(edges);
-                    document.getElementsByClassName("lds-dual-ring")[0].style.visibility='hidden';
-                    updateSigma();
-                }
-            });
-        }
-
         initSigma();
-        // addEdges([[{url:'A', label:'a'}, 'R1', {url:'B', label:'b'}], [{url:'B', label:'b'}, 'R2', {url:'C', label:'c'}]]);
-        safeGrowGraph('病毒');
+        addEdges([['A', 'R1', 'B'], ['B', 'R2', 'C']]);
+        updateSigma();
 
         dom.addEventListener('click',
             function (e) {
-                var node = getClickedNode(e, radius);
-                if (node == null) {
+                var neighbors = getClickedNode(e, radius);
+                if (neighbors == null) {
                     return;
                 }
-                safeGrowGraph(node.label);
+                var pos = generateRandomPos();
+                s.graph.addNode({
+                    id: (id = (++nId) + ''), size: nodeRadius,
+                    x: pos.x, y: pos.y
+                });
+                s.graph.addEdge({
+                    id: (++eId) + '', source: id, target: neighbors.id
+                });
                 updateSigma();
             },
             false);
