@@ -39,7 +39,7 @@ public class TypeSettingActivity extends AppCompatActivity {
             inflate(context, R.layout.drag_item, this);
 
             CardView cardView = findViewById(R.id.select_card_view);
-            cardView.setClickable(true);
+            cardView.setLongClickable(true);
             cardView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {

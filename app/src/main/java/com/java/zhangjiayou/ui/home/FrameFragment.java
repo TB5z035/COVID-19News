@@ -3,6 +3,7 @@ package com.java.zhangjiayou.ui.home;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
@@ -131,31 +133,65 @@ public class FrameFragment extends Fragment {
             }
         });
 
-//        viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-//            @Override
-//            public void onPageSelected(int position) {
-//                super.onPageSelected(position);
-//                int tabCount = tabLayout.getTabCount();
-//                for (int i = 0; i < tabCount; i++) {
-//                    TabLayout.Tab tab = tabLayout.getTabAt(i);
-//                    TextView tabView = (TextView) tab.getCustomView();
-//
-//                    if (tab.getPosition() == position) {
-//                        tabView.setTextSize(20);
-//                        tabView.setGravity(TextView.TEXT_ALIGNMENT_GRAVITY);
-//                        tabView.setTypeface(Typeface.DEFAULT_BOLD);
-//                    } else {
-//                        tabView.setTextSize(14);
-//                        tabView.setGravity(TextView.TEXT_ALIGNMENT_GRAVITY);
-//                        tabView.setTypeface(Typeface.DEFAULT);
-//                    }
-//                }
-//            }
-//        });
-
         int activeColor = Color.parseColor("#ff678f");
         int normalColor = Color.parseColor("#666666");
         int[] colors = new int[]{activeColor, normalColor};
+
+        viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                int tabCount = tabLayout.getTabCount();
+                for (int i = 0; i < tabCount; i++) {
+                    TabLayout.Tab tab = tabLayout.getTabAt(i);
+                    TextView tabView = (TextView) tab.getCustomView();
+
+                    if (tab.getPosition() == position) {
+                        tabView.setTextSize(20);
+                        tabView.setGravity(TextView.TEXT_ALIGNMENT_GRAVITY);
+                        tabView.setTypeface(Typeface.DEFAULT_BOLD);
+                        tabView.setTextColor(colors[0]);
+                    } else {
+                        tabView.setTextSize(14);
+                        tabView.setGravity(TextView.TEXT_ALIGNMENT_GRAVITY);
+                        tabView.setTypeface(Typeface.DEFAULT);
+                        tabView.setTextColor(colors[1]);
+                    }
+                }
+            }
+        });
+        viewPager2.setPageTransformer(new ViewPager2.PageTransformer() {
+            private static final float MIN_SCALE = 0.95f;
+            private static final float MIN_ALPHA = 0.85f;
+
+            @Override
+            public void transformPage(View view, float position) {
+                int pageWidth = view.getWidth();
+                int pageHeight = view.getHeight();
+
+                if (position < -1) {
+                    view.setAlpha(0f);
+                } else if (position <= 1) {
+                    float scaleFactor = Math.max(MIN_SCALE, 1 - Math.abs(position));
+                    float vertMargin = pageHeight * (1 - scaleFactor) / 2;
+                    float horzMargin = pageWidth * (1 - scaleFactor) / 2;
+                    if (position < 0) {
+                        view.setTranslationX(horzMargin - vertMargin / 2);
+                    } else {
+                        view.setTranslationX(-horzMargin + vertMargin / 2);
+                    }
+
+                    view.setScaleX(scaleFactor);
+                    view.setScaleY(scaleFactor);
+
+                    view.setAlpha(MIN_ALPHA +
+                            (scaleFactor - MIN_SCALE) /
+                                    (1 - MIN_SCALE) * (1 - MIN_ALPHA));
+                } else {
+                    view.setAlpha(0f);
+                }
+            }
+        });
 
         new TabLayoutMediator(tabLayout, viewPager2, (tab, position) -> {
             TextView tabView = new TextView(getActivity());
@@ -179,7 +215,6 @@ public class FrameFragment extends Fragment {
                 startActivityForResult(intent, TYPE_SETTING_ACTIVITY);
             }
         });
-
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -189,6 +224,7 @@ public class FrameFragment extends Fragment {
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
             }
+
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
             }
