@@ -11,10 +11,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.DetailActivity"></activity>
+        <provider
+            android:authorities="com.java.zhangjiayou.MySuggestionProvider"
+            android:name=".MySuggestionProvider"/>
         <activity android:name=".ui.home.TypeSettingActivity" />
         <activity
-            android:name=".ui.explore.DetailActivity"
+            android:name=".ui.DetailActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_activity_detail"
             android:theme="@style/AppTheme.NoActionBar" />

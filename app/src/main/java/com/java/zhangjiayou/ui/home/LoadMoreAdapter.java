@@ -55,7 +55,11 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
         new Thread(() -> {
             try {
-                Thread.sleep(1000);
+//                try {
+//                    Thread.sleep(1000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
 
                 if (mode) dataList.clear();
                 dataList.addAll(new PassagePortal().getNewsFromType(type, index, size));
@@ -65,8 +69,6 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 System.out.println(e.getStackTrace());
             } catch (NoResponseError noResponseError) {
                 noResponseError.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
         }).start();
     }
