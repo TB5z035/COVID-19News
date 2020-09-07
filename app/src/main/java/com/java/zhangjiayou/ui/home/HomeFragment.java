@@ -31,7 +31,7 @@ public class HomeFragment extends Fragment {
 
     public HomeFragment(String type, Set<String> historyIds) {
         this.historyIds = historyIds;
-        if (type.equals("news") || type.equals("paper")) this.type = type;
+        if (type.equals("News") || type.equals("Paper")) this.type = type.toLowerCase();
         else throw new UnsupportedPassageType();
     }
 
