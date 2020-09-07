@@ -163,7 +163,7 @@ public class WebViewerFragment extends Fragment {
             String html = AssetsIO.getFromAssets(parentActivity, "template/worldmap.html");
             loadData(html);
         } else if (id == 3){ // 知识图谱
-            String html = AssetsIO.getFromAssets(parentActivity, "template/graph-example.html");
+            String html = AssetsIO.getFromAssets(parentActivity, "template/kg.html");
             loadData(html);
         } else if (id == 4) { // 新闻聚类
             loadUrl("https://www.baidu.com");
