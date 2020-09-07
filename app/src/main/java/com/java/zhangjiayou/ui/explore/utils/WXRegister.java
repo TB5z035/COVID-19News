@@ -1,4 +1,4 @@
-package com.java.zhangjiayou.ui.home.utils;
+package com.java.zhangjiayou.ui.explore.utils;
 
 import android.content.Context;
 

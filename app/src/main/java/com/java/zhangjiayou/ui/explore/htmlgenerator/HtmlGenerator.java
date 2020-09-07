@@ -1,4 +1,4 @@
-package com.java.zhangjiayou.ui.home.htmlgenerator;
+package com.java.zhangjiayou.ui.explore.htmlgenerator;
 
 import android.text.Html;
 

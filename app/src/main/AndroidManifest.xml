@@ -13,7 +13,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".ui.home.TypeSettingActivity"></activity>
         <activity
-            android:name=".ui.home.DetailActivity"
+            android:name=".ui.explore.DetailActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_activity_detail"
             android:theme="@style/AppTheme.NoActionBar" />

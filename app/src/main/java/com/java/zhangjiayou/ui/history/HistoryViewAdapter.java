@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.java.zhangjiayou.R;
 import com.java.zhangjiayou.database.PassageDatabase;
-import com.java.zhangjiayou.ui.home.DetailActivity;
 import com.java.zhangjiayou.util.Passage;
 
 import java.text.SimpleDateFormat;
@@ -188,7 +187,7 @@ public class HistoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     }, 200);
                     //TODO:call detail page activity here
                     Intent intent = new Intent();
-                    intent.setClass(activity.getApplicationContext(), DetailActivity.class);
+//                    intent.setClass(activity.getApplicationContext(), DetailActivity.class); // TODO: transfer to fragment
                     activity.startActivity(intent);
                 }
             });

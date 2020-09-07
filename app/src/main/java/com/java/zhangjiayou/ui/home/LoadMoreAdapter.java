@@ -180,7 +180,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     }, 200);
                     //TODO:call detail page activity here
                     Intent intent = new Intent();
-                    intent.setClass(fragment.getContext(), DetailActivity.class);
+//                    intent.setClass(fragment.getContext(), DetailActivity.class); // TODO: transfer to fragment
 
                     LoadMoreAdapter.this.fragment.startActivity(intent);
                 }

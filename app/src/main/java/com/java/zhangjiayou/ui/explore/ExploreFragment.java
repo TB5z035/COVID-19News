@@ -16,7 +16,6 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.java.zhangjiayou.R;
-import com.java.zhangjiayou.ui.home.DetailActivity;
 
 public class ExploreFragment extends Fragment {
 
@@ -40,7 +39,7 @@ public class ExploreFragment extends Fragment {
             @Override
             public Fragment createFragment(int position) {
                 //TODO:customize the fragment
-                return new ViewerFragment();
+                return WebViewerFragment.newInstance(position);
             }
             @Override
             public int getItemCount() {

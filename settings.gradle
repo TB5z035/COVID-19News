@@ -1,2 +1,3 @@
+include ':subwebview'
 include ':app'
 rootProject.name = "COVID-19News"
