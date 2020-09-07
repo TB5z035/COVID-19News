@@ -1,7 +1,7 @@
 package com.java.zhangjiayou.ui.home;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +16,13 @@ import com.java.zhangjiayou.R;
 import com.java.zhangjiayou.database.PassageDatabase;
 import com.java.zhangjiayou.network.NoResponseError;
 import com.java.zhangjiayou.network.PassagePortal;
-import com.java.zhangjiayou.ui.DetailActivity;
 import com.java.zhangjiayou.util.Passage;
+
+import org.ansj.splitWord.analysis.ToAnalysis;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -167,26 +169,33 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 //                            .apply();
                     historyIds.add(dataList.get(getLayoutPosition()).getId());
 
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Passage passageInDB = PassageDatabase.getInstance(null).getPassageDao().getPassageFromId(dataList.get(getLayoutPosition()).getId());
-                            if (passageInDB == null)
-                                PassageDatabase.getInstance(null).getPassageDao().insert(dataList.get(getLayoutPosition()));
-                        }
+                    new Thread(() -> {
+                        Passage passageInDB = PassageDatabase.getInstance(null).getPassageDao().getPassageFromId(dataList.get(getLayoutPosition()).getId());
+                        if (passageInDB == null)
+                            PassageDatabase.getInstance(null).getPassageDao().insert(dataList.get(getLayoutPosition()));
+                        String title = dataList.get(getLayoutPosition()).getTitle();
+
+                        ToAnalysis.parse(title).forEach((v1) -> {
+                            if (v1 != null ) {
+                                Set<String> strings = itemView.getContext().getSharedPreferences(String.valueOf(R.string.search_seg_id_map_key), Context.MODE_PRIVATE)
+                                        .getStringSet(v1.getName(), new HashSet<>());
+
+                                strings.add(dataList.get(getLayoutPosition()).getId());
+
+                                itemView.getContext().getSharedPreferences(String.valueOf(R.string.search_seg_id_map_key), Context.MODE_PRIVATE)
+                                        .edit().putStringSet(v1.getName(), new HashSet<>(strings)).apply();
+                                System.out.println(v1.getName());
+                            }
+                        });
                     }).start();
-                    itemView.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            notifyDataSetChanged();
-                        }
-                    }, 200);
+                    itemView.postDelayed(() -> notifyDataSetChanged(), 200);
+
                     //TODO:call detail page activity here
-                    Intent intent = new Intent();
-                    intent.putExtra("id", -1);
-                    intent.putExtra("rawJSON", rawJSON);
-                    intent.setClass(fragment.getContext(), DetailActivity.class); // TODO: transfer to fragment
-                    LoadMoreAdapter.this.fragment.startActivity(intent);
+//                    Intent intent = new Intent();
+//                    intent.putExtra("id", -1);
+//                    intent.putExtra("rawJSON", rawJSON);
+//                    intent.setClass(fragment.getContext(), DetailActivity.class); // TODO: transfer to fragment
+//                    LoadMoreAdapter.this.fragment.startActivity(intent);
                 }
             });
         }

@@ -2,6 +2,7 @@ package com.java.zhangjiayou.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.FrameLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -21,7 +22,7 @@ public class DetailActivity extends AppCompatActivity {
 
         WebViewerFragment webViewerFragment = WebViewerFragment.newInstance(id);
         webViewerFragment.setJsonString(rawJSON);
-        getSupportFragmentManager().beginTransaction().add(R.id.detail_frame, webViewerFragment);
+        getSupportFragmentManager().beginTransaction().add(R.id.detail_frame, webViewerFragment).commit();
         webViewerFragment.updateWebView();
 
     }
