@@ -154,7 +154,6 @@ public class WebViewerFragment extends Fragment {
     public void updateWebView(){
         if (id == 0){ // 中国折线图
             String html = AssetsIO.getFromAssets(parentActivity, "template/history_china.html");
-            Log.e("FFFFFFFFFFFFF", "updateWebView: ");
             loadData(html);
         } else if (id == 1){ // 世界折线图
             String html = AssetsIO.getFromAssets(parentActivity, "template/history_world.html");

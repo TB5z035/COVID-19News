@@ -5,6 +5,7 @@ function inArray(arr, x) {
 }
 
 function searchEnt(label, callback) {
+    console.log('https://innovaapi.aminer.cn/covid/api/v1/pneumonia/entityquery?entity=' + label);
     (fetch('https://innovaapi.aminer.cn/covid/api/v1/pneumonia/entityquery?entity=' + label)
         .then(response => response.json())
         .then(data => callback(data)));

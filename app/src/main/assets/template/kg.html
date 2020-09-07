@@ -5,7 +5,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Basic sigma.js example</title>
+    <title>知识图谱</title>
     <style type="text/css">
         .lds-dual-ring {
             z-index: 2;
@@ -36,15 +36,37 @@
                 transform: rotate(360deg);
             }
         }
+
+        #searchbar {
+            position: absolute;
+            z-index: 1;
+            top: 0%;
+            height: 5%;
+            width: 98%;
+            left: 1%;
+            right: 1%;
+            opacity: 0.2;
+            resize: none;
+            transition: opacity 0.1s ease-in-out;
+            border: 0;
+        }
+
+        #searchbar:hover {
+            opacity: 0.8;
+            height: 60%;
+        }
     </style>
 </head>
 
-<body style="margin: 0;padding: 0;">
+<body style="margin: 0;padding: 0;background-size: contain;background-repeat: no-repeat;background-position: center;">
     <div class="lds-dual-ring"></div>
+    <form id="searchbarContainer">
+        <textarea type="text" id="searchbar" name="entlabel"></textarea>
+    </form>
     <div id="container">
         <style>
             #graph-container {
-                background: #fff;
+                background: rgba(255, 255, 255, 0.2);
                 height: 100vh;
                 max-width: 100%;
                 margin: auto;
@@ -76,6 +98,7 @@
         var s, c, dom, disc, nId = 0, eId = 0, radius = 4,
             nodeRadius = 8;
         var timeoutID;
+        var searchbar = document.getElementById("searchbar");
 
         function updateSigma() {
             s.killForceAtlas2();
@@ -122,12 +145,19 @@
             return s.graph.nodes().map((x) => x.id);
         }
 
+        function rgbToHex(v) {
+            v = Math.min(Math.floor(v), 255).toString(16);
+            v = v.length == 1 ? "0" + v : v;
+            return v
+        }
+
         function addNode(node) {
             if (!inArray(getNodes(), node)) {
                 var pos = generateRandomPos();
                 s.graph.addNode({
                     id: node.url, label: node.label,
-                    size: nodeRadius, x: pos.x, y: pos.y
+                    size: nodeRadius, x: pos.x, y: pos.y,
+                    color: ('#' + rgbToHex(98 + Math.random() * 60) + rgbToHex(0 + Math.random() * 60) + rgbToHex(238 + Math.random() * 60))
                 });
             }
         }
@@ -159,31 +189,64 @@
             return neighbors[0];
         }
 
+        function myalert(s) {
+            searchbar.value = s;
+        }
+
         function safeGrowGraph(label) {
-            document.getElementsByClassName("lds-dual-ring")[0].style.visibility='visible';
+            document.getElementsByClassName("lds-dual-ring")[0].style.visibility = 'visible';
             searchEnt(label, (data) => {
                 if (data.msg !== "success") {
-                    alert("网络不佳请重试");
-                    return;
+                    myalert("网络不佳请重试");
                 } else {
                     data = data.data;
                     if (data.length === 0) {
-                        alert("检索不到结果");
-                        return;
+                        myalert("检索不到结果");
+                    } else {
+                        data = data[0];
+                        var edges = parseEdges(data);
+                        // TODO: 展示图片和摘要
+                        addEdges(edges);
+                        updateSigma();
+                        if (data.img !== null) {
+                            document.body.style.backgroundImage = 'url(' + data.img + ')';
+                        }
+                        var abs = data.abstractInfo;
+                        var description = label + "\n百科描述:\n";
+                        if (abs.baidu.length !== 0) {
+                            description += abs.baidu;
+                        } else if (abs.enwiki.length !== 0) {
+                            description += abs.enwiki;
+                        } else if (abs.zhwiki.length !== 0) {
+                            description += abs.zhwiki;
+                        }
+                        description += "\n属性信息:\n";
+                        for (var x in abs.COVID.properties) { description += "\n☆" + x + ": " + abs.COVID.properties[x] + "."; };
+                        myalert(description);
                     }
-                    data = data[0];
-                    var edges = parseEdges(data);
-                    // TODO: 展示图片和摘要
-                    addEdges(edges);
-                    document.getElementsByClassName("lds-dual-ring")[0].style.visibility='hidden';
-                    updateSigma();
                 }
+                document.getElementsByClassName("lds-dual-ring")[0].style.visibility = 'hidden';
             });
         }
 
         initSigma();
         // addEdges([[{url:'A', label:'a'}, 'R1', {url:'B', label:'b'}], [{url:'B', label:'b'}, 'R2', {url:'C', label:'c'}]]);
         safeGrowGraph('病毒');
+        function onSubmit(e) {
+            e.preventDefault();
+            safeGrowGraph(searchbar.value);
+            s.graph.clear();
+            s.refresh();
+        }
+        document.getElementById("searchbarContainer").addEventListener("submit", onSubmit);
+        document.getElementById("searchbarContainer").addEventListener("keydown", function (e) {
+            if ((e.keyCode || e.which) == 13) {
+                onSubmit(e);
+            }
+            if (searchbar.value.search("\n") !== -1) {
+                searchbar.value = "";
+            }
+        });
 
         dom.addEventListener('click',
             function (e) {

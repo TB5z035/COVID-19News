@@ -162,7 +162,7 @@
         }
 
         function rgbToHex(v) {
-            v = Math.floor(v * 255).toString(16);
+            v = Math.min(Math.floor(v*255), 255).toString(16);
             v = v.length == 1 ? "0" + v : v;
             return v
         }
