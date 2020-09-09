@@ -1,6 +1,5 @@
 package com.java.zhangjiayou;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,20 +18,21 @@ import com.google.android.material.snackbar.Snackbar;
 import com.java.zhangjiayou.database.PassageDatabase;
 import com.java.zhangjiayou.network.PassagePortal;
 import com.java.zhangjiayou.sharing.SharePortWeibo;
+import com.java.zhangjiayou.ui.explore.BackPressedHandlerMain;
+import com.java.zhangjiayou.ui.explore.BackPressedHandlerSub;
 import com.sina.weibo.sdk.common.UiError;
 import com.sina.weibo.sdk.share.WbShareCallback;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.function.BiFunction;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements  BackPressedHandlerMain{
     private HashMap<String, HashSet<String>> searchMap;
     private View backup;
-    private BackPressedHandler backPressedHandler;
+    private BackPressedHandlerSub backPressedHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,24 +126,20 @@ public class MainActivity extends AppCompatActivity {
             });
     }
 
-    public void setBackPressedHandler(BackPressedHandler backPressedHandler) {
+    @Override
+    public void setBackPressedHandler(BackPressedHandlerSub backPressedHandler) {
         this.backPressedHandler = backPressedHandler;
     }
 
+    @Override
     public void superOnBackPressed(){
         super.onBackPressed();
     }
 
     @Override
     public void onBackPressed() {
-        if (backPressedHandler == null){
+        if (backPressedHandler == null || backPressedHandler.onBackPressed() == false) {
             superOnBackPressed();
-        } else {
-            backPressedHandler.onBackPressed();
         }
-    }
-
-    public interface BackPressedHandler {
-        void onBackPressed();
     }
 }

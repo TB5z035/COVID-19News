@@ -55,6 +55,11 @@ public class WebViewerFragment extends Fragment {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // 初始化浏览器
@@ -69,16 +74,17 @@ public class WebViewerFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         parentActivity = (AppCompatActivity) context;
-//        parentActivity.setBackPressedHandler(new AppCompatActivity.BackPressedHandler() {
-//            @Override
-//            public void onBackPressed() {
-//                if (webView.canGoBack()){
-//                    webView.goBack();
-//                }else  {
-//                    parentActivity.superOnBackPressed();
-//                }
-//            }
-//        });
+        ((BackPressedHandlerMain)parentActivity).setBackPressedHandler(new BackPressedHandlerSub() {
+            @Override
+            public boolean onBackPressed() {
+                if (webView.canGoBack()){
+                    webView.goBack();
+                    return true;
+                }else  {
+                    return false;
+                }
+            }
+        });
     }
 
     // 更新父activity
@@ -114,8 +120,7 @@ public class WebViewerFragment extends Fragment {
                 super.onPageFinished(view, url);
                 // 储存标题
                 title = view.getTitle();
-                if (nowId == id){
-                    Log.e("debug!", "onPageFinished: ");
+                if (nowId == id && isVisible()){
                     parentActivity.getSupportActionBar().setTitle(title);
                 }
 
@@ -179,7 +184,6 @@ public class WebViewerFragment extends Fragment {
 
     @Override
     public void onPause() {
-        Log.e("debug!", "onPause: " );
         super.onPause();
         if (nowId == id) {
             nowId = -1;
@@ -189,9 +193,10 @@ public class WebViewerFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        nowId = id;
-        Log.e("debug!", "onResume: ");
-        parentActivity.getSupportActionBar().setTitle(title);
+        if (isVisible()){
+            nowId = id;
+            parentActivity.getSupportActionBar().setTitle(title);
+        }
     }
 
     // 把字符串解读为html

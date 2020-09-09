@@ -32,7 +32,7 @@
     document.getElementById('content').innerHTML = content;
 
     function createRelatedList() {
-        if (related.length == 0) {
+        if (related == null || related.length == 0) {
             return;
         }
         var list = document.createElement('ul');
