@@ -7,16 +7,16 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.java.zhangjiayou.R;
-import com.java.zhangjiayou.util.Passage;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 public class HomeFragment extends Fragment {
@@ -28,11 +28,43 @@ public class HomeFragment extends Fragment {
     private String type;
     private Integer size = 20;
     private Set<String> historyIds;
+    private final static String ID_TYPE = "id_type";
+    private final static String ID_HISTORY = "id_history";
 
-    public HomeFragment(String type, Set<String> historyIds) {
-        this.historyIds = historyIds;
-        if (type.equals("News") || type.equals("Paper")) this.type = type.toLowerCase();
-        else throw new UnsupportedPassageType();
+
+//    public HomeFragment(String type, Set<String> historyIds) {
+//        this.historyIds = historyIds;
+//        if (type.equals("News") || type.equals("Paper")) this.type = type.toLowerCase();
+//        else throw new UnsupportedPassageType();
+//    }
+
+    public HomeFragment() {
+        // Intentionally left blank
+    }
+
+    public static HomeFragment newInstance(String type, Set<String> historyIds) {
+        HomeFragment fragment = new HomeFragment();
+
+        Bundle args = new Bundle();
+        ArrayList<String> param = new ArrayList<>(historyIds);
+        args.putString(ID_TYPE, type);
+        args.putStringArrayList(ID_HISTORY, param);
+        fragment.setArguments(args);
+
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        type = getArguments().getString(ID_TYPE);
+        //TODO
+
+        ArrayList<String> arrayList = requireArguments().getStringArrayList(ID_HISTORY);
+
+        if (arrayList == null) historyIds = new HashSet<>();
+        else
+            historyIds = new HashSet<>(arrayList);
     }
 
     void onDataGot() {
@@ -44,7 +76,6 @@ public class HomeFragment extends Fragment {
             }
         });
     }
-
 
     @Override
     public View onCreateView(@NonNull final LayoutInflater inflater,
