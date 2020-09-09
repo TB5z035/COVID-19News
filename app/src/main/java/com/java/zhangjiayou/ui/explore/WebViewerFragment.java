@@ -168,6 +168,10 @@ public class WebViewerFragment extends Fragment {
             loadUrl("https://www.baidu.com");
         } else if (id == 5) { // 知疫学者
             loadUrl("https://www.bing.com");
+        } else if (id == -1) {
+            String template = AssetsIO.getFromAssets(parentActivity, "template/plaintext.html");
+            String html = HtmlGenerator.generateWithJson(jsonString, template);
+            loadData(html);
         }
     }
 
