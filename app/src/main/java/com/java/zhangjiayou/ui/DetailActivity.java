@@ -7,9 +7,12 @@ import android.widget.FrameLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.java.zhangjiayou.R;
+import com.java.zhangjiayou.ui.explore.BackPressedHandlerMain;
+import com.java.zhangjiayou.ui.explore.BackPressedHandlerSub;
 import com.java.zhangjiayou.ui.explore.WebViewerFragment;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity implements BackPressedHandlerMain {
+    private BackPressedHandlerSub backPressedHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,5 +34,23 @@ public class DetailActivity extends AppCompatActivity {
 ////        webViewerFragment.updateWebView();
 //        getSupportFragmentManager().beginTransaction().add(R.id.detail_frame, webViewerFragment).commit();
 
+    }
+
+
+    @Override
+    public void setBackPressedHandler(BackPressedHandlerSub backPressedHandler) {
+        this.backPressedHandler = backPressedHandler;
+    }
+
+    @Override
+    public void superOnBackPressed() {
+        super.onBackPressed();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (backPressedHandler == null || backPressedHandler.onBackPressed() == false) {
+            superOnBackPressed();
+        }
     }
 }

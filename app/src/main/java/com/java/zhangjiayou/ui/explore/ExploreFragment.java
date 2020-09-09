@@ -31,7 +31,6 @@ public class ExploreFragment extends Fragment {
 
     @Override
     public void onResume() {
-        Log.e("debugddddddd", "onResume: " );
         super.onResume();
         storeTitle();
 
@@ -39,7 +38,6 @@ public class ExploreFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        Log.e("debugddddddd", "onCreateView: " );
         exploreViewModel =
                 ViewModelProviders.of(this).get(ExploreViewModel.class);
         View root = inflater.inflate(R.layout.fragment_explore, container, false);
@@ -174,14 +172,12 @@ public class ExploreFragment extends Fragment {
 
     @Override
     public void onPause() {
-        Log.e("debugddddddd", "onPause: ");
         restoreTitle();
         super.onPause();
     }
 
     @Override
     public void onDestroy() {
-        Log.e("debugddddddd", "onDestroy: " );
         restoreTitle();
         super.onDestroy();
     }
