@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.java.zhangjiayou.util.Passage;
 import com.java.zhangjiayou.util.PassageWithNoContent;
 
-import org.ansj.domain.Term;
 import org.ansj.splitWord.analysis.BaseAnalysis;
 
 import java.io.ByteArrayOutputStream;
@@ -96,6 +95,8 @@ public class PassagePortal extends Portal {
         } catch (JsonMappingException e) {
             e.printStackTrace();
         } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

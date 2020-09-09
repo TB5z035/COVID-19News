@@ -3,6 +3,7 @@ package com.java.zhangjiayou;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
+//                Log.e(, "run: ", );
                 MainActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -49,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
                 new PassagePortal().getAllPassageIdTitle(new BiFunction<String, String, Boolean>() {
+                    
                     @Override
                     public Boolean apply(String key, String val) {
                         Set<String> stringSet = new HashSet<>(getApplication().getSharedPreferences(String.valueOf(R.string.search_seg_id_map_key), Context.MODE_PRIVATE)
@@ -66,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
             }
-        }, 0, 60000);
+        }, 0, 30000);
 
         backup = findViewById(R.id.nav_host_fragment);
 
