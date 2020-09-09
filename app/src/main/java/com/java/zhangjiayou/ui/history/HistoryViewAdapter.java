@@ -61,13 +61,14 @@ public class HistoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 .getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)
                 .getStringSet(String.valueOf(R.string.history_fileid_set_key), new HashSet<String>());
         new Thread(() -> {
-            for (String id :
-                    historyIds) {
-                PassageDatabase db = PassageDatabase.getInstance(activity);
-                Passage passage = db.getPassageDao().getPassageFromId(id);
-                System.out.println(passage.getContent());
-                dataList.add(passage);
-            }
+            PassageDatabase db = PassageDatabase.getInstance(activity);
+//            for (String id :
+//                    historyIds) {
+//                Passage passage = db.getPassageDao().getPassageFromId(id);
+//                System.out.println(passage.getContent());
+//                dataList.add(passage);
+//            }
+            dataList = db.getPassageDao().getPassagesFromIds(new ArrayList<>(historyIds));
             Collections.sort(dataList, new Comparator<Passage>() {
                 @Override
                 public int compare(Passage o1, Passage o2) {
@@ -170,25 +171,25 @@ public class HistoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 //                    itemView.getContext().getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)
 //                            .edit().putString(dataList.get(getLayoutPosition()).getId(), null)
 //                            .apply();
-
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Passage passageInDB = PassageDatabase.getInstance(null).getPassageDao().getPassageFromId(dataList.get(getLayoutPosition()).getId());
-                            if (passageInDB == null)
-                                PassageDatabase.getInstance(null).getPassageDao().insert(dataList.get(getLayoutPosition()));
-                        }
-                    }).start();
-                    itemView.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            notifyDataSetChanged();
-                        }
-                    }, 200);
+//
+//                    new Thread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            Passage passageInDB = PassageDatabase.getInstance(null).getPassageDao().getPassageFromId(dataList.get(getLayoutPosition()).getId());
+//                            if (passageInDB == null)
+//                                PassageDatabase.getInstance(null).getPassageDao().insert(dataList.get(getLayoutPosition()));
+//                        }
+//                    }).start();
+//                    itemView.postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            notifyDataSetChanged();
+//                        }
+//                    }, 200);
                     //TODO:call detail page activity here
-                    Intent intent = new Intent();
-//                    intent.setClass(activity.getApplicationContext(), DetailActivity.class); // TODO: transfer to fragment
-                    activity.startActivity(intent);
+//                    Intent intent = new Intent();
+////                    intent.setClass(activity.getApplicationContext(), DetailActivity.class); // TODO: Load data from database !
+//                    activity.startActivity(intent);
                 }
             });
         }

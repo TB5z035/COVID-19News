@@ -20,6 +20,9 @@ public interface PassageDAO {
     @Query("SELECT * FROM passages WHERE _id=:id")
     Passage getPassageFromId(String id);
 
+    @Query("SELECT * FROM passages WHERE _id IN (:ids)")
+    List<Passage> getPassagesFromIds(List<String> ids);
+
     @Insert
     void insert(Passage... passages);
 

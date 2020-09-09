@@ -58,11 +58,11 @@ public class Passage {
         this.title = title;
         this.content = content;
         this.date = date;
-        try {
-            this.rawJSON = new PassagePortal().getNewsJSONFromId(id);
-        } catch (NoResponseError noResponseError) {
-            noResponseError.printStackTrace();
-        }
+//        try {
+//            this.rawJSON = new PassagePortal().getNewsJSONFromId(id);
+//        } catch (NoResponseError noResponseError) {
+//            noResponseError.printStackTrace();
+//        }
 
     }
 

@@ -1,6 +1,7 @@
 package com.java.zhangjiayou.ui.home;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,8 +20,11 @@ import com.java.zhangjiayou.network.PassagePortal;
 import com.java.zhangjiayou.ui.DetailActivity;
 import com.java.zhangjiayou.util.Passage;
 
+import org.ansj.splitWord.analysis.ToAnalysis;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -55,8 +59,6 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
         new Thread(() -> {
             try {
-                Thread.sleep(1000);
-
                 if (mode) dataList.clear();
                 dataList.addAll(new PassagePortal().getNewsFromType(type, index, size));
                 index++;
@@ -65,8 +67,6 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 System.out.println(e.getStackTrace());
             } catch (NoResponseError noResponseError) {
                 noResponseError.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
         }).start();
     }
@@ -157,35 +157,41 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             titleView = (TextView) itemView.findViewById(R.id.title_view);
             contentView = (TextView) itemView.findViewById(R.id.time_view);
             cardView = itemView.findViewById(R.id.passage_card_view);
-            cardView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+
+            //点击时：将文章保存至数据库；分词，然后将关键词-id映射关系保存到本地映射表；延迟通知adapter以留足够的时间，完成点击动画后项目才变灰；启动详情页activity
+            cardView.setOnClickListener(v -> {
 //                    itemView.getContext().getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)
 //                            .edit().putString(dataList.get(getLayoutPosition()).getId(), null)
 //                            .apply();
-                    historyIds.add(dataList.get(getLayoutPosition()).getId());
+                historyIds.add(dataList.get(getLayoutPosition()).getId());
 
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Passage passageInDB = PassageDatabase.getInstance(null).getPassageDao().getPassageFromId(dataList.get(getLayoutPosition()).getId());
-                            if (passageInDB == null)
-                                PassageDatabase.getInstance(null).getPassageDao().insert(dataList.get(getLayoutPosition()));
+                new Thread(() -> {
+                    Passage passageInDB = PassageDatabase.getInstance(null).getPassageDao().getPassageFromId(dataList.get(getLayoutPosition()).getId());
+                    if (passageInDB == null)
+                        PassageDatabase.getInstance(null).getPassageDao().insert(dataList.get(getLayoutPosition()));
+                    String title = dataList.get(getLayoutPosition()).getTitle();
+
+                    ToAnalysis.parse(title).forEach((v1) -> {
+                        if (v1 != null ) {
+                            Set<String> strings = itemView.getContext().getSharedPreferences(String.valueOf(R.string.search_seg_id_map_key), Context.MODE_PRIVATE)
+                                    .getStringSet(v1.getName(), new HashSet<>());
+
+                            strings.add(dataList.get(getLayoutPosition()).getId());
+
+                            itemView.getContext().getSharedPreferences(String.valueOf(R.string.search_seg_id_map_key), Context.MODE_PRIVATE)
+                                    .edit().putStringSet(v1.getName(), new HashSet<>(strings)).apply();
+                            System.out.println(v1.getName());
                         }
-                    }).start();
-                    itemView.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            notifyDataSetChanged();
-                        }
-                    }, 200);
-                    //TODO:call detail page activity here
-                    Intent intent = new Intent();
-                    intent.putExtra("id", -1);
-                    intent.putExtra("rawJSON", rawJSON);
-                    intent.setClass(fragment.getContext(), DetailActivity.class); // TODO: transfer to fragment
-                    LoadMoreAdapter.this.fragment.startActivity(intent);
-                }
+                    });
+                }).start();
+                itemView.postDelayed(() -> notifyDataSetChanged(), 200);
+
+                //TODO:call detail page activity here
+//                Intent intent = new Intent();
+//                intent.putExtra("id", -1);
+//                intent.putExtra("rawJSON", rawJSON);
+//                intent.setClass(fragment.getContext(), DetailActivity.class); // TODO: transfer to fragment
+//                LoadMoreAdapter.this.fragment.startActivity(intent);
             });
         }
     }

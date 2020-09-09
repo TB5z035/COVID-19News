@@ -1,9 +1,10 @@
 package com.java.zhangjiayou;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.webkit.WebView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,9 +16,16 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.java.zhangjiayou.database.PassageDatabase;
+import com.java.zhangjiayou.network.PassagePortal;
 import com.java.zhangjiayou.sharing.SharePortWeibo;
 import com.sina.weibo.sdk.common.UiError;
 import com.sina.weibo.sdk.share.WbShareCallback;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.function.BiFunction;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,6 +38,35 @@ public class MainActivity extends AppCompatActivity {
 //        Objects.requireNonNull(getSupportActionBar()).hide();
 //        getActionBar().hide();
         setContentView(R.layout.activity_main);
+
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                MainActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, "Start loading!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                new PassagePortal().getAllPassageIdTitle(new BiFunction<String, String, Boolean>() {
+                    @Override
+                    public Boolean apply(String key, String val) {
+                        Set<String> stringSet = new HashSet<>(getApplication().getSharedPreferences(String.valueOf(R.string.search_seg_id_map_key), Context.MODE_PRIVATE)
+                                .getStringSet(key, new HashSet<>()));
+                        stringSet.add(val);
+                        getApplication().getSharedPreferences(String.valueOf(R.string.search_seg_id_map_key), Context.MODE_PRIVATE)
+                                .edit().putStringSet(key, stringSet).commit();
+                        return null;
+                    }
+                });
+                MainActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, "Finish loading!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }, 0, 60000);
 
         backup = findViewById(R.id.nav_host_fragment);
 
@@ -44,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
+        //初始化数据库
         PassageDatabase.getInstance(this);
     }
 
