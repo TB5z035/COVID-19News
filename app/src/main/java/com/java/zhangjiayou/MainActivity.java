@@ -22,6 +22,7 @@ import com.java.zhangjiayou.sharing.SharePortWeibo;
 import com.sina.weibo.sdk.common.UiError;
 import com.sina.weibo.sdk.share.WbShareCallback;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Timer;
@@ -29,7 +30,7 @@ import java.util.TimerTask;
 import java.util.function.BiFunction;
 
 public class MainActivity extends AppCompatActivity {
-
+    private HashMap<String, HashSet<String>> searchMap;
     private View backup;
     private BackPressedHandler backPressedHandler;
 
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-//                Log.e(, "run: ", );
+                Log.e("Timer", "run: ");
                 MainActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -54,11 +55,23 @@ public class MainActivity extends AppCompatActivity {
                     
                     @Override
                     public Boolean apply(String key, String val) {
-                        Set<String> stringSet = new HashSet<>(getApplication().getSharedPreferences(String.valueOf(R.string.search_seg_id_map_key), Context.MODE_PRIVATE)
-                                .getStringSet(key, new HashSet<>()));
-                        stringSet.add(val);
-                        getApplication().getSharedPreferences(String.valueOf(R.string.search_seg_id_map_key), Context.MODE_PRIVATE)
-                                .edit().putStringSet(key, stringSet).commit();
+//                        Set<String> stringSet = new HashSet<>(getApplication().getSharedPreferences(String.valueOf(R.string.search_seg_id_map_key), Context.MODE_PRIVATE)
+//                                .getStringSet(key, new HashSet<>()));
+//                        stringSet.add(val);
+
+//                        HashSet<String> now = SearchMapManager.getMap().getOrDefault(key, new HashSet<>());
+                        if (SearchMapManager.getMap().containsKey(key)) {
+                            HashSet<String> now = SearchMapManager.getMap().get(key);
+                            now.add(val);
+                            SearchMapManager.getMap().put(key, now);
+                        } else {
+                            HashSet<String> now = new HashSet<>();
+                            now.add(val);
+                            SearchMapManager.getMap().put(key, now);
+                        }
+
+//                        getApplication().getSharedPreferences(String.valueOf(R.string.search_seg_id_map_key), Context.MODE_PRIVATE)
+//                                .edit().putStringSet(key, stringSet).commit();
                         return null;
                     }
                 });

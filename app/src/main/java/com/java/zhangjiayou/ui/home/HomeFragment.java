@@ -57,7 +57,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        type = getArguments().getString(ID_TYPE);
+        type = requireArguments().getString(ID_TYPE);
         //TODO
 
         ArrayList<String> arrayList = requireArguments().getStringArrayList(ID_HISTORY);

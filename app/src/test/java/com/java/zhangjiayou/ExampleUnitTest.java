@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import java.util.Date;
 import java.util.List;
+import java.util.function.BiFunction;
 
 import static org.junit.Assert.assertEquals;
 
@@ -50,7 +51,7 @@ public class ExampleUnitTest {
 
     @Test
     public void passage_test() {
-        new PassagePortal().getAllPassageIdTitle();
+//        new PassagePortal().getAllPassageIdTitle(BiFunction<>);
     }
 
 
