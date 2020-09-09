@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.java.zhangjiayou.R;
 import com.java.zhangjiayou.database.PassageDatabase;
+import com.java.zhangjiayou.ui.DetailActivity;
+import com.java.zhangjiayou.ui.home.LoadMoreAdapter;
 import com.java.zhangjiayou.util.Passage;
 
 import java.text.SimpleDateFormat;
@@ -123,6 +125,8 @@ public class HistoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         holder.setIsRecyclable(false);
         recyclerViewHolder.titleView.setText(dataList.get(position).getTitle());
 
+        recyclerViewHolder.rawJSON = dataList.get(position).rawJSON;
+
         recyclerViewHolder.contentView.setText(
                 new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA)
                         .format(dataList.get(position).getDate()));
@@ -158,6 +162,7 @@ public class HistoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         TextView titleView;
         TextView contentView;
         CardView cardView;
+        String rawJSON;
 
         RecyclerViewHolder(final View itemView) {
             super(itemView);
@@ -190,6 +195,14 @@ public class HistoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 //                    Intent intent = new Intent();
 ////                    intent.setClass(activity.getApplicationContext(), DetailActivity.class); // TODO: Load data from database !
 //                    activity.startActivity(intent);
+
+
+
+                    Intent intent = new Intent();
+                    intent.putExtra("id", -1);
+                    intent.putExtra("rawJSON", rawJSON);
+                    intent.setClass(activity, DetailActivity.class); // TODO: transfer to fragment
+                    HistoryViewAdapter.this.activity.startActivity(intent);
                 }
             });
         }
