@@ -115,6 +115,7 @@ public class WebViewerFragment extends Fragment {
                 // 储存标题
                 title = view.getTitle();
                 if (nowId == id){
+                    Log.e("debug!", "onPageFinished: ");
                     parentActivity.getSupportActionBar().setTitle(title);
                 }
 
@@ -177,14 +178,24 @@ public class WebViewerFragment extends Fragment {
     }
 
     @Override
+    public void onPause() {
+        Log.e("debug!", "onPause: " );
+        super.onPause();
+        if (nowId == id) {
+            nowId = -1;
+        }
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         nowId = id;
+        Log.e("debug!", "onResume: ");
         parentActivity.getSupportActionBar().setTitle(title);
     }
 
     // 把字符串解读为html
-    public void loadData(final String html){
+    public void loadData(final String html) {
         webView.loadDataWithBaseURL("file:///android_asset/template/worldmap-example.html",
                 html,"text/html", "utf-8", null);
     }

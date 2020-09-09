@@ -28,10 +28,18 @@ public class ExploreFragment extends Fragment {
     private String oldTitle;
     final private String[] tabNames = {"中国疫情走势", "世界疫情走势", "世界热力图", "知识图谱", "新闻聚类", "知疫学者"};
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+
+    @Override
+    public void onResume() {
+        Log.e("debugddddddd", "onResume: " );
+        super.onResume();
         storeTitle();
 
+    }
+
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
+        Log.e("debugddddddd", "onCreateView: " );
         exploreViewModel =
                 ViewModelProviders.of(this).get(ExploreViewModel.class);
         View root = inflater.inflate(R.layout.fragment_explore, container, false);
@@ -153,8 +161,7 @@ public class ExploreFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onDestroy() {
+    private void restoreTitle(){
         try {
             if (oldTitle == null){
                 oldTitle = "COVID-19News";
@@ -163,6 +170,19 @@ public class ExploreFragment extends Fragment {
         } catch (ClassCastException e){
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onPause() {
+        Log.e("debugddddddd", "onPause: ");
+        restoreTitle();
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.e("debugddddddd", "onDestroy: " );
+        restoreTitle();
         super.onDestroy();
     }
 }

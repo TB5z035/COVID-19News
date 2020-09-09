@@ -60,7 +60,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         new Thread(() -> {
             try {
                 if (mode) dataList.clear();
-                dataList.addAll(new PassagePortal().getNewsFromType(type, index, size));
+                dataList.addAll(new PassagePortal().getNewsFromType(type.toLowerCase(), index, size));
                 index++;
                 fragment.onDataGot();
             } catch (NullPointerException e) {
