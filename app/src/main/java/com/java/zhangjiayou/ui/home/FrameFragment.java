@@ -28,7 +28,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class FrameFragment extends Fragment {
-    private int numPages = 2;
     private Set<String> historyIds = new HashSet<>();
     private ViewPager2 viewPager2;
     private TabLayout tabLayout;
@@ -36,15 +35,16 @@ public class FrameFragment extends Fragment {
     private static final Integer TYPE_SETTING_ACTIVITY = 0;
     private static ArrayList<String> availableList;
 
+    /**
+     * Get result from TypeSettingActivity & rearrange tabs
+     * */
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == TYPE_SETTING_ACTIVITY) {
             availableList = data.getStringArrayListExtra("available");
-            Toast.makeText(getActivity(), availableList.toString(), Toast.LENGTH_SHORT);
-            System.out.println(availableList);
 
-
+            // Reset content and styles of tabs according to intent returned
             new TabLayoutMediator(tabLayout, viewPager2, (tab, position) -> {
                 TextView tabView = new TextView(getActivity());
 
@@ -57,41 +57,29 @@ public class FrameFragment extends Fragment {
 
                 tab.setCustomView(tabView);
             }).attach();
+
+            // Set up fragments inside ViewPager
             viewPager2.setAdapter(new FragmentStateAdapter(this.getActivity()) {
                 @NonNull
                 @Override
                 public Fragment createFragment(int position) {
-                    return new HomeFragment(availableList.get(position), historyIds);
+                    return HomeFragment.newInstance(availableList.get(position), historyIds);
                 }
-
                 @Override
                 public long getItemId(int position) {
                     return super.getItemId(position);
                 }
-
                 @Override
                 public boolean containsItem(long itemId) {
                     return super.containsItem(itemId);
                 }
-
                 @Override
                 public int getItemCount() {
                     return availableList.size();
                 }
             });
             viewPager2.getAdapter().notifyDataSetChanged();
-
         }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        getActivity()
-                .getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)
-                .edit()
-                .putStringSet(String.valueOf(R.string.history_fileid_set_key), historyIds)
-                .apply();
     }
 
     @Nullable
@@ -114,7 +102,7 @@ public class FrameFragment extends Fragment {
             @NonNull
             @Override
             public Fragment createFragment(int position) {
-                return new HomeFragment(availableList.get(position), historyIds);
+                return HomeFragment.newInstance(availableList.get(position), historyIds);
             }
 
             @Override
@@ -220,11 +208,9 @@ public class FrameFragment extends Fragment {
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager2.setCurrentItem(tab.getPosition(), true);
             }
-
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
             }
-
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
             }

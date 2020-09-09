@@ -2,7 +2,6 @@ package com.java.zhangjiayou.ui.home;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,6 @@ import com.java.zhangjiayou.R;
 import com.java.zhangjiayou.database.PassageDatabase;
 import com.java.zhangjiayou.network.NoResponseError;
 import com.java.zhangjiayou.network.PassagePortal;
-import com.java.zhangjiayou.ui.DetailActivity;
 import com.java.zhangjiayou.util.Passage;
 
 import org.ansj.splitWord.analysis.ToAnalysis;
@@ -166,13 +164,18 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 historyIds.add(dataList.get(getLayoutPosition()).getId());
 
                 new Thread(() -> {
+                    itemView.getContext()
+                            .getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)
+                            .edit()
+                            .putStringSet(String.valueOf(R.string.history_fileid_set_key), historyIds)
+                            .apply();
                     Passage passageInDB = PassageDatabase.getInstance(null).getPassageDao().getPassageFromId(dataList.get(getLayoutPosition()).getId());
                     if (passageInDB == null)
                         PassageDatabase.getInstance(null).getPassageDao().insert(dataList.get(getLayoutPosition()));
                     String title = dataList.get(getLayoutPosition()).getTitle();
 
                     ToAnalysis.parse(title).forEach((v1) -> {
-                        if (v1 != null ) {
+                        if (v1 != null) {
                             Set<String> strings = itemView.getContext().getSharedPreferences(String.valueOf(R.string.search_seg_id_map_key), Context.MODE_PRIVATE)
                                     .getStringSet(v1.getName(), new HashSet<>());
 
@@ -183,6 +186,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             System.out.println(v1.getName());
                         }
                     });
+
                 }).start();
                 itemView.postDelayed(() -> notifyDataSetChanged(), 200);
 
