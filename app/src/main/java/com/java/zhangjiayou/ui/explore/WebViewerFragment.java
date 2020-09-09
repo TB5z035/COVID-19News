@@ -14,6 +14,7 @@ import android.webkit.WebViewClient;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.java.zhangjiayou.R;
 import com.java.zhangjiayou.ui.explore.htmlgenerator.HtmlGenerator;
 import com.java.zhangjiayou.ui.explore.utils.AssetsIO;
@@ -24,7 +25,7 @@ import com.java.zhangjiayou.ui.explore.utils.AssetsIO;
  * create an instance of this fragment.
  */
 public class WebViewerFragment extends Fragment {
-
+    String TAG = "WebViewFrag";
     private final static String ID_KEY = "id_key";
     private int id = -1;
     private WebView webView;
@@ -66,6 +67,7 @@ public class WebViewerFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_viewer, container, false);
         initWebView(v);
         updateWebView();
+        initFab(v, null);
         return v;
     }
 
@@ -208,5 +210,23 @@ public class WebViewerFragment extends Fragment {
     // 从给定url中加载网页, 可以是本地网页, 也可以是互联网上的网页
     public void loadUrl(final String url){
         webView.loadUrl(url);
+    }
+
+    private  void initFab(final View v, final String api){
+
+        // 获取fab(分享按钮)
+        FloatingActionButton fab = v.findViewById(R.id.fab);
+        // 不是网页详情页就不显示, 因为没有jsonString
+        if (id != -1){
+            fab.hide();
+            return;
+        }
+        // 修改点击行为为分享给微信好友
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.e(TAG, "onClick: FAB not initialized!");
+            }
+        });
     }
 }
