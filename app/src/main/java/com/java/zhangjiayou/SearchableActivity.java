@@ -1,6 +1,7 @@
 package com.java.zhangjiayou;
 
 import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
@@ -8,32 +9,46 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.java.zhangjiayou.ui.history.HistoryViewAdapter;
 
 import org.ansj.splitWord.analysis.ToAnalysis;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
 public class SearchableActivity extends AppCompatActivity {
     private TextView textView;
+    private RecyclerView recyclerView;
+    private SearchResultAdapter historyViewAdapter;
+    private Set<String> searchIds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        Objects.requireNonNull(getSupportActionBar()).hide();
         setContentView(R.layout.activity_searchable);
+
         textView = findViewById(R.id.debug_textVIew);
+        recyclerView = findViewById(R.id.search_result);
+
 
 
         Intent intent = getIntent();
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
-                    MySuggestionProvider.AUTHORITY,MySuggestionProvider.MODE);
-            suggestions.saveRecentQuery(query,null);
+                    MySuggestionProvider.AUTHORITY, MySuggestionProvider.MODE);
+            suggestions.saveRecentQuery(query, null);
 
             doMySearch(query);
         }
+        historyViewAdapter = new SearchResultAdapter(searchIds,this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(historyViewAdapter);
+        historyViewAdapter.refreshDataList();
 
     }
 
@@ -42,17 +57,21 @@ public class SearchableActivity extends AppCompatActivity {
         Toast.makeText(textView.getContext(), query, Toast.LENGTH_SHORT).show();
 //        Set<String> strings = getSharedPreferences(String.valueOf(R.string.search_seg_id_map_key), Context.MODE_PRIVATE)
 //                .getStringSet(query, new HashSet<>());
-        HashSet<String> ids = new HashSet<>();
+        searchIds = new HashSet<>();
 
         ToAnalysis.parse(query).forEach((v) -> {
+//<<<<<<< Updated upstream
 //            Set<String> strings = new HashSet<>(getSharedPreferences(String.valueOf(R.string.search_seg_id_map_key), Context.MODE_PRIVATE)
 //                    .getStringSet(v.getName(), new HashSet<>()));
-            String name = v.getName();
-            Set<String> strings = SearchMapManager.getMap().get(name);
-            if (strings != null)
-                ids.addAll(strings);
+
+            searchIds.add(v.getName());
+////=======
+//            Set<String> strings = new HashSet<>(getSharedPreferences(String.valueOf(R.string.search_seg_id_map_key), Context.MODE_PRIVATE)
+//                    .getStringSet(v.getName(), new HashSet<>()));
+//            searchIds.addAll(strings);
+//>>>>>>> Stashed changes
         });
 
-        textView.setText(ids.toString());
+        textView.setText(searchIds.toString());
     }
 }

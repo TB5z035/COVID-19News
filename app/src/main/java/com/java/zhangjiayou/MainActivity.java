@@ -20,6 +20,7 @@ import com.java.zhangjiayou.network.PassagePortal;
 import com.java.zhangjiayou.sharing.SharePortWeibo;
 import com.java.zhangjiayou.ui.explore.BackPressedHandlerMain;
 import com.java.zhangjiayou.ui.explore.BackPressedHandlerSub;
+import com.java.zhangjiayou.util.PassageWithNoContent;
 import com.sina.weibo.sdk.common.UiError;
 import com.sina.weibo.sdk.share.WbShareCallback;
 
@@ -51,29 +52,25 @@ public class MainActivity extends AppCompatActivity implements  BackPressedHandl
                         Toast.makeText(MainActivity.this, "Start loading!", Toast.LENGTH_SHORT).show();
                     }
                 });
-                new PassagePortal().getAllPassageIdTitle(new BiFunction<String, String, Boolean>() {
-                    
-                    @Override
-                    public Boolean apply(String key, String val) {
+                new PassagePortal().getAllPassageIdTitle((key, val) -> {
 //                        Set<String> stringSet = new HashSet<>(getApplication().getSharedPreferences(String.valueOf(R.string.search_seg_id_map_key), Context.MODE_PRIVATE)
 //                                .getStringSet(key, new HashSet<>()));
 //                        stringSet.add(val);
 
 //                        HashSet<String> now = SearchMapManager.getMap().getOrDefault(key, new HashSet<>());
-                        if (SearchMapManager.getMap().containsKey(key)) {
-                            HashSet<String> now = SearchMapManager.getMap().get(key);
-                            now.add(val);
-                            SearchMapManager.getMap().put(key, now);
-                        } else {
-                            HashSet<String> now = new HashSet<>();
-                            now.add(val);
-                            SearchMapManager.getMap().put(key, now);
-                        }
+                    if (SearchMapManager.getMap().containsKey(key)) {
+                        HashSet<PassageWithNoContent> now = SearchMapManager.getMap().get(key);
+                        now.add(val);
+                        SearchMapManager.getMap().put(key, now);
+                    } else {
+                        HashSet<PassageWithNoContent> now = new HashSet<>();
+                        now.add(val);
+                        SearchMapManager.getMap().put(key, now);
+                    }
 
 //                        getApplication().getSharedPreferences(String.valueOf(R.string.search_seg_id_map_key), Context.MODE_PRIVATE)
 //                                .edit().putStringSet(key, stringSet).commit();
-                        return null;
-                    }
+                    return null;
                 });
                 MainActivity.this.runOnUiThread(new Runnable() {
                     @Override
@@ -82,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements  BackPressedHandl
                     }
                 });
             }
-        }, 0, 30000);
+        }, 0, 120000);
 
         backup = findViewById(R.id.nav_host_fragment);
 

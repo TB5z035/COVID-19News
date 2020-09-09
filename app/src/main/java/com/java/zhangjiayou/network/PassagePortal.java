@@ -77,7 +77,7 @@ public class PassagePortal extends Portal {
         return getRawData("https://covid-dashboard.aminer.cn/api/event/" + id, null);
     }
 
-    public List<Map<String, String>> getAllPassageIdTitle(BiFunction<String, String, Boolean> function) {
+    public List<Map<String, String>> getAllPassageIdTitle(BiFunction<String, PassageWithNoContent, Boolean> function) {
         String response = "";
         try {
             response = getRawData("https://covid-dashboard.aminer.cn/api/dist/events.json", null);
@@ -87,7 +87,7 @@ public class PassagePortal extends Portal {
                     list) {
                 BaseAnalysis.parse(p.getTitle()).forEach((v) -> {
 //                    System.out.println(v.getName());
-                    function.apply(v.getName(), p.getId());
+                    function.apply(v.getName(), p);
                 });
             }
         } catch (NoResponseError noResponseError) {

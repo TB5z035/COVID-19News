@@ -9,8 +9,6 @@ import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.java.zhangjiayou.network.NoResponseError;
-import com.java.zhangjiayou.network.PassagePortal;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -27,7 +25,7 @@ public class PassageWithNoContent {
     @PrimaryKey
     @NonNull
     private String _id;
-
+    private Date date;
     private String title;
 
     @Ignore
@@ -46,10 +44,12 @@ public class PassageWithNoContent {
     @JsonCreator
     public PassageWithNoContent(
             @JsonProperty("_id") String id,
-            @JsonProperty("title") String title
+            @JsonProperty("title") String title,
+            @JsonProperty("date") Date date
     ) {
         this._id = id;
         this.title = title;
+        this.date = date;
 //        try {
 //            this.rawJSON = new PassagePortal().getNewsJSONFromId(id);
 //        } catch (NoResponseError noResponseError) {
@@ -109,6 +109,13 @@ public class PassageWithNoContent {
         return properties;
     }
 
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
 }
 
 
