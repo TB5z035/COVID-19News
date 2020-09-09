@@ -39,7 +39,6 @@ public class WebViewerFragment extends Fragment {
     }
 
     public static WebViewerFragment newInstance(int id) {
-        Log.e("pello4", "NewInstance: ");
         WebViewerFragment fragment = new WebViewerFragment();
         Bundle args = new Bundle();
         args.putInt(ID_KEY, id);
@@ -49,7 +48,6 @@ public class WebViewerFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.e("gello3", "onCreate: ");
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             id = getArguments().getInt(ID_KEY);
@@ -59,7 +57,6 @@ public class WebViewerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.e("hello2", "onCreateView: ");
         // 初始化浏览器
         View v = inflater.inflate(R.layout.fragment_viewer, container, false);
         initWebView(v);
@@ -93,7 +90,6 @@ public class WebViewerFragment extends Fragment {
 
     // 初始化浏览器
     private void initWebView(View v){
-        Log.e("hello", "initWebView: ");
         // 获取webview
         webView = (WebView) v.findViewById(R.id.web_view);
         // 加载设置
@@ -184,7 +180,6 @@ public class WebViewerFragment extends Fragment {
     public void onResume() {
         super.onResume();
         nowId = id;
-        Log.e("dd", "onResume: " + parentActivity + "/" + parentActivity.getSupportActionBar());
         parentActivity.getSupportActionBar().setTitle(title);
     }
 
