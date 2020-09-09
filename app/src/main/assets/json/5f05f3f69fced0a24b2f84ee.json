@@ -1,0 +1,121 @@
+{
+    "data": {
+        "_id": "5ec2d4809fced0a24b8e6b2d",
+        "category": "",
+        "content": "HELSINKI, May 18 (Xinhua) -- Field tests began in Finland on Monday for a possible mobile phone application (app) to track and prevent COVID-19 infections, while a survey conducted by the Ministry of Social Affairs and Health indicated that health experts and decision makers are concerned whether the app would gain wide enough acceptance among citizens.,To be viable in tracking, the app should be installed on the mobile gadgets of 60 percent of the country's residents, experts have said.,SITRA Director Antti Kivela told the newspaper Hufvudstadsbladet that the app is \"all open\" for future developers, including the source code and experiences from the tests.,The functionability of the app's Bluetooth connection is also being tested, for example, in situations where two people are close to each other but are separated by a wall.,According to a survey of key social stakeholders conducted by the Ministry of Social Affairs and Health, two-thirds of the 68 responding organizations considered the system suitable for tracking coronavirus infections.,\"But concern was raised whether enough people will accept the use of an app for tracking encounters,\" the ministry said in a press release.,The government decided in late April that the use of a COVID-19 encounters tracker app in Finland would have to be voluntary and would have to respect the relevant personal data protection and privacy laws.",
+        "date": "Mon, 18 May 2020 18:05:19 GMT",
+        "entities": [
+            {
+                "label": "ministry of social affairs and health",
+                "url": "http://xlore.org/instance/eni4997693"
+            },
+            {
+                "label": "hufvudstadsbladet",
+                "url": "http://xlore.org/instance/eni451410"
+            },
+            {
+                "label": "coronavirus",
+                "url": "http://xlore.org/instance/eni105371"
+            },
+            {
+                "label": "bluetooth",
+                "url": "http://xlore.org/instance/eni1548"
+            },
+            {
+                "label": "xinhua",
+                "url": "http://xlore.org/instance/eni126120"
+            },
+            {
+                "label": "data protection",
+                "url": "http://xlore.org/instance/eni117297"
+            },
+            {
+                "label": "tests",
+                "url": "http://xlore.org/instance/eni15042"
+            },
+            {
+                "label": "helsinki",
+                "url": "http://xlore.org/instance/eni6431"
+            },
+            {
+                "label": "finland",
+                "url": "http://xlore.org/instance/eni4929"
+            },
+            {
+                "label": "coronavirus",
+                "url": "https://covid-19.aminer.cn/kg/class/coronavirus"
+            },
+            {
+                "label": "coronavirus infections",
+                "url": "https://covid-19.aminer.cn/kg/resource/R693"
+            },
+            {
+                "label": "COVID-19",
+                "url": "https://covid-19.aminer.cn/kg/resource/R332"
+            }
+        ],
+        "geoInfo": [
+            {
+                "geoName": "Republic of Finland",
+                "latitude": "64",
+                "longitude": "26",
+                "originText": "Finland"
+            }
+        ],
+        "id": "xinhua13906748611110320",
+        "influence": 0.33218420930150006,
+        "lang": "en",
+        "related_events": [
+            {
+                "id": "5eb964d39fced0a24bd491eb",
+                "score": 0.9227933244691904
+            },
+            {
+                "id": "5ee0fd2b9fced0a24b5cf337",
+                "score": 0.9203086697760336
+            },
+            {
+                "id": "5ed91af09fced0a24b4d1953",
+                "score": 0.9162746096410254
+            },
+            {
+                "id": "5f10ce5c9fced0a24b5fba3d",
+                "score": 0.9138314453182323
+            },
+            {
+                "id": "5ebe95b59fced0a24b3973af",
+                "score": 0.9118753362015857
+            },
+            {
+                "id": "5efdf82f9fced0a24b8327a6",
+                "score": 0.9117210532146109
+            },
+            {
+                "id": "5f05f3f69fced0a24b2f84ee",
+                "score": 0.9113580346658512
+            },
+            {
+                "id": "5ec58f979fced0a24b677151",
+                "score": 0.911123850613027
+            },
+            {
+                "id": "5ed54aa09fced0a24b9156a0",
+                "score": 0.9106969761027109
+            },
+            {
+                "id": "5ec6ea359fced0a24b0e5bb8",
+                "score": 0.9106867411833128
+            }
+        ],
+        "seg_text": "finland test covid - 19 track app helsinki , may 18 ( xinhua ) -- field test began finland monday possibl mobil phone applic ( app ) track prevent covid - 19 infect , survey conduct ministri social affair health indic health expert decis maker concern whether app would gain wide enough accept among citizen . , To viabl track , app instal mobil gadget 60 percent countri ' resid , expert said . , sitra director antti kivela told newspap hufvudstadsbladet app `` open `` futur develop , includ sourc code experi test . , function app ' bluetooth connect also test , exampl , situat two peopl close separ wall . , accord survey key social stakehold conduct ministri social affair health , two - third 68 respond organ consid system suitabl track coronaviru infect . , `` concern wa rais whether enough peopl accept use app track encount , `` ministri said press releas . , govern decid late april use covid - 19 encount tracker app finland would voluntari would respect relev person data protect privaci law .",
+        "source": "XINHUANET",
+        "tflag": 1589826688692,
+        "time": "2020-05-19 02:05:19",
+        "title": "Finland tests COVID-19 tracking app",
+        "type": "news",
+        "urls": [
+            "http://www.xinhuanet.com/english/2020-05/19/c_139067486.htm"
+        ]
+    },
+    "status": true
+}

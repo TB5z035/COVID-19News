@@ -1,6 +1,7 @@
 package com.java.zhangjiayou.ui.explore.htmlgenerator;
 
 import android.text.Html;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,7 +58,7 @@ public class HtmlGenerator {
     }
 
     public static String generateWithJson(final String json, final String template){
-        return (template.replaceAll(getSymbol("jsonString"), json));
+        return (template.replaceAll(getSymbol("jsonString"), json.replace("\\", "\\\\")));
     }
 
     public static String toString(final int [] x){

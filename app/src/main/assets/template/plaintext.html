@@ -1,14 +1,56 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset=\utf-8\>
-<meta name="description" content="{{abstract}}">
-<title>{{title}}</title>
+    <meta charset=utf-8>
+    <meta name="description" content="{{abstract}}">
+    <title id="title">{{title}}</title>
 </head>
+
 <body style="margin: 0;padding: 0;">
-    <p style="font-size: 2rem;">{{title}}</p>
-<p>来源:{{source}}</p>
-<p>时间:{{date}}</p>
-<p class="details">{{text}}</p>
+    <div style="font-size: 2rem; word-wrap: break-word;" id="title inner">{{title}}</div>
+    <div id="source">来源:{{source}}</div>
+    <div id="date">时间:{{date}}</div>
+    <div id="content">{{text}}</div>
+    <!-- <ul id="related">
+        <li class="related item"> </li>
+    </ul> -->
 </body>
+<script>
+    var json = {{ jsonString }};
+    var _id = json.data._id;
+    var content = json.data.content;
+    var date = json.data.date;
+    var related = json.data.related_events;
+    var source = json.data.source;
+    var title = json.data.title;
+
+    document.getElementById('title').innerHTML = title;
+    document.getElementById('title inner').innerHTML = title;
+    document.getElementById('source').innerHTML = "来源: " + source;
+    document.getElementById('date').innerHTML = "时间: " + date;
+    document.getElementById('content').innerHTML = content;
+
+    function createRelatedList() {
+        if (related.length == 0) {
+            return;
+        }
+        var list = document.createElement('ul');
+        list.setAttribute("id", "related");
+        document.body.appendChild(list);
+
+        var tip = document.createElement('div');
+        tip.innerHTML = "相关新闻";
+        list.appendChild(tip);
+
+        related.map((x) => {
+            var item = document.createElement('li');
+            item.innerHTML = x.id;
+            item.setAttribute("class", "related item");
+            list.appendChild(item);
+        });
+    }
+    createRelatedList();
+</script>
+
 </html>
