@@ -2,10 +2,6 @@ package com.java.zhangjiayou.ui.explore;
 
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +10,10 @@ import android.webkit.URLUtil;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.webkit.WebViewFragment;
 
-import com.java.zhangjiayou.MainActivity;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
 import com.java.zhangjiayou.R;
 import com.java.zhangjiayou.ui.explore.htmlgenerator.HtmlGenerator;
 import com.java.zhangjiayou.ui.explore.utils.AssetsIO;
@@ -29,12 +26,12 @@ import com.java.zhangjiayou.ui.explore.utils.AssetsIO;
 public class WebViewerFragment extends Fragment {
 
     private final static String ID_KEY = "id_key";
-    private int id;
+    private int id = -1;
     private WebView webView;
-    private MainActivity parentActivity;
+    private AppCompatActivity parentActivity;
     private static String oldTitle;
     private String title;
-    private String jsonString;
+    private String jsonString = "";
     private static int nowId;
 
     public WebViewerFragment() {
@@ -42,6 +39,7 @@ public class WebViewerFragment extends Fragment {
     }
 
     public static WebViewerFragment newInstance(int id) {
+        Log.e("pello4", "NewInstance: ");
         WebViewerFragment fragment = new WebViewerFragment();
         Bundle args = new Bundle();
         args.putInt(ID_KEY, id);
@@ -51,6 +49,7 @@ public class WebViewerFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.e("gello3", "onCreate: ");
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             id = getArguments().getInt(ID_KEY);
@@ -60,6 +59,7 @@ public class WebViewerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.e("hello2", "onCreateView: ");
         // 初始化浏览器
         View v = inflater.inflate(R.layout.fragment_viewer, container, false);
         initWebView(v);
@@ -71,17 +71,17 @@ public class WebViewerFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        parentActivity = (MainActivity) context;
-        parentActivity.setBackPressedHandler(new MainActivity.BackPressedHandler() {
-            @Override
-            public void onBackPressed() {
-                if (webView.canGoBack()){
-                    webView.goBack();
-                }else  {
-                    parentActivity.superOnBackPressed();
-                }
-            }
-        });
+        parentActivity = (AppCompatActivity) context;
+//        parentActivity.setBackPressedHandler(new AppCompatActivity.BackPressedHandler() {
+//            @Override
+//            public void onBackPressed() {
+//                if (webView.canGoBack()){
+//                    webView.goBack();
+//                }else  {
+//                    parentActivity.superOnBackPressed();
+//                }
+//            }
+//        });
     }
 
     // 更新父activity
@@ -93,6 +93,7 @@ public class WebViewerFragment extends Fragment {
 
     // 初始化浏览器
     private void initWebView(View v){
+        Log.e("hello", "initWebView: ");
         // 获取webview
         webView = (WebView) v.findViewById(R.id.web_view);
         // 加载设置
@@ -152,6 +153,10 @@ public class WebViewerFragment extends Fragment {
 
     // 初始化网页内容
     public void updateWebView(){
+        webView.clearCache(true);
+        webView.clearView();
+        webView.reload();
+
         if (id == 0){ // 中国折线图
             String html = AssetsIO.getFromAssets(parentActivity, "template/history_china.html");
             loadData(html);
@@ -179,6 +184,7 @@ public class WebViewerFragment extends Fragment {
     public void onResume() {
         super.onResume();
         nowId = id;
+        Log.e("dd", "onResume: " + parentActivity + "/" + parentActivity.getSupportActionBar());
         parentActivity.getSupportActionBar().setTitle(title);
     }
 

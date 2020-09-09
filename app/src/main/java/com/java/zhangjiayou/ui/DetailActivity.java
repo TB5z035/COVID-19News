@@ -20,10 +20,16 @@ public class DetailActivity extends AppCompatActivity {
         String rawJSON = intent.getStringExtra("rawJSON");
         int id = intent.getIntExtra("id", -1);
 
-        WebViewerFragment webViewerFragment = WebViewerFragment.newInstance(id);
+        WebViewerFragment webViewerFragment = (WebViewerFragment) getSupportFragmentManager().findFragmentById(R.id.debug_webview);
         webViewerFragment.setJsonString(rawJSON);
-        getSupportFragmentManager().beginTransaction().add(R.id.detail_frame, webViewerFragment).commit();
         webViewerFragment.updateWebView();
+
+
+
+//        WebViewerFragment webViewerFragment = WebViewerFragment.newInstance(-1);
+////        webViewerFragment.setJsonString(rawJSON);
+////        webViewerFragment.updateWebView();
+//        getSupportFragmentManager().beginTransaction().add(R.id.detail_frame, webViewerFragment).commit();
 
     }
 }

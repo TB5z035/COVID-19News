@@ -18,12 +18,12 @@
 </body>
 <script>
     var json = {{ jsonString }};
-    var _id = json.data._id;
-    var content = json.data.content;
-    var date = json.data.date;
-    var related = json.data.related_events;
-    var source = json.data.source;
-    var title = json.data.title;
+    var _id = json._id;
+    var content = json.content;
+    var date = json.date;
+    var related = json.related_events;
+    var source = json.source;
+    var title = json.title;
 
     document.getElementById('title').innerHTML = title;
     document.getElementById('title inner').innerHTML = title;
