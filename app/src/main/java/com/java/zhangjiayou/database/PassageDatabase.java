@@ -18,7 +18,6 @@ public abstract class PassageDatabase extends RoomDatabase {
     public static synchronized PassageDatabase getInstance(Context context) {
         if (instance == null) {
             instance = create(context);
-//            instance = createInMemory(context);
         }
         return instance;
     }

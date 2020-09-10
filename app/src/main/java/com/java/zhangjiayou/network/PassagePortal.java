@@ -32,15 +32,6 @@ public class PassagePortal extends Portal {
 
     private static final String baseURL = "https://covid-dashboard.aminer.cn/api/events/list";
 
-    public List<Passage> getNewsFromType(String type) throws NoResponseError {
-        return getNewsFromType(type, null, null);
-    }
-
-    //TODO:implement PassagePortal.getNewsTitleAndId
-    public List<Pair<String, String>> getNewsTitleAndId(String type, Integer index, Integer size) {
-        throw new UnsupportedOperationException();
-    }
-
     public List<Passage> getNewsFromType(String type, Integer index, Integer size) throws NoResponseError {
         HashMap<String, String> params = new HashMap<>();
         if (type != null) params.put("type", type);
@@ -70,11 +61,6 @@ public class PassagePortal extends Portal {
         return data;
     }
 
-    public Passage getNewsFromId(String id) {
-        //TODO:implement PassagePortal.getNewsFromId
-        throw new UnsupportedOperationException();
-    }
-
     public String getNewsJSONFromId(String id) throws NoResponseError {
         String response = getRawData("https://covid-dashboard.aminer.cn/api/event/" + id, null);
         try {
@@ -101,7 +87,6 @@ public class PassagePortal extends Portal {
             for (PassageWithNoContent p :
                     list) {
                 ToAnalysis.parse(p.getTitle()).forEach((v) -> {
-//                    System.out.println(v.getName());
                     function.apply(v.getName(), p);
                 });
             }

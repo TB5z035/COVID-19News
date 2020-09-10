@@ -3,6 +3,8 @@ package com.java.zhangjiayou.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Process;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +20,7 @@ import com.java.zhangjiayou.database.PassageDatabase;
 import com.java.zhangjiayou.network.NoResponseError;
 import com.java.zhangjiayou.network.PassagePortal;
 import com.java.zhangjiayou.ui.DetailActivity;
-import com.java.zhangjiayou.ui.home.HomeFragment;
+import com.java.zhangjiayou.ui.home.ContentFragment;
 import com.java.zhangjiayou.util.Passage;
 
 import org.ansj.splitWord.analysis.ToAnalysis;
@@ -34,7 +36,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private Integer index = 1;
     private List<Passage> dataList;
     private Set<String> historyIds;
-    private HomeFragment fragment;
+    private ContentFragment fragment;
 
     private final int TYPE_ITEM = 1;
     private final int TYPE_FOOTER = 2;
@@ -48,7 +50,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return dataList.get(position);
     }
 
-    public LoadMoreAdapter(Set<String> map, HomeFragment fragment) {
+    public LoadMoreAdapter(Set<String> map, ContentFragment fragment) {
         this.dataList = new ArrayList<>();
         this.historyIds = map;
         this.fragment = fragment;
@@ -59,6 +61,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             index = 1;
         }
         new Thread(() -> {
+            Process.setThreadPriority(Process.THREAD_PRIORITY_DEFAULT);
             try {
                 if (mode) dataList.clear();
                 dataList.addAll(new PassagePortal().getNewsFromType(type.toLowerCase(), index, size));
@@ -74,9 +77,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public int getItemViewType(int position) {
-        // 最后一个item设置为FooterView
         if (position + 1 == getItemCount()) {
-//        if (position % 2 == 0) {
             return TYPE_FOOTER;
         } else {
             return TYPE_ITEM;
@@ -157,19 +158,17 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         RecyclerViewHolder(final View itemView) {
             super(itemView);
-            titleView = (TextView) itemView.findViewById(R.id.title_view);
-            contentView = (TextView) itemView.findViewById(R.id.time_view);
-            originView = (TextView)itemView.findViewById(R.id.origin_view);
+            titleView = itemView.findViewById(R.id.title_view);
+            contentView = itemView.findViewById(R.id.time_view);
+            originView = itemView.findViewById(R.id.origin_view);
             cardView = itemView.findViewById(R.id.passage_card_view);
 
             //点击时：将文章保存至数据库；分词，然后将关键词-id映射关系保存到本地映射表；延迟通知adapter以留足够的时间，完成点击动画后项目才变灰；启动详情页activity
             cardView.setOnClickListener(v -> {
-//                    itemView.getContext().getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)
-//                            .edit().putString(dataList.get(getLayoutPosition()).getId(), null)
-//                            .apply();
                 historyIds.add(dataList.get(getLayoutPosition()).getId());
 
                 new Thread(() -> {
+                    Process.setThreadPriority(Process.THREAD_PRIORITY_DEFAULT);
                     itemView.getContext()
                             .getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)
                             .edit()
@@ -187,9 +186,11 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                             strings.add(dataList.get(getLayoutPosition()).getId());
 
-                            itemView.getContext().getSharedPreferences(String.valueOf(R.string.search_seg_id_map_key), Context.MODE_PRIVATE)
-                                    .edit().putStringSet(v1.getName(), new HashSet<>(strings)).apply();
-                            System.out.println(v1.getName());
+                            //TODO:Concurrent problem!!! use synchronized
+                            SharedPreferences sharedPreferences = itemView.getContext().getSharedPreferences(String.valueOf(R.string.search_seg_id_map_key), Context.MODE_PRIVATE);
+                            synchronized (sharedPreferences) {
+                                sharedPreferences.edit().putStringSet(v1.getName(), new HashSet<>(strings)).apply();
+                            }
                         }
                     });
 
@@ -214,9 +215,9 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         FootViewHolder(View itemView) {
             super(itemView);
-            pbLoading = (ProgressBar) itemView.findViewById(R.id.pb_loading);
-            tvLoading = (TextView) itemView.findViewById(R.id.tv_loading);
-            llEnd = (LinearLayout) itemView.findViewById(R.id.ll_end);
+            pbLoading = itemView.findViewById(R.id.pb_loading);
+            tvLoading = itemView.findViewById(R.id.tv_loading);
+            llEnd = itemView.findViewById(R.id.ll_end);
         }
     }
 

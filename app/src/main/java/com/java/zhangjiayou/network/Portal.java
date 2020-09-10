@@ -31,7 +31,7 @@ abstract class Portal {
                     }
                 }
             }
-//            String debug = urlBuilder.toString();
+            
             StringBuilder output = new StringBuilder();
             try {
                 URL host = new URL(urlBuilder.toString());
