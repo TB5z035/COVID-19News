@@ -21,7 +21,6 @@ import com.java.zhangjiayou.R;
 
 public class ExploreFragment extends Fragment {
 
-    private ExploreViewModel exploreViewModel;
     private ViewPager2 viewPager2;
     private TabLayout tabLayout;
     private static Integer NUM_PAGES = 6;
@@ -33,13 +32,10 @@ public class ExploreFragment extends Fragment {
     public void onResume() {
         super.onResume();
         storeTitle();
-
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        exploreViewModel =
-                ViewModelProviders.of(this).get(ExploreViewModel.class);
         View root = inflater.inflate(R.layout.fragment_explore, container, false);
 
         viewPager2 = root.findViewById(R.id.explore_view_pager);

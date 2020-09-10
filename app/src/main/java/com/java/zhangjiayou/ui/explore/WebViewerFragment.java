@@ -3,7 +3,7 @@ package com.java.zhangjiayou.ui.explore;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.java.zhangjiayou.R;
+import com.java.zhangjiayou.sharing.SharePortWeibo;
 import com.java.zhangjiayou.ui.explore.htmlgenerator.HtmlGenerator;
 import com.java.zhangjiayou.ui.explore.utils.AssetsIO;
 
@@ -31,10 +32,12 @@ public class WebViewerFragment extends Fragment {
     private int id = -1;
     private WebView webView;
     private AppCompatActivity parentActivity;
-    private static String oldTitle;
     private String title;
     private String jsonString = "";
+    String currentWebContent = "[正文]";
     private static int nowId;
+
+    private FloatingActionButton floatingActionButton;
 
     public WebViewerFragment() {
         // Required empty public constructor
@@ -134,19 +137,14 @@ public class WebViewerFragment extends Fragment {
 
             // 获取html的内容
             public void getContextDelayed(WebView view){
-//                view.evaluateJavascript(
-//                        //"(function() { return (document.getElementsByClassName('details')[0].innerHTML); })();",
-//                        //"(function() { return (document.body.innerHTML); })();",
-//                        "(function() { return (document.getElementsByName('description')[0].content); })();",
-//                        new ValueCallback<String>() {
-//                            @Override
-//                            public void onReceiveValue(final String abstra) {
-//                                currentWebContent = abstra.substring(1, abstra.length()-1); // 丢弃自带的引号
-//                                currentWebContent = Html.fromHtml(currentWebContent).toString();
-//                                currentWebContent = currentWebContent == null? "" : currentWebContent;
-//                                System.out.println(currentWebContent);
-//                            }
-//                        });
+                view.evaluateJavascript(
+                        "(function() { return (document.getElementsById('content').innerHTML); })();",
+                        content -> {
+                            currentWebContent = content.substring(1, content.length()-1); // 丢弃自带的引号
+                            currentWebContent = Html.fromHtml(currentWebContent).toString();
+                            currentWebContent = currentWebContent == null? "" : currentWebContent;
+                            System.out.println(currentWebContent);
+                        });
             }
         });
     }
@@ -218,18 +216,15 @@ public class WebViewerFragment extends Fragment {
     private  void initFab(final View v, final String api){
 
         // 获取fab(分享按钮)
-        FloatingActionButton fab = v.findViewById(R.id.fab);
+        floatingActionButton = v.findViewById(R.id.fab);
         // 不是网页详情页就不显示, 因为没有jsonString
         if (id != -1){
-            fab.hide();
+            floatingActionButton.hide();
             return;
         }
-        // 修改点击行为为分享给微信好友
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.e(TAG, "onClick: FAB not initialized!");
-            }
+        floatingActionButton.setOnClickListener(view -> {
+            String text = currentWebContent.substring(Math.min(currentWebContent.length(), 40));
+            new SharePortWeibo().setText(text).share();
         });
     }
 }

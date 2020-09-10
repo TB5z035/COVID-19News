@@ -40,7 +40,6 @@ public class NumberPortal extends Portal {
     @org.jetbrains.annotations.Nullable
     public Integer getData(String region, Date date, NumberType type)
             throws DateOutOfRangeException {
-        //TODO
 
         ObjectMapper objectMapper = new ObjectMapper();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");

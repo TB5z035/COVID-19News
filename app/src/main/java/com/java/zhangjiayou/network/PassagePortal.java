@@ -1,5 +1,6 @@
 package com.java.zhangjiayou.network;
 
+import android.util.Log;
 import android.util.Pair;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -10,6 +11,7 @@ import com.java.zhangjiayou.util.Passage;
 import com.java.zhangjiayou.util.PassageWithNoContent;
 
 import org.ansj.splitWord.analysis.BaseAnalysis;
+import org.ansj.splitWord.analysis.ToAnalysis;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -74,10 +76,23 @@ public class PassagePortal extends Portal {
     }
 
     public String getNewsJSONFromId(String id) throws NoResponseError {
-        return getRawData("https://covid-dashboard.aminer.cn/api/event/" + id, null);
+        String response = getRawData("https://covid-dashboard.aminer.cn/api/event/" + id, null);
+        try {
+            Object data = new ObjectMapper().readValue(response, new TypeReference<Map<String, Object>>() {
+            }).get("data");
+            OutputStream outputStream = new ByteArrayOutputStream();
+            new ObjectMapper().writeValue(outputStream, data);
+            return outputStream.toString();
+        } catch (JsonProcessingException e) {
+            Log.e("parse error", "getNewsJSONFromId: ");
+            return null;
+        } catch (IOException e) {
+            Log.e("parse error", "getNewsJSONFromId: ");
+            return null;
+        }
     }
 
-    public List<Map<String, String>> getAllPassageIdTitle(BiFunction<String, String, Boolean> function) {
+    public List<Map<String, String>> getAllPassageIdTitle(BiFunction<String, PassageWithNoContent, Boolean> function) {
         String response = "";
         try {
             response = getRawData("https://covid-dashboard.aminer.cn/api/dist/events.json", null);
@@ -85,9 +100,9 @@ public class PassagePortal extends Portal {
             }).datas;
             for (PassageWithNoContent p :
                     list) {
-                BaseAnalysis.parse(p.getTitle()).forEach((v) -> {
+                ToAnalysis.parse(p.getTitle()).forEach((v) -> {
 //                    System.out.println(v.getName());
-                    function.apply(v.getName(), p.getId());
+                    function.apply(v.getName(), p);
                 });
             }
         } catch (NoResponseError noResponseError) {

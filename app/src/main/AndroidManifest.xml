@@ -14,14 +14,14 @@
         android:theme="@style/AppTheme"
         android:largeHeap="true">
         <provider
-            android:authorities="com.java.zhangjiayou.MySuggestionProvider"
-            android:name=".MySuggestionProvider"/>
+            android:authorities="com.java.zhangjiayou.search.MySuggestionProvider"
+            android:name=".search.MySuggestionProvider"/>
         <activity android:name=".ui.home.TypeSettingActivity" />
         <activity
             android:name=".ui.DetailActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_activity_detail"/>
-        <activity android:name=".SearchableActivity">
+        <activity android:name=".search.SearchableActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
@@ -47,7 +47,7 @@
 
             <meta-data
                 android:name="android.app.default_searchable"
-                android:value=".SearchableActivity" />
+                android:value=".search.SearchableActivity" />
         </activity>
         <activity
             android:name=".wxapi.WXEntryActivity"

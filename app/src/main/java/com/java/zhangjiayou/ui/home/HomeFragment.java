@@ -14,13 +14,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.java.zhangjiayou.R;
+import com.java.zhangjiayou.adapter.LoadMoreAdapter;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
 public class HomeFragment extends Fragment {
-
 
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -30,13 +30,6 @@ public class HomeFragment extends Fragment {
     private Set<String> historyIds;
     private final static String ID_TYPE = "id_type";
     private final static String ID_HISTORY = "id_history";
-
-
-//    public HomeFragment(String type, Set<String> historyIds) {
-//        this.historyIds = historyIds;
-//        if (type.equals("News") || type.equals("Paper")) this.type = type.toLowerCase();
-//        else throw new UnsupportedPassageType();
-//    }
 
     public HomeFragment() {
         // Intentionally left blank
@@ -58,16 +51,14 @@ public class HomeFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         type = requireArguments().getString(ID_TYPE);
-        //TODO
 
         ArrayList<String> arrayList = requireArguments().getStringArrayList(ID_HISTORY);
 
         if (arrayList == null) historyIds = new HashSet<>();
-        else
-            historyIds = new HashSet<>(arrayList);
+        else historyIds = new HashSet<>(arrayList);
     }
 
-    void onDataGot() {
+    public void onDataGot() {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -92,7 +83,6 @@ public class HomeFragment extends Fragment {
                 loadMoreAdapter.getData(true, type, size);
             }
         });
-
 
         recyclerView = root.findViewById(R.id.recycler_view);
         loadMoreAdapter = new LoadMoreAdapter(historyIds, this);
