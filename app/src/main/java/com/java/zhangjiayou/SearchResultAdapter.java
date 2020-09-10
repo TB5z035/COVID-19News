@@ -1,9 +1,7 @@
 package com.java.zhangjiayou;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,17 +12,21 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.java.zhangjiayou.database.PassageDatabase;
+import com.java.zhangjiayou.network.NoResponseError;
+import com.java.zhangjiayou.network.PassagePortal;
 import com.java.zhangjiayou.ui.DetailActivity;
 import com.java.zhangjiayou.util.PassageWithNoContent;
 
+import org.ansj.splitWord.analysis.ToAnalysis;
+
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SearchResultAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Integer index = 1;
@@ -43,7 +45,8 @@ public class SearchResultAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public SearchResultAdapter(Set<String> ids, Activity activity) {
         this.historyIds = ids;
         this.activity = activity;
-        dataList = new ArrayList<>();
+        this.dataList = new CopyOnWriteArrayList<>();
+        this.historyIds = new HashSet<>();
 //        activity.getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)
 //                .registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
 //                    @Override
@@ -53,43 +56,73 @@ public class SearchResultAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 //                });
     }
 
-    public void refreshDataList() {
+    public void refreshDataList(String query) {
         Toast.makeText(activity, "refreshing Data List", Toast.LENGTH_SHORT);
         System.out.println("I'm here#2" + historyIds);
-//        dataList.clear();
-//        historyIds = activity
-//                .getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)
-//                .getStringSet(String.valueOf(R.string.history_fileid_set_key), new HashSet<String>());
-        new Thread(() -> {
-            PassageDatabase db = PassageDatabase.getInstance(activity);
-//            for (String id :
-//                    historyIds) {
-//                Passage passage = db.getPassageDao().getPassageFromId(id);
-//                System.out.println(passage.getContent());
-//                dataList.add(passage);
-//            }
-//            dataList = db.getPassageDao().getPassagesFromIds(new ArrayList<>(historyIds));
-            for (String item :
-                    historyIds) {
-//                dataList.add(new PassagePortal().getNewsFromId(item));
-                if (SearchMapManager.getMap().get(item) != null)
-                    dataList.addAll(SearchMapManager.getMap().get(item));
+
+        dataList.clear();
+
+        Set<PassageWithNoContent> wholeResult = SearchMapManager.getMap().get(query);
+        if (wholeResult != null) {
+            for (PassageWithNoContent p :
+                    wholeResult) {
+                p.whole = true;
             }
-            //TODO:Sort!
-//            Collections.sort(dataList, new Comparator<PassageWithNoContent>() {
+            dataList.addAll(wholeResult);
+        }
+
+        ToAnalysis.parse(query).forEach((v) -> {
+            Set<PassageWithNoContent> result = SearchMapManager.getMap().get(v.getName());
+            if (result != null)
+                dataList.addAll(result);
+        });
+
+        Collections.sort(dataList, new Comparator<PassageWithNoContent>() {
+            @Override
+            public int compare(PassageWithNoContent o1, PassageWithNoContent o2) {
+
+                if (o1.getDate() == null && o2.getDate() == null) return 0;
+                else if (o1.getDate() == null) return 1;
+                else if (o2.getDate() == null) return -1;
+                else if (!o1.whole && o2.whole) return 1;
+                else if (o1.whole && !o2.whole) return -1;
+                else return o2.getDate().compareTo(o1.getDate());
+            }
+        });
+
+        notifyDataSetChanged();
+        setLoadState(LOADING_COMPLETE);
+//
+//        new Thread(() -> {
+////            PassageDatabase db = PassageDatabase.getInstance(activity);
+////            for (String id :
+////                    historyIds) {
+////                Passage passage = db.getPassageDao().getPassageFromId(id);
+////                System.out.println(passage.getContent());
+////                dataList.add(passage);
+////            }
+////            dataList = db.getPassageDao().getPassagesFromIds(new ArrayList<>(historyIds));
+//            for (String item :
+//                    historyIds) {
+////                dataList.add(new PassagePortal().getNewsFromId(item));
+//                if (SearchMapManager.getMap().get(item) != null)
+//                    dataList.addAll(SearchMapManager.getMap().get(item));
+//            }
+//            //TODO:Sort!
+////            Collections.sort(dataList, new Comparator<PassageWithNoContent>() {
+////                @Override
+////                public int compare(PassageWithNoContent o1, PassageWithNoContent o2) {
+////                    return o2.getDate().compareTo(o1.getDate());
+////                }
+////            });
+//            activity.runOnUiThread(new Runnable() {
 //                @Override
-//                public int compare(PassageWithNoContent o1, PassageWithNoContent o2) {
-//                    return o2.getDate().compareTo(o1.getDate());
+//                public void run() {
+//                    notifyDataSetChanged();
+//                    setLoadState(LOADING_COMPLETE);
 //                }
 //            });
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    notifyDataSetChanged();
-                    setLoadState(LOADING_COMPLETE);
-                }
-            });
-        }).start();
+//        }).start();
     }
 
 //     普通布局
@@ -129,10 +162,14 @@ public class SearchResultAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         final SearchResultAdapter.RecyclerViewHolder recyclerViewHolder = (SearchResultAdapter.RecyclerViewHolder) holder;
         holder.setIsRecyclable(false);
         recyclerViewHolder.titleView.setText(dataList.get(position).getTitle());
-        recyclerViewHolder.rawJSON = dataList.get(position).rawJSON;
-        recyclerViewHolder.contentView.setText(
-                new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA)
-                        .format(dataList.get(position).getDate()));
+        recyclerViewHolder.id = dataList.get(position).getId();
+        if (dataList.get(position).getDate() != null)
+            recyclerViewHolder.contentView.setText(
+                    new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA)
+                            .format(dataList.get(position).getDate()));
+        else {
+            recyclerViewHolder.contentView.setVisibility(View.GONE);
+        }
 //        } else if (holder instanceof HistoryViewAdapter.FootViewHolder) {
 //            HistoryViewAdapter.FootViewHolder footViewHolder = (HistoryViewAdapter.FootViewHolder) holder;
 //            switch (loadState) {
@@ -162,7 +199,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     private class RecyclerViewHolder extends RecyclerView.ViewHolder {
 
-        String rawJSON;
+        String id;
         TextView titleView;
         TextView contentView;
         CardView cardView;
@@ -194,15 +231,32 @@ public class SearchResultAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 //                            notifyDataSetChanged();
 //                        }
 //                    }, 200);
-                    //TODO:call detail page activity here
-//                    Intent intent = new Intent();
-////                    intent.setClass(activity.getApplicationContext(), DetailActivity.class); // TODO: Load data from database !
-//                    activity.startActivity(intent);
-                    Intent intent = new Intent();
-                    intent.putExtra("id", -1);
-                    intent.putExtra("rawJSON", rawJSON);
-                    intent.setClass(activity, DetailActivity.class); // TODO: transfer to fragment
-                    activity.startActivity(intent);
+
+
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            String rawJSON = "";
+                            try {
+                                rawJSON = new PassagePortal().getNewsJSONFromId(id);
+                            } catch (NoResponseError noResponseError) {
+                                //TODO:处理网络无连接
+                                noResponseError.printStackTrace();
+                            }
+                            String finalRawJSON = rawJSON;
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Intent intent = new Intent();
+                                    intent.putExtra("id", -1);
+                                    intent.putExtra("rawJSON", finalRawJSON);
+                                    intent.setClass(activity, DetailActivity.class); // TODO: transfer to fragment
+                                    activity.startActivity(intent);
+                                }
+                            });
+                        }
+                    }).start();
+
                 }
             });
         }

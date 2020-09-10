@@ -1,6 +1,7 @@
 package com.java.zhangjiayou.util;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
@@ -10,8 +11,13 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -25,13 +31,16 @@ public class PassageWithNoContent {
     @PrimaryKey
     @NonNull
     private String _id;
+
+    @Nullable
     private Date date;
     private String title;
 
     @Ignore
     private Map<String, Object> properties = new HashMap<>();
+
     @JsonIgnore
-    public String rawJSON;
+    public boolean whole = false;
 
     /**
      * This method aims to create a Passage instance from JSON text.
@@ -43,19 +52,17 @@ public class PassageWithNoContent {
      */
     @JsonCreator
     public PassageWithNoContent(
-            @JsonProperty("_id") String id,
+            @NotNull @JsonProperty("_id") String id,
             @JsonProperty("title") String title,
-            @JsonProperty("date") Date date
+            @JsonProperty("time") String date
     ) {
         this._id = id;
         this.title = title;
-        this.date = date;
-//        try {
-//            this.rawJSON = new PassagePortal().getNewsJSONFromId(id);
-//        } catch (NoResponseError noResponseError) {
-//            noResponseError.printStackTrace();
-//        }
-
+        try {
+            this.date = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA).parse(date);
+        } catch (ParseException e) {
+            this.date = null;
+        }
     }
 
     /**
@@ -109,13 +116,15 @@ public class PassageWithNoContent {
         return properties;
     }
 
+    @Nullable
     public Date getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(@Nullable Date date) {
         this.date = date;
     }
+
 }
 
 
