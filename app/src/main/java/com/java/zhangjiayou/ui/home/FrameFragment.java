@@ -9,11 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
@@ -21,6 +19,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.java.zhangjiayou.MainActivity;
 import com.java.zhangjiayou.R;
 
 import java.util.ArrayList;
@@ -81,13 +80,20 @@ public class FrameFragment extends Fragment {
             viewPager2.getAdapter().notifyDataSetChanged();
         }
     }
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((MainActivity) getActivity()).getSupportActionBar().setTitle("Home");
+    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Set<String> list = getActivity()
                 .getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)
                 .getStringSet(String.valueOf(R.string.history_fileid_set_key), new HashSet<String>());
+
+        ((MainActivity) getActivity()).getSupportActionBar().setTitle("Home");
+
         if (list != null) historyIds = new HashSet<>(list);
         availableList = new ArrayList<>();
         availableList.add("News");
