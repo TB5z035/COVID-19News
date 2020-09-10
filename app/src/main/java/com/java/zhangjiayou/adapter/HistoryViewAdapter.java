@@ -125,7 +125,8 @@ public class HistoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         recyclerViewHolder.titleView.setText(dataList.get(position).getTitle());
 
         recyclerViewHolder.rawJSON = dataList.get(position).rawJSON;
-
+        recyclerViewHolder.originView.setVisibility(View.GONE);
+        ;
         recyclerViewHolder.contentView.setText(
                 new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA)
                         .format(dataList.get(position).getDate()));
@@ -160,6 +161,7 @@ public class HistoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         TextView titleView;
         TextView contentView;
+        TextView originView;
         CardView cardView;
         String rawJSON;
 
@@ -169,6 +171,7 @@ public class HistoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             titleView = (TextView) itemView.findViewById(R.id.title_view);
             contentView = (TextView) itemView.findViewById(R.id.time_view);
             cardView = itemView.findViewById(R.id.passage_card_view);
+            originView = itemView.findViewById(R.id.origin_view);
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
