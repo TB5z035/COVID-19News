@@ -1,0 +1,177 @@
+<html>
+
+<head>
+	<title>知疫学者</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+
+<body class="">
+	<!-- Header -->
+	<header id="header">
+		<h1><a href="#">{{name}} <span>{{name_zh}}</span></a></h1>
+
+	</header>
+	<section id="banner" style="background-image:url({{avatar}});">
+		<div class="inner">
+			<header>
+				<h1>{{name}}</h1>
+				<p>{{position}}</p>
+				<p>{{is_passedaway}}</p>
+			</header>
+
+		</div>
+	</section>
+
+
+	<div id="main">
+
+		<!-- One -->
+		<section class="wrapper style1">
+			<div class="inner">
+				<header class="align-center">
+					<h2>指数</h2>
+					<p>...</p>
+				</header>
+				<!-- 2 Column Video Section -->
+				<div class="flex flex-2">
+					<div class="video col">
+						<!-- <div class="image fit">
+							<img src="images/pic07.jpg" alt="">
+							<div class="arrow">
+								<div class="icon fa-play"></div>
+							</div>
+						</div> -->
+						<p class="caption">
+							活跃度: {{activity}}
+						</p>
+					</div>
+					<div class="video col">
+						<p class="caption">
+							引用量: {{citations}}
+						</p>
+					</div>
+					<div class="video col">
+						<p class="caption">
+							多样性: {{diversity}}
+						</p>
+					</div>
+					<div class="video col">
+						<p class="caption">
+							g指数: {{gindex}}
+						</p>
+					</div>
+					<div class="video col">
+						<p class="caption">
+							h指数: {{hindex}}
+						</p>
+					</div>
+					<div class="video col">
+						<p class="caption">
+							new star: {{newStar}}
+						</p>
+					</div>
+					<div class="video col">
+						<p class="caption">
+							rising star: {{risingStar}}
+						</p>
+					</div>
+					<div class="video col">
+						<p class="caption">
+							社会性: {{sociability}}
+						</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Two -->
+
+
+		<!-- Three -->
+		<section class="wrapper ">
+			<div class="inner">
+				<header class="align-center">
+					<h2>个人资料</h2>
+					<p>...</p>
+				</header>
+
+				<!-- 3 Column Video Section -->
+				<div class="flex flex-3">
+					<div class="video col">
+						<div class="image fit">
+							<img src={{avatar}} alt="">
+						</div>
+						<p class="caption">
+							{{name}} {{name_zh}}
+						</p>
+					</div>
+					<div class="video col">
+						<p class="caption">单位:</p>
+						<p class="caption">{{affiliation}}</p>
+						<p class="caption">{{affiliation_zh}}</p>
+					</div>
+					<div class="video col">
+						<p class="caption">教育程度:</p>
+						<p class="caption">{{edu}}</p>
+					</div>
+					<div class="video col">
+						<p class="caption">邮箱</p>
+						[[emails_u]]
+					</div>
+					<div class="video col">
+						<p class="caption">主页:</p>
+						[[homepage]]
+					</div>
+					<div class="video col">
+						<p class="caption">电话: {{phone}}</p>
+					</div>
+					<div class="video col">
+						<p class="caption">职位: {{position}}</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+	</div>
+
+	<!-- Footer -->
+	<footer id="footer">
+		<div class="inner">
+			<div class="flex flex-3">
+				<div class="col">
+					<h3>简介</h3>
+					[[bio]]
+					<h3>工作经历</h3>
+					[[work]]
+				</div>
+			</div>
+		</div>
+
+	</footer>
+
+	<!-- Scripts -->
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/jquery.scrolly.min.js"></script>
+	<script src="assets/js/skel.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
+	<script src="assets/js/append.js"></script>
+	<script>
+		function getQueryVariable(variable) {
+			var query = window.location.search.substring(1);
+			var vars = query.split("&");
+			for (var i = 0; i < vars.length; i++) {
+				var pair = vars[i].split("=");
+				if (pair[0] == variable) { return pair[1]; }
+			}
+			return (false);
+		}
+		var id = getQueryVariable("id");
+		id = id ? id : null;
+		getScholar(2, (data) => processJson(data, id));
+	</script>
+</body>
+
+</html>

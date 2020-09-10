@@ -1,6 +1,7 @@
 package com.java.zhangjiayou.ui.explore;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -111,7 +112,7 @@ public class WebViewerFragment extends Fragment {
         webView.setWebViewClient(new WebViewClient(){
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if( URLUtil.isNetworkUrl(url) ) {
+                if( URLUtil.isNetworkUrl(url) || Uri.parse(url).getScheme().equals("file")) {
                     return false;
                 }
                 return true;
@@ -176,7 +177,9 @@ public class WebViewerFragment extends Fragment {
         } else if (id == 4) { // 新闻聚类
             loadUrl("https://www.baidu.com");
         } else if (id == 5) { // 知疫学者
-            loadUrl("https://www.bing.com");
+            String html = AssetsIO.getFromAssets(parentActivity, "template/scholar-profile/scholar-profile.html");
+            webView.loadDataWithBaseURL("file:///android_asset/template/scholar-profile/scholar-profile.html",
+                    html,"text/html", "utf-8", null);
         } else if (id == -1) {
             String template = AssetsIO.getFromAssets(parentActivity, "template/plaintext.html");
             String html = HtmlGenerator.generateWithJson(jsonString, template);
