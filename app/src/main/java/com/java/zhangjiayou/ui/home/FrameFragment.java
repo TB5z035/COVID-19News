@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +24,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.java.zhangjiayou.MainActivity;
 import com.java.zhangjiayou.R;
+import com.java.zhangjiayou.util.NetworkChecker;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -99,7 +103,15 @@ public class FrameFragment extends Fragment {
         availableList.add("News");
         availableList.add("Paper");
 
-        View root = inflater.inflate(R.layout.fragment_frame, container, false);
+        View root;
+
+        if (!NetworkChecker.isNetworkConnected(getActivity())) {
+            root = inflater.inflate(R.layout.fragment_frame_no_network,container,false);
+
+            return root;
+        }
+
+        root = inflater.inflate(R.layout.fragment_frame, container, false);
         viewPager2 = root.findViewById(R.id.home_view_pager);
         tabLayout = root.findViewById(R.id.tabLayout);
         floatingActionButton = root.findViewById(R.id.edit_button);

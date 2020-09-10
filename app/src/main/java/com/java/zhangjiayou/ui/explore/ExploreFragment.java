@@ -8,14 +8,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.java.zhangjiayou.MainActivity;
 import com.java.zhangjiayou.R;
+import com.java.zhangjiayou.util.NetworkChecker;
 
 public class ExploreFragment extends Fragment {
 
@@ -34,7 +35,14 @@ public class ExploreFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_explore, container, false);
+        View root;
+        if (!NetworkChecker.isNetworkConnected(getActivity())) {
+            root = inflater.inflate(R.layout.fragment_frame_no_network, container, false);
+            ((MainActivity) getActivity()).getSupportActionBar().setTitle("Explore");
+            return root;
+        }
+
+        root = inflater.inflate(R.layout.fragment_explore, container, false);
         storeTitle();
         viewPager2 = root.findViewById(R.id.explore_view_pager);
         tabLayout = root.findViewById(R.id.explore_tab_layout);
