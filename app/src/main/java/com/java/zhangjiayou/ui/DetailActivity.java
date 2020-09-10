@@ -24,6 +24,7 @@ public class DetailActivity extends AppCompatActivity implements BackPressedHand
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+        getSupportActionBar().setTitle("Detail");
 
         Intent intent = getIntent();
         String rawJSON = intent.getStringExtra("rawJSON");

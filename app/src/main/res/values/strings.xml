@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">COVID-19News</string>
+    <string name="app_name">COVIDNews</string>
     <string name="title_home">Home</string>
     <string name="title_history">History</string>
     <string name="title_explore">Explore</string>
