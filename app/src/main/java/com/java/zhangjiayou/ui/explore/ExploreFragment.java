@@ -2,7 +2,6 @@ package com.java.zhangjiayou.ui.explore;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -37,7 +35,7 @@ public class ExploreFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_explore, container, false);
-
+        storeTitle();
         viewPager2 = root.findViewById(R.id.explore_view_pager);
         tabLayout = root.findViewById(R.id.explore_tab_layout);
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
@@ -147,23 +145,23 @@ public class ExploreFragment extends Fragment {
     }
 
     private void storeTitle(){
-        try {
-            oldTitle = ((AppCompatActivity) getContext()).getTitle().toString();
-        } catch (ClassCastException e){
-            e.printStackTrace();
-            oldTitle = "COVID-19News";
-        }
+//        try {
+//            oldTitle = ((AppCompatActivity) getContext()).getTitle().toString();
+//        } catch (ClassCastException e){
+//            e.printStackTrace();
+//            oldTitle = "COVID-19News";
+//        }
     }
 
     private void restoreTitle(){
-        try {
-            if (oldTitle == null){
-                oldTitle = "COVID-19News";
-            }
-            ((AppCompatActivity) getContext()).getSupportActionBar().setTitle(oldTitle);
-        } catch (ClassCastException e){
-            e.printStackTrace();
-        }
+//        try {
+//            if (oldTitle == null){
+//                oldTitle = "COVID-19News";
+//            }
+//            ((AppCompatActivity) getContext()).getSupportActionBar().setTitle(oldTitle);
+//        } catch (ClassCastException e){
+//            e.printStackTrace();
+//        }
     }
 
     @Override

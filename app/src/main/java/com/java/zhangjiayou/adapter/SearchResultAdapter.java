@@ -53,11 +53,8 @@ public class SearchResultAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         Set<PassageWithNoContent> wholeResult = SearchMapManager.getMap().get(query);
         if (wholeResult != null) {
-            for (PassageWithNoContent p :
-                    wholeResult) {
-                p.whole = true;
-            }
             for (PassageWithNoContent p : wholeResult) {
+                p.whole = true;
                 if (!dataList.contains(p)) dataList.add(p);
             }
         }
@@ -71,7 +68,6 @@ public class SearchResultAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         });
 
         Collections.sort(dataList, (o1, o2) -> {
-
             if (o1.getDate() == null && o2.getDate() == null) return 0;
             else if (o1.getDate() == null) return 1;
             else if (o2.getDate() == null) return -1;

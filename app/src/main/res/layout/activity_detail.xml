@@ -2,15 +2,15 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/detail_constraint_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.DetailActivity">
 
-<fragment
-    android:id="@+id/debug_webview"
-    android:tag="debug_tag"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:name="com.java.zhangjiayou.ui.explore.WebViewerFragment"
-    />
+    <fragment
+        android:id="@+id/debug_webview"
+        android:name="com.java.zhangjiayou.ui.explore.WebViewerFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:tag="debug_tag" />
 </androidx.constraintlayout.widget.ConstraintLayout>

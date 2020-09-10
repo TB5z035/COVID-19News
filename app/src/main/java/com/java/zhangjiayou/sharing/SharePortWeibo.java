@@ -110,18 +110,14 @@ public class SharePortWeibo implements ShareAPI<SharePortWeibo> {
 
                 @Override
                 public void onError(UiError uiError) {
-                    mWBAPI.shareMessage(message, false);
-
+//                    mWBAPI.shareMessage(message, false);
                 }
 
                 @Override
                 public void onCancel() {
-                    mWBAPI.shareMessage(message, false);
-
+//                    mWBAPI.shareMessage(message, false);
                 }
             });
         }
     }
-
-
 }

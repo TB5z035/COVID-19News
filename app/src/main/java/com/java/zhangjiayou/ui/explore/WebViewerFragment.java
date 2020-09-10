@@ -134,7 +134,7 @@ public class WebViewerFragment extends Fragment {
                 // 储存标题
                 title = view.getTitle();
                 Log.d(TAG, "onPageFinished: "+title);
-                if (nowId == id && isVisible()){
+                if (nowId == id){
                     Log.d(TAG, "onPageFinished: set title");
                     parentActivity.getSupportActionBar().setTitle(title);
                 }
@@ -172,9 +172,10 @@ public class WebViewerFragment extends Fragment {
             webView.loadDataWithBaseURL("file:///android_asset/template/scholar-profile/scholar-profile.html",
                     html,"text/html", "utf-8", null);
         } else if (id == -1) {
-            String template = AssetsIO.getFromAssets(parentActivity, "template/plaintext.html");
+            String template = AssetsIO.getFromAssets(parentActivity, "template/news-details/index.html");
             String html = HtmlGenerator.generateWithJson(jsonString, template);
-            loadData(html);
+            webView.loadDataWithBaseURL("file:///android_asset/template/news-details/index.html",
+                    html,"text/html", "utf-8", null);
         }
     }
 

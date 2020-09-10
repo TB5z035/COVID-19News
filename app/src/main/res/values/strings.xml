@@ -9,7 +9,7 @@
     <string name="history_fileid_set_key">history</string>
     <string name="search_seg_id_map_key">history1</string>
     <string name="title_activity_detail">DetailActivity</string>
-
+    <string name="search_prepare">Search engine is loading…</string>
 
 
 </resources>
