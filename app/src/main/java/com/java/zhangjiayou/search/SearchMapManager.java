@@ -1,6 +1,5 @@
-package com.java.zhangjiayou;
+package com.java.zhangjiayou.search;
 
-import android.app.Activity;
 import android.app.Application;
 
 import com.java.zhangjiayou.util.PassageWithNoContent;
@@ -11,7 +10,7 @@ import java.util.HashSet;
 public class SearchMapManager extends Application {
     private static HashMap<String, HashSet<PassageWithNoContent>> searchMap = new HashMap<>();
 
-    synchronized static HashMap<String, HashSet<PassageWithNoContent>> getMap() {
+    synchronized public static HashMap<String, HashSet<PassageWithNoContent>> getMap() {
         return searchMap;
     }
 }

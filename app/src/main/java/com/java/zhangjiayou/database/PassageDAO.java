@@ -11,7 +11,6 @@ import com.java.zhangjiayou.util.Passage;
 
 import java.util.List;
 
-//TODO: modify interfaces
 @Dao
 public interface PassageDAO {
     @Query("SELECT * FROM passages")

@@ -1,4 +1,4 @@
-package com.java.zhangjiayou.ui.history;
+package com.java.zhangjiayou.adapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.java.zhangjiayou.R;
 import com.java.zhangjiayou.database.PassageDatabase;
 import com.java.zhangjiayou.ui.DetailActivity;
-import com.java.zhangjiayou.ui.home.LoadMoreAdapter;
 import com.java.zhangjiayou.util.Passage;
 
 import java.text.SimpleDateFormat;
@@ -173,35 +172,10 @@ public class HistoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    itemView.getContext().getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)
-//                            .edit().putString(dataList.get(getLayoutPosition()).getId(), null)
-//                            .apply();
-//
-//                    new Thread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            Passage passageInDB = PassageDatabase.getInstance(null).getPassageDao().getPassageFromId(dataList.get(getLayoutPosition()).getId());
-//                            if (passageInDB == null)
-//                                PassageDatabase.getInstance(null).getPassageDao().insert(dataList.get(getLayoutPosition()));
-//                        }
-//                    }).start();
-//                    itemView.postDelayed(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            notifyDataSetChanged();
-//                        }
-//                    }, 200);
-                    //TODO:call detail page activity here
-//                    Intent intent = new Intent();
-////                    intent.setClass(activity.getApplicationContext(), DetailActivity.class); // TODO: Load data from database !
-//                    activity.startActivity(intent);
-
-
-
                     Intent intent = new Intent();
                     intent.putExtra("id", -1);
                     intent.putExtra("rawJSON", rawJSON);
-                    intent.setClass(activity, DetailActivity.class); // TODO: transfer to fragment
+                    intent.setClass(activity, DetailActivity.class);
                     HistoryViewAdapter.this.activity.startActivity(intent);
                 }
             });

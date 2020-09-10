@@ -1,4 +1,4 @@
-package com.java.zhangjiayou.ui.home;
+package com.java.zhangjiayou.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -18,6 +18,7 @@ import com.java.zhangjiayou.database.PassageDatabase;
 import com.java.zhangjiayou.network.NoResponseError;
 import com.java.zhangjiayou.network.PassagePortal;
 import com.java.zhangjiayou.ui.DetailActivity;
+import com.java.zhangjiayou.ui.home.HomeFragment;
 import com.java.zhangjiayou.util.Passage;
 
 import org.ansj.splitWord.analysis.ToAnalysis;
@@ -53,7 +54,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         this.fragment = fragment;
     }
 
-     void getData(final boolean mode, String type, int size) {
+     public void getData(final boolean mode, String type, int size) {
         if (mode) {
             index = 1;
         }
@@ -192,11 +193,10 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }).start();
                 itemView.postDelayed(() -> notifyDataSetChanged(), 200);
 
-                //TODO:call detail page activity here
                 Intent intent = new Intent();
                 intent.putExtra("id", -1);
                 intent.putExtra("rawJSON", rawJSON);
-                intent.setClass(fragment.getContext(), DetailActivity.class); // TODO: transfer to fragment
+                intent.setClass(fragment.getContext(), DetailActivity.class);
                 LoadMoreAdapter.this.fragment.startActivity(intent);
             });
         }

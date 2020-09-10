@@ -26,14 +26,6 @@ public class DetailActivity extends AppCompatActivity implements BackPressedHand
         WebViewerFragment webViewerFragment = (WebViewerFragment) getSupportFragmentManager().findFragmentById(R.id.debug_webview);
         webViewerFragment.setJsonString(rawJSON);
         webViewerFragment.updateWebView();
-
-
-
-//        WebViewerFragment webViewerFragment = WebViewerFragment.newInstance(-1);
-////        webViewerFragment.setJsonString(rawJSON);
-////        webViewerFragment.updateWebView();
-//        getSupportFragmentManager().beginTransaction().add(R.id.detail_frame, webViewerFragment).commit();
-
     }
 
 

@@ -1,4 +1,4 @@
-package com.java.zhangjiayou;
+package com.java.zhangjiayou.search;
 
 import android.app.SearchManager;
 import android.content.Intent;
@@ -10,13 +10,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.Set;
+import com.java.zhangjiayou.R;
+import com.java.zhangjiayou.adapter.SearchResultAdapter;
 
 public class SearchableActivity extends AppCompatActivity {
     private TextView textView;
     private RecyclerView recyclerView;
-    private SearchResultAdapter historyViewAdapter;
-    private Set<String> searchIds;
+
+    private SearchResultAdapter searchResultAdapter;
+    private String query;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,38 +27,19 @@ public class SearchableActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.search_result);
 
-
-        historyViewAdapter = new SearchResultAdapter(searchIds, this);
+        searchResultAdapter = new SearchResultAdapter(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(historyViewAdapter);
+        recyclerView.setAdapter(searchResultAdapter);
 
         Intent intent = getIntent();
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
+            query = intent.getStringExtra(SearchManager.QUERY);
             SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
                     MySuggestionProvider.AUTHORITY, MySuggestionProvider.MODE);
             suggestions.saveRecentQuery(query, null);
-
-            getSupportActionBar().setTitle("\"" + query + "\"" + "的搜索结果");
-            historyViewAdapter.refreshDataList(query);
-
-//            doMySearch(query);
+            searchResultAdapter.refreshDataList(query);
         }
 
+        getSupportActionBar().setTitle("“" + query + "”" + "的搜索结果");
     }
-
-//     void doMySearch(String query) {
-//         textView.setText(query + "的搜索结果");
-//         Toast.makeText(textView.getContext(), query, Toast.LENGTH_SHORT).show();
-//
-//         searchIds = new HashSet<>();
-//
-//         ToAnalysis.parse(query).forEach((v) -> {
-//             searchIds.add(v.getName());
-//         });
-//
-//         textView.setText(searchIds.toString());
-//         historyViewAdapter.refreshDataList();
-//         historyViewAdapter.notifyDataSetChanged();
-//     }
 }
