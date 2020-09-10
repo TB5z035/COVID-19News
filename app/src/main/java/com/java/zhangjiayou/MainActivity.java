@@ -28,8 +28,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity implements  BackPressedHandlerMain{
-    private HashMap<String, HashSet<String>> searchMap;
-    private View backup;
     private BackPressedHandlerSub backPressedHandler;
     public boolean searchEnable = false;
     BottomNavigationView navView;
@@ -40,12 +38,6 @@ public class MainActivity extends AppCompatActivity implements  BackPressedHandl
         setContentView(R.layout.activity_main);
         SharePortWeibo.initSDK(this);
 
-        //TODO:Set the title bar
-
-
-        //TODO:test availability when updating search map
-
-        backup = findViewById(R.id.nav_host_fragment);
         navView = findViewById(R.id.nav_view);
 
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
@@ -57,12 +49,7 @@ public class MainActivity extends AppCompatActivity implements  BackPressedHandl
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                MainActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(MainActivity.this, "Start loading!", Toast.LENGTH_SHORT).show();
-                    }
-                });
+//                MainActivity.this.runOnUiThread(() -> Toast.makeText(MainActivity.this, "Start loading!", Toast.LENGTH_SHORT).show());
                 new PassagePortal().getAllPassageIdTitle((key, val) -> {
                     if (SearchMapManager.getMap().containsKey(key)) {
                         HashSet<PassageWithNoContent> now = SearchMapManager.getMap().get(key);
@@ -75,15 +62,8 @@ public class MainActivity extends AppCompatActivity implements  BackPressedHandl
                     }
                     return null;
                 });
-                MainActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(MainActivity.this, "Finish loading!", Toast.LENGTH_SHORT).show();
-                    }
-                });
+//                MainActivity.this.runOnUiThread(() -> Toast.makeText(MainActivity.this, "Finish loading!", Toast.LENGTH_SHORT).show());
                 searchEnable = true;
-
-//                historyFragment.setSearch();
             }
         }, 0, 300000);
 
@@ -91,28 +71,6 @@ public class MainActivity extends AppCompatActivity implements  BackPressedHandl
         PassageDatabase.getInstance(this);
     }
 
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        System.out.println("Callback success.");
-//        if (SharePortWeibo.getAPI() != null)
-//            SharePortWeibo.getAPI().doResultIntent(data, new WbShareCallback() {
-//                @Override
-//                public void onComplete() {
-//                    Snackbar.make(backup, "分享成功", Snackbar.LENGTH_SHORT).show();
-//                }
-//                @Override
-//                public void onError(UiError uiError) {
-//                    Snackbar.make(backup, "分享失败", Snackbar.LENGTH_SHORT).show();
-//
-//                }
-//                @Override
-//                public void onCancel() {
-//                    Snackbar.make(backup, "分享取消", Snackbar.LENGTH_SHORT).show();
-//                }
-//            });
-//    }
-//
     @Override
     public void setBackPressedHandler(BackPressedHandlerSub backPressedHandler) {
         this.backPressedHandler = backPressedHandler;

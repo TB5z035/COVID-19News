@@ -21,6 +21,7 @@ import com.java.zhangjiayou.R;
 import java.util.ArrayList;
 import java.util.List;
 
+//TODO:Add animation
 public class TypeSettingActivity extends AppCompatActivity {
     private static final Integer TYPE_SETTING_ACTIVITY = 0;
     private LinearLayout selectedLinearLayout;

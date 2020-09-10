@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">COVID-19News</string>
+    <string name="app_name">COVIDNews</string>
     <string name="title_home">Home</string>
     <string name="title_history">History</string>
     <string name="title_explore">Explore</string>
@@ -10,6 +10,7 @@
     <string name="search_seg_id_map_key">history1</string>
     <string name="title_activity_detail">DetailActivity</string>
     <string name="search_prepare">Search engine is loading…</string>
+    <string name="no_connection">Oops……\n Please check your\n network connection</string>
 
 
 </resources>

@@ -23,17 +23,12 @@ public class SharePortWeibo implements ShareAPI<SharePortWeibo> {
     private static final String APP_KY = "1287314582";
     private static final String REDIRECT_URL = "https://api.weibo.com/oauth2/default.html";
     private static final String SCOPE = "";
-    //            "email,direct_messages_read,direct_messages_write,"
-//                    + "friendships_groups_read,friendships_groups_write,statuses_to_me_read,"
-//                    + "follow_app_official_microblog," + "invitation_write";
     private static IWBAPI mWBAPI;
+    private WeiboMultiMessage message;
 
     public static final IWBAPI getAPI() {
         return mWBAPI;
     }
-
-    //    private Context context;
-    private WeiboMultiMessage message;
 
     public static void initSDK(Context context) {
         AuthInfo authInfo = new AuthInfo(context, APP_KY, REDIRECT_URL, SCOPE);
@@ -63,11 +58,6 @@ public class SharePortWeibo implements ShareAPI<SharePortWeibo> {
         imageObject.setImageData(BitmapFactory.decodeResource(context.getResources(), resId));
         message.imageObject = imageObject;
         return this;
-    }
-
-    public SharePortWeibo setWebPage(String title, String description, String actionUrl) {
-        //TODO:add default logo
-        throw new UnsupportedOperationException();
     }
 
     public SharePortWeibo setWebPage(Context context, int resLogoId, String title, String description, String actionUrl) {
@@ -107,15 +97,11 @@ public class SharePortWeibo implements ShareAPI<SharePortWeibo> {
                 public void onComplete(Oauth2AccessToken oauth2AccessToken) {
                     mWBAPI.shareMessage(message, false);
                 }
-
                 @Override
                 public void onError(UiError uiError) {
-//                    mWBAPI.shareMessage(message, false);
                 }
-
                 @Override
                 public void onCancel() {
-//                    mWBAPI.shareMessage(message, false);
                 }
             });
         }

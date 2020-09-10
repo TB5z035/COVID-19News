@@ -8,34 +8,33 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.java.zhangjiayou.MainActivity;
 import com.java.zhangjiayou.R;
+import com.java.zhangjiayou.util.NetworkChecker;
 
 public class ExploreFragment extends Fragment {
 
     private ViewPager2 viewPager2;
     private TabLayout tabLayout;
     private static Integer NUM_PAGES = 6;
-    private String oldTitle;
     final private String[] tabNames = {"中国疫情走势", "世界疫情走势", "世界热力图", "知识图谱", "新闻聚类", "知疫学者"};
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        storeTitle();
-    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_explore, container, false);
-        storeTitle();
+        View root;
+        if (!NetworkChecker.isNetworkConnected(getActivity())) {
+            root = inflater.inflate(R.layout.fragment_frame_no_network, container, false);
+            ((MainActivity) getActivity()).getSupportActionBar().setTitle("Explore");
+            return root;
+        }
+
+        root = inflater.inflate(R.layout.fragment_explore, container, false);
         viewPager2 = root.findViewById(R.id.explore_view_pager);
         tabLayout = root.findViewById(R.id.explore_tab_layout);
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
@@ -44,7 +43,6 @@ public class ExploreFragment extends Fragment {
             @NonNull
             @Override
             public Fragment createFragment(int position) {
-                //TODO:customize the fragment
                 return WebViewerFragment.newInstance(position);
             }
             @Override
@@ -87,92 +85,14 @@ public class ExploreFragment extends Fragment {
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager2.setCurrentItem(tab.getPosition(), true);
             }
-
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-
             }
-
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-
             }
         });
 
-//        final TextView textView = root.findViewById(R.id.text_notifications);
-//        exploreViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-//            @Override
-//            public void onChanged(@Nullable String s) {
-//                textView.setText(s);
-//            }
-//        });
-//
-//        final TextView test = root.findViewById(R.id.test_text);
-//
-//        root.findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                new Thread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        List<Passage> passageList = PassageDatabase.getInstance(null).getPassageDao().getAllPassages();
-//                        for (Passage i :
-//                                passageList) {
-//                            System.out.println(i.getTitle());
-//                        }
-//                    }
-//                }).start();
-//            }
-//        });
-//
-//        root.findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                SharePortWeibo.initSDK(getActivity());
-//                new SharePortWeibo().setText("本地测试").share();
-//            }
-//        });
-//
-//        root.findViewById(R.id.button3).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                SharePortWeixin.initSDK(getActivity());
-//                new SharePortWeixin().setText("本地测试").share();
-//            }
-//        });
-
         return root;
-    }
-
-    private void storeTitle(){
-//        try {
-//            oldTitle = ((AppCompatActivity) getContext()).getTitle().toString();
-//        } catch (ClassCastException e){
-//            e.printStackTrace();
-//            oldTitle = "COVID-19News";
-//        }
-    }
-
-    private void restoreTitle(){
-//        try {
-//            if (oldTitle == null){
-//                oldTitle = "COVID-19News";
-//            }
-//            ((AppCompatActivity) getContext()).getSupportActionBar().setTitle(oldTitle);
-//        } catch (ClassCastException e){
-//            e.printStackTrace();
-//        }
-    }
-
-    @Override
-    public void onPause() {
-        restoreTitle();
-        super.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        restoreTitle();
-        super.onDestroy();
     }
 }

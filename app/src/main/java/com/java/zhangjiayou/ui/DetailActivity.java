@@ -24,26 +24,23 @@ public class DetailActivity extends AppCompatActivity implements BackPressedHand
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+        getSupportActionBar().setTitle("Detail");
 
         Intent intent = getIntent();
         String rawJSON = intent.getStringExtra("rawJSON");
-        int id = intent.getIntExtra("id", -1);
 
         WebViewerFragment webViewerFragment = (WebViewerFragment) getSupportFragmentManager().findFragmentById(R.id.debug_webview);
         webViewerFragment.setJsonString(rawJSON);
         webViewerFragment.updateWebView();
 
         constraintLayout = findViewById(R.id.detail_constraint_layout);
-
-
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         SharePortWeibo.getAPI().authorizeCallback(requestCode, resultCode, data);
     }
-
-
 
     @Override
     public void setBackPressedHandler(BackPressedHandlerSub backPressedHandler) {
@@ -61,6 +58,4 @@ public class DetailActivity extends AppCompatActivity implements BackPressedHand
             superOnBackPressed();
         }
     }
-
-
 }
