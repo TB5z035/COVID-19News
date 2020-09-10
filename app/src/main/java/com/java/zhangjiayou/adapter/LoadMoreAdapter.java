@@ -109,10 +109,11 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             recyclerViewHolder.titleView.setText(dataList.get(position).getTitle());
 
             if (historyIds.contains(dataList.get(position).getId()))
-                recyclerViewHolder.titleView.setTextColor(R.color.colorPrimaryDark);
+                recyclerViewHolder.titleView.setTextColor(R.color.colorTextAccent);
             recyclerViewHolder.contentView.setText(
                     new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA)
                             .format(dataList.get(position).getDate()));
+            recyclerViewHolder.originView.setText(dataList.get(position).getProperties().get("source").toString());
             recyclerViewHolder.rawJSON = dataList.get(position).rawJSON;
         } else if (holder instanceof FootViewHolder) {
             FootViewHolder footViewHolder = (FootViewHolder) holder;
@@ -150,6 +151,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         TextView titleView;
         TextView contentView;
+        TextView originView;
         CardView cardView;
         String rawJSON;
 
@@ -157,6 +159,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             super(itemView);
             titleView = (TextView) itemView.findViewById(R.id.title_view);
             contentView = (TextView) itemView.findViewById(R.id.time_view);
+            originView = (TextView)itemView.findViewById(R.id.origin_view);
             cardView = itemView.findViewById(R.id.passage_card_view);
 
             //点击时：将文章保存至数据库；分词，然后将关键词-id映射关系保存到本地映射表；延迟通知adapter以留足够的时间，完成点击动画后项目才变灰；启动详情页activity
