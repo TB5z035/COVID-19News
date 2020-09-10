@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<!--
+	Transitive by TEMPLATED
+	templated.co @templatedco
+	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+
+<head>
+	<title>{{title}}</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+
+<body class="">
+
+	<!-- Header -->
+	<header id="header" class="reveal">
+		<div class="logo"><a href="#">新闻详情</a></div>
+
+	</header>
+	<!-- One -->
+	<section id="one" class="wrapper style2">
+		<div class="inner">
+			<div>
+				<div class="box">
+					<div class="image fit">
+						<img src="images/pic01.jpg" alt="">
+					</div>
+					<div class="content">
+						<header class="align-center">
+							<h2 id="inner-title"></h2>
+							<p id="date"></p>
+							<p id="source"></p>
+						</header>
+						<hr>
+						<div id="content">
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- Scripts -->
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/jquery.scrolly.min.js"></script>
+	<script src="assets/js/jquery.scrollex.min.js"></script>
+	<script src="assets/js/skel.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
+	<script>
+		var json = {{ jsonString }};
+		var _id = json._id;
+		var content = json.content;
+		var date = json.date;
+		var related = json.related_events;
+		var source = json.source;
+		var title = json.title;
+
+		document.title = title;
+		document.getElementById('inner-title').innerHTML = title;
+		document.getElementById('source').innerHTML = "来源: " + source;
+		document.getElementById('date').innerHTML = "时间: " + date;
+		document.getElementById('content').innerHTML = '<p>'+content.split('\n').join('</p><p>')+'</p>';
+	</script>
+</body>
+
+</html>
