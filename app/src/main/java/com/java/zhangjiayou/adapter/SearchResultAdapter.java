@@ -118,6 +118,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         holder.setIsRecyclable(false);
         recyclerViewHolder.titleView.setText(dataList.get(position).getTitle());
         recyclerViewHolder.id = dataList.get(position).getId();
+        recyclerViewHolder.originView.setVisibility(View.GONE);
         if (dataList.get(position).getDate() != null)
             recyclerViewHolder.contentView.setText(
                     new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA)
@@ -157,6 +158,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         String id;
         TextView titleView;
         TextView contentView;
+        TextView originView;
         CardView cardView;
 
         RecyclerViewHolder(final View itemView) {
@@ -164,6 +166,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
             titleView = (TextView) itemView.findViewById(R.id.title_view);
             contentView = (TextView) itemView.findViewById(R.id.time_view);
+            originView = (TextView) itemView.findViewById(R.id.origin_view);
             cardView = itemView.findViewById(R.id.passage_card_view);
             cardView.setOnClickListener(v -> {
                 //TODO:put selected passage into database
