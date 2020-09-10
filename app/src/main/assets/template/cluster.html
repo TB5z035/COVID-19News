@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+
+
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>新闻聚类</title>
+    <style type="text/css">
+    </style>
+</head>
+
+<body>
+    <!-- START SIGMA IMPORTS -->
+    <script src="../sigmajs/sigma.min.js"></script>
+    <!-- END SIGMA IMPORTS -->
+    <div id="container">
+        <style>
+            #graph-container {
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                position: absolute;
+            }
+        </style>
+        <div id="graph-container"></div>
+    </div>
+    <script>
+        /**
+         * This is a basic example on how to instantiate sigma. A random graph is
+         * generated and stored in the "graph" variable, and then sigma is instantiated
+         * directly with the graph.
+         *
+         * The simple instance of sigma is enough to make it render the graph on the on
+         * the screen, since the graph is given directly to the constructor.
+         */
+        var s;
+        var json = {{ jsonString }};
+        var titles = json.titles, poses = json.X_emb, labels = json.labels;
+
+        var num = titles.length, num_select = 200;
+        var randIdx = [...Array(num).keys()].sort(function (a, b) { return 0.5 - Math.random(); });
+        randIdx = randIdx.slice(num_select);
+        titles = randIdx.map((i) => titles[i]);
+        poses = randIdx.map((i) => poses[i]);
+        labels = randIdx.map((i) => labels[i]);
+        var g = {
+            nodes: [],
+            edges: []
+        };
+
+        function rgbToHex(v) {
+            v = Math.min(Math.floor(v), 255).toString(16);
+            v = v.length == 1 ? "0" + v : v;
+            return v
+        }
+
+        for (i = 0; i < num_select; i++) {
+            g.nodes.push({
+                id: 'n' + i,
+                label: titles[i],
+                size: 3,
+                x: poses[i][0],
+                y: poses[i][1],
+                color: ('#' + rgbToHex(60 + labels[i] * 67) + rgbToHex(131 + labels[i] * 13) + rgbToHex(77 + labels[i] * 19))
+            })
+        }
+        // Instantiate sigma:
+        s = new sigma({
+            graph: g,
+            container: 'graph-container',
+            settings: {
+                autoRescale: true,
+                skipErrors: true,
+                labelThreshold: 40,
+            }
+        });
+    </script>
+</body>
+
+</html>

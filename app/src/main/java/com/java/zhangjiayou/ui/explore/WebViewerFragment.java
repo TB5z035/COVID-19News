@@ -166,7 +166,10 @@ public class WebViewerFragment extends Fragment {
             String html = AssetsIO.getFromAssets(parentActivity, "template/kg.html");
             loadData(html);
         } else if (id == 4) { // 新闻聚类
-            loadUrl("https://www.baidu.com");
+            String html = AssetsIO.getFromAssets(parentActivity, "template/cluster.html");
+            String json = AssetsIO.getFromAssets(parentActivity, "json/cluster.min.json");
+            html = HtmlGenerator.generateWithJson(json, html);
+            loadData(html);
         } else if (id == 5) { // 知疫学者
             String html = AssetsIO.getFromAssets(parentActivity, "template/scholar-profile/scholar-profile.html");
             webView.loadDataWithBaseURL("file:///android_asset/template/scholar-profile/scholar-profile.html",
