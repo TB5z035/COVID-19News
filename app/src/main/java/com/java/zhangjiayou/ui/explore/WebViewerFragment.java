@@ -3,7 +3,6 @@ package com.java.zhangjiayou.ui.explore;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,10 +68,9 @@ public class WebViewerFragment extends Fragment {
                              Bundle savedInstanceState) {
         // 初始化浏览器
         View v = inflater.inflate(R.layout.fragment_viewer, container, false);
+        initFab(v);
         initWebView(v);
         updateWebView();
-        initFab(v, null);
-
         return v;
     }
 
@@ -219,7 +217,7 @@ public class WebViewerFragment extends Fragment {
         webView.loadUrl(url);
     }
 
-    private  void initFab(final View v, final String api){
+    private  void initFab(final View v){
 
         // 获取fab(分享按钮)
         FloatingActionButton fab = v.findViewById(R.id.fab);
@@ -232,7 +230,7 @@ public class WebViewerFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.e(TAG, "onClick: FAB not initialized!");
+                new SharePortWeibo().setText("测试").share();
             }
         });
     }
