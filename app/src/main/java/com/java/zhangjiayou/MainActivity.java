@@ -88,28 +88,28 @@ public class MainActivity extends AppCompatActivity implements  BackPressedHandl
         PassageDatabase.getInstance(this);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        System.out.println("Callback success.");
-        if (SharePortWeibo.getAPI() != null)
-            SharePortWeibo.getAPI().doResultIntent(data, new WbShareCallback() {
-                @Override
-                public void onComplete() {
-                    Snackbar.make(backup, "分享成功", Snackbar.LENGTH_SHORT).show();
-                }
-                @Override
-                public void onError(UiError uiError) {
-                    Snackbar.make(backup, "分享失败", Snackbar.LENGTH_SHORT).show();
-
-                }
-                @Override
-                public void onCancel() {
-                    Snackbar.make(backup, "分享取消", Snackbar.LENGTH_SHORT).show();
-                }
-            });
-    }
-
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        System.out.println("Callback success.");
+//        if (SharePortWeibo.getAPI() != null)
+//            SharePortWeibo.getAPI().doResultIntent(data, new WbShareCallback() {
+//                @Override
+//                public void onComplete() {
+//                    Snackbar.make(backup, "分享成功", Snackbar.LENGTH_SHORT).show();
+//                }
+//                @Override
+//                public void onError(UiError uiError) {
+//                    Snackbar.make(backup, "分享失败", Snackbar.LENGTH_SHORT).show();
+//
+//                }
+//                @Override
+//                public void onCancel() {
+//                    Snackbar.make(backup, "分享取消", Snackbar.LENGTH_SHORT).show();
+//                }
+//            });
+//    }
+//
     @Override
     public void setBackPressedHandler(BackPressedHandlerSub backPressedHandler) {
         this.backPressedHandler = backPressedHandler;
