@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,12 @@ import com.java.zhangjiayou.R;
 import com.java.zhangjiayou.sharing.SharePortWeibo;
 import com.java.zhangjiayou.ui.explore.htmlgenerator.HtmlGenerator;
 import com.java.zhangjiayou.ui.explore.utils.AssetsIO;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -126,25 +133,11 @@ public class WebViewerFragment extends Fragment {
                 super.onPageFinished(view, url);
                 // 储存标题
                 title = view.getTitle();
+                Log.d(TAG, "onPageFinished: "+title);
                 if (nowId == id && isVisible()){
+                    Log.d(TAG, "onPageFinished: set title");
                     parentActivity.getSupportActionBar().setTitle(title);
                 }
-
-                // 异步获取新闻正文
-                // TODO: 得到正文后, 把正文放在成员变量中
-                getContextDelayed(view);
-            }
-
-            // 获取html的内容
-            public void getContextDelayed(WebView view) {
-                view.evaluateJavascript(
-                        "(function() { return (document.getElementsById('content').innerHTML); })();",
-                        content -> {
-                            currentWebContent = content.substring(1, content.length() - 1); // 丢弃自带的引号
-                            currentWebContent = Html.fromHtml(currentWebContent).toString();
-                            currentWebContent = currentWebContent == null ? "" : currentWebContent;
-                            System.out.println(currentWebContent);
-                        });
             }
         });
     }
@@ -198,6 +191,7 @@ public class WebViewerFragment extends Fragment {
         super.onResume();
         if (isVisible()){
             nowId = id;
+            Log.d(TAG, "onPageFinished: set title 2");
             parentActivity.getSupportActionBar().setTitle(title);
         }
     }
@@ -224,9 +218,15 @@ public class WebViewerFragment extends Fragment {
         }
 
         floatingActionButton.setOnClickListener(view -> {
-            String text = currentWebContent.substring(Math.min(currentWebContent.length(), 40));
+            String content = "内容";
+            try {
+                JSONObject obj = new JSONObject(jsonString);
+                content = obj.getString("content");
+            } catch (Exception e){
+                Log.e(TAG, "initFab: Corrupted json");
+            }
+            String text = "标题: " + title + ". 摘要: " + content.substring(0, Math.min(100, content.length()));
             new SharePortWeibo().setText(text).share();
-
         });
     }
 }
