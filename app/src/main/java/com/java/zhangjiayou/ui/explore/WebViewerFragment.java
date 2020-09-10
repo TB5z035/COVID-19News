@@ -3,7 +3,6 @@ package com.java.zhangjiayou.ui.explore;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +12,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -22,11 +22,7 @@ import com.java.zhangjiayou.sharing.SharePortWeibo;
 import com.java.zhangjiayou.ui.explore.htmlgenerator.HtmlGenerator;
 import com.java.zhangjiayou.ui.explore.utils.AssetsIO;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Iterator;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -87,15 +83,12 @@ public class WebViewerFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         parentActivity = (AppCompatActivity) context;
-        ((BackPressedHandlerMain)parentActivity).setBackPressedHandler(new BackPressedHandlerSub() {
-            @Override
-            public boolean onBackPressed() {
-                if (webView.canGoBack()){
-                    webView.goBack();
-                    return true;
-                }else  {
-                    return false;
-                }
+        ((BackPressedHandlerMain)parentActivity).setBackPressedHandler(() -> {
+            if (webView.canGoBack()){
+                webView.goBack();
+                return true;
+            }else  {
+                return false;
             }
         });
     }
@@ -110,7 +103,7 @@ public class WebViewerFragment extends Fragment {
     // 初始化浏览器
     private void initWebView(View v){
         // 获取webview
-        webView = (WebView) v.findViewById(R.id.web_view);
+        webView = v.findViewById(R.id.web_view);
         // 加载设置
         WebSettings settings = webView.getSettings();
         // 启用js
@@ -134,9 +127,11 @@ public class WebViewerFragment extends Fragment {
                 // 储存标题
                 title = view.getTitle();
                 Log.d(TAG, "onPageFinished: "+title);
-                if (nowId == id){
+                if (nowId == id) {
                     Log.d(TAG, "onPageFinished: set title");
-                    parentActivity.getSupportActionBar().setTitle(title);
+                    ActionBar actionBar = parentActivity.getSupportActionBar();
+                    if (actionBar != null)
+                        parentActivity.getSupportActionBar().setTitle(title);
                 }
             }
         });
@@ -166,7 +161,10 @@ public class WebViewerFragment extends Fragment {
             String html = AssetsIO.getFromAssets(parentActivity, "template/kg.html");
             loadData(html);
         } else if (id == 4) { // 新闻聚类
-            loadUrl("https://www.baidu.com");
+            String html = AssetsIO.getFromAssets(parentActivity, "template/cluster.html");
+            String json = AssetsIO.getFromAssets(parentActivity, "json/cluster.min.json");
+            html = HtmlGenerator.generateWithJson(json, html);
+            loadData(html);
         } else if (id == 5) { // 知疫学者
             String html = AssetsIO.getFromAssets(parentActivity, "template/scholar-profile/scholar-profile.html");
             webView.loadDataWithBaseURL("file:///android_asset/template/scholar-profile/scholar-profile.html",
