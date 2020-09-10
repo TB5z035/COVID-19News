@@ -14,7 +14,9 @@ import android.webkit.WebViewClient;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.java.zhangjiayou.R;
+import com.java.zhangjiayou.sharing.SharePortWeibo;
 import com.java.zhangjiayou.ui.explore.htmlgenerator.HtmlGenerator;
 import com.java.zhangjiayou.ui.explore.utils.AssetsIO;
 
@@ -33,6 +35,8 @@ public class WebViewerFragment extends Fragment {
     private String title;
     private String jsonString = "";
     private static int nowId;
+
+    private FloatingActionButton floatingActionButton;
 
     public WebViewerFragment() {
         // Required empty public constructor
@@ -66,6 +70,12 @@ public class WebViewerFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_viewer, container, false);
         initWebView(v);
         updateWebView();
+
+        floatingActionButton = v.findViewById(R.id.fab);
+        floatingActionButton.setOnClickListener(view -> {
+            new SharePortWeibo().setText("测试").share();
+        });
+
         return v;
     }
 

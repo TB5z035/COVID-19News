@@ -9,6 +9,9 @@ import com.sina.weibo.sdk.api.TextObject;
 import com.sina.weibo.sdk.api.WebpageObject;
 import com.sina.weibo.sdk.api.WeiboMultiMessage;
 import com.sina.weibo.sdk.auth.AuthInfo;
+import com.sina.weibo.sdk.auth.Oauth2AccessToken;
+import com.sina.weibo.sdk.auth.WbAuthListener;
+import com.sina.weibo.sdk.common.UiError;
 import com.sina.weibo.sdk.openapi.IWBAPI;
 import com.sina.weibo.sdk.openapi.WBAPIFactory;
 
@@ -17,12 +20,12 @@ import java.io.IOException;
 import java.util.UUID;
 
 public class SharePortWeibo implements ShareAPI<SharePortWeibo> {
-    private static final String APP_KY = "3280537319";
-    private static final String REDIRECT_URL = "http://www.sina.com";
-    private static final String SCOPE =
-            "email,direct_messages_read,direct_messages_write,"
-                    + "friendships_groups_read,friendships_groups_write,statuses_to_me_read,"
-                    + "follow_app_official_microblog," + "invitation_write";
+    private static final String APP_KY = "1287314582";
+    private static final String REDIRECT_URL = "https://api.weibo.com/oauth2/default.html";
+    private static final String SCOPE = "";
+    //            "email,direct_messages_read,direct_messages_write,"
+//                    + "friendships_groups_read,friendships_groups_write,statuses_to_me_read,"
+//                    + "follow_app_official_microblog," + "invitation_write";
     private static IWBAPI mWBAPI;
 
     public static final IWBAPI getAPI() {
@@ -96,7 +99,28 @@ public class SharePortWeibo implements ShareAPI<SharePortWeibo> {
     }
 
     public void share() {
-        mWBAPI.shareMessage(message, false);
+        if (mWBAPI.isWBAppInstalled()) {
+            mWBAPI.shareMessage(message, true);
+        } else {
+            mWBAPI.authorize(new WbAuthListener() {
+                @Override
+                public void onComplete(Oauth2AccessToken oauth2AccessToken) {
+                    mWBAPI.shareMessage(message, false);
+                }
+
+                @Override
+                public void onError(UiError uiError) {
+                    mWBAPI.shareMessage(message, false);
+
+                }
+
+                @Override
+                public void onCancel() {
+                    mWBAPI.shareMessage(message, false);
+
+                }
+            });
+        }
     }
 
 
