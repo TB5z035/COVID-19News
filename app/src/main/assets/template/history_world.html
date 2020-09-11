@@ -54,6 +54,10 @@
                 renderer: 'canvas'
             });
 
+            window.onresize = function(){
+                chart_container.resize();
+            }
+
             var option = {
                 baseOption: {
                     timeline: {
