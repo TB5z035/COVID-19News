@@ -1,12 +1,8 @@
 package com.java.zhangjiayou;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -19,11 +15,9 @@ import com.java.zhangjiayou.search.SearchMapManager;
 import com.java.zhangjiayou.sharing.SharePortWeibo;
 import com.java.zhangjiayou.ui.explore.BackPressedHandlerMain;
 import com.java.zhangjiayou.ui.explore.BackPressedHandlerSub;
-import com.java.zhangjiayou.ui.history.HistoryFragment;
 import com.java.zhangjiayou.util.NetworkChecker;
 import com.java.zhangjiayou.util.PassageWithNoContent;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -50,7 +44,6 @@ public class MainActivity extends AppCompatActivity implements  BackPressedHandl
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-//                MainActivity.this.runOnUiThread(() -> Toast.makeText(MainActivity.this, "Start loading!", Toast.LENGTH_SHORT).show());
                 while (!NetworkChecker.isNetworkConnected(MainActivity.this)) {
                     try {
                         Thread.sleep(5000);
@@ -58,19 +51,21 @@ public class MainActivity extends AppCompatActivity implements  BackPressedHandl
                         e.printStackTrace();
                     }
                 }
-                new PassagePortal().getAllPassageIdTitle((key, val) -> {
-                    if (SearchMapManager.getMap().containsKey(key)) {
-                        HashSet<PassageWithNoContent> now = SearchMapManager.getMap().get(key);
-                        now.add(val);
-                        SearchMapManager.getMap().put(key, now);
-                    } else {
-                        HashSet<PassageWithNoContent> now = new HashSet<>();
-                        now.add(val);
-                        SearchMapManager.getMap().put(key, now);
-                    }
-                    return null;
-                });
-//                MainActivity.this.runOnUiThread(() -> Toast.makeText(MainActivity.this, "Finish loading!", Toast.LENGTH_SHORT).show());
+                try {
+                    new PassagePortal().getAllPassageIdTitle((key, val) -> {
+                        if (SearchMapManager.getMap().containsKey(key)) {
+                            HashSet<PassageWithNoContent> now = SearchMapManager.getMap().get(key);
+                            now.add(val);
+                            SearchMapManager.getMap().put(key, now);
+                        } else {
+                            HashSet<PassageWithNoContent> now = new HashSet<>();
+                            now.add(val);
+                            SearchMapManager.getMap().put(key, now);
+                        }
+                        return null;
+                    });
+                } catch (Exception ignored) {
+                }
                 searchEnable = true;
             }
         }, 0, 300000);
