@@ -82,6 +82,8 @@ public class HomeFragment extends Fragment {
     public void onResume() {
         super.onResume();
         ((MainActivity) requireActivity()).getSupportActionBar().setTitle("Home");
+        if (tabLayout != null)
+            tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
     }
     @Nullable
     @Override
