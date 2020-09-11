@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.java.zhangjiayou.R;
-import com.java.zhangjiayou.adapter.SearchResultAdapter;
+import com.java.zhangjiayou.ui.adapter.SearchResultAdapter;
 
 public class SearchableActivity extends AppCompatActivity {
     private TextView textView;

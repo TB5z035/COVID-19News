@@ -1,4 +1,4 @@
-package com.java.zhangjiayou.adapter;
+package com.java.zhangjiayou.ui.adapter;
 
 import android.app.Activity;
 import android.content.Context;

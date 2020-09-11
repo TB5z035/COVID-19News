@@ -1,7 +1,6 @@
 package com.java.zhangjiayou.network;
 
 import android.util.Log;
-import android.util.Pair;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -10,7 +9,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.java.zhangjiayou.util.Passage;
 import com.java.zhangjiayou.util.PassageWithNoContent;
 
-import org.ansj.splitWord.analysis.BaseAnalysis;
 import org.ansj.splitWord.analysis.ToAnalysis;
 
 import java.io.ByteArrayOutputStream;
@@ -31,6 +29,52 @@ import java.util.function.BiFunction;
 public class PassagePortal extends Portal {
 
     private static final String baseURL = "https://covid-dashboard.aminer.cn/api/events/list";
+
+    public Passage getNewsFromId(String id) {
+        try {
+            String response = getRawData("https://covid-dashboard.aminer.cn/api/event/" + id, null);
+
+            Object temp = new ObjectMapper().readValue(response, new TypeReference<Map<String, Object>>() {
+            }).get("data");
+            OutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            new ObjectMapper().writeValue(byteArrayOutputStream, temp);
+            String JSON = byteArrayOutputStream.toString();
+            Passage retVal = new ObjectMapper().readValue(JSON, new TypeReference<Passage>() {
+            });
+            retVal.rawJSON = JSON;
+            return retVal;
+        } catch (NoResponseError noResponseError) {
+            noResponseError.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Passage getNewsFromRawJSON(String rawJSON) {
+        Passage parsed = null;
+        try {
+            Object data = new ObjectMapper().readValue(rawJSON, new TypeReference<Map<String, Object>>() {
+            });
+            System.out.println(data.getClass());
+            System.out.println(data.toString());
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            new ObjectMapper().writeValue(byteArrayOutputStream, data);
+            String output = byteArrayOutputStream.toString();
+            parsed = new ObjectMapper().readValue(output, new TypeReference<Passage>() {
+            });
+            parsed.rawJSON = output;
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return parsed;
+    }
 
     public List<Passage> getNewsFromType(String type, Integer index, Integer size) throws NoResponseError {
         HashMap<String, String> params = new HashMap<>();

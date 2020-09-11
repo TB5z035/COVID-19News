@@ -1,9 +1,8 @@
-package com.java.zhangjiayou.adapter;
+package com.java.zhangjiayou.ui.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Process;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,57 +22,49 @@ import com.java.zhangjiayou.ui.DetailActivity;
 import com.java.zhangjiayou.ui.home.ContentFragment;
 import com.java.zhangjiayou.util.Passage;
 
-import org.ansj.splitWord.analysis.ToAnalysis;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class NormalTypeAdapter extends TypeAdapter {
     private Integer index = 1;
     private List<Passage> dataList;
     private Set<String> historyIds;
     private ContentFragment fragment;
 
-    private final int TYPE_ITEM = 1;
-    private final int TYPE_FOOTER = 2;
     private int loadState = 2;
 
-    public final int LOADING = 1;
-    public final int LOADING_COMPLETE = 2;
-    public final int LOADING_END = 3;
 
     public Passage getItem(int position) {
         return dataList.get(position);
     }
 
-    public LoadMoreAdapter(Set<String> map, ContentFragment fragment) {
+    public NormalTypeAdapter(Set<String> map, ContentFragment fragment) {
         this.dataList = new ArrayList<>();
         this.historyIds = map;
         this.fragment = fragment;
     }
 
      public void getData(final boolean mode, String type, int size) {
-        if (mode) {
-            index = 1;
-        }
-        new Thread(() -> {
-            Process.setThreadPriority(Process.THREAD_PRIORITY_DEFAULT);
-            try {
-                if (mode) dataList.clear();
-                dataList.addAll(new PassagePortal().getNewsFromType(type.toLowerCase(), index, size));
-                index++;
-                fragment.onDataGot();
-            } catch (NullPointerException e) {
-                System.out.println(e.getStackTrace());
-            } catch (NoResponseError noResponseError) {
-                noResponseError.printStackTrace();
-            }
-        }).start();
-    }
+         if (mode) {
+             index = 1;
+         }
+         new Thread(() -> {
+             Process.setThreadPriority(Process.THREAD_PRIORITY_DEFAULT);
+             try {
+                 if (mode) dataList.clear();
+                 dataList.addAll(new PassagePortal().getNewsFromType(type.toLowerCase(), index, size));
+                 index++;
+                 fragment.onDataGot(true);
+             } catch (NullPointerException e) {
+                 System.out.println(e.getStackTrace());
+             } catch (NoResponseError noResponseError) {
+                 noResponseError.printStackTrace();
+             }
+         }).start();
+     }
 
     @Override
     public int getItemViewType(int position) {
@@ -184,7 +175,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 intent.putExtra("id", -1);
                 intent.putExtra("rawJSON", rawJSON);
                 intent.setClass(fragment.getContext(), DetailActivity.class);
-                LoadMoreAdapter.this.fragment.startActivity(intent);
+                NormalTypeAdapter.this.fragment.startActivity(intent);
             });
         }
     }
