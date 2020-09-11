@@ -1,6 +1,7 @@
 package com.java.zhangjiayou.adapter;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Process;
 import android.view.LayoutInflater;
@@ -12,20 +13,29 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.java.zhangjiayou.R;
+import com.java.zhangjiayou.database.PassageDatabase;
 import com.java.zhangjiayou.network.NoResponseError;
 import com.java.zhangjiayou.network.PassagePortal;
 import com.java.zhangjiayou.search.SearchMapManager;
 import com.java.zhangjiayou.ui.DetailActivity;
+import com.java.zhangjiayou.util.Passage;
 import com.java.zhangjiayou.util.PassageWithNoContent;
 
 import org.ansj.splitWord.analysis.ToAnalysis;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -129,6 +139,44 @@ public class SearchResultAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     noResponseError.printStackTrace();
                 }
                 String finalRawJSON = rawJSON;
+                Passage parsed = null;
+                try {
+                    Object data = new ObjectMapper().readValue(rawJSON, new TypeReference<Map<String, Object>>() {
+                    });
+                    System.out.println(data.getClass());
+                    System.out.println(data.toString());
+                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                    new ObjectMapper().writeValue(byteArrayOutputStream, data);
+                    parsed = new ObjectMapper().readValue(byteArrayOutputStream.toString(), new TypeReference<Passage>() {
+                    });
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Passage finalParsed = parsed;
+                new Thread(() -> {
+                    Process.setThreadPriority(Process.THREAD_PRIORITY_DEFAULT);
+
+                    Set<String> nowSet = itemView.getContext()
+                            .getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)
+                            .getStringSet(String.valueOf(R.string.history_fileid_set_key), new HashSet<>());
+
+                    HashSet<String> newSet = new HashSet<>(nowSet);
+
+                    newSet.add(finalParsed.getId());
+                    itemView.getContext()
+                            .getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)
+                            .edit()
+                            .putStringSet(String.valueOf(R.string.history_fileid_set_key), newSet)
+                            .apply();
+
+                    Passage passageInDB = PassageDatabase.getInstance(null).getPassageDao().getPassageFromId(finalParsed.getId());
+                    if (passageInDB == null)
+                        PassageDatabase.getInstance(null).getPassageDao().insert(finalParsed);
+                }).start();
+
+                System.out.println(parsed.getId());
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
