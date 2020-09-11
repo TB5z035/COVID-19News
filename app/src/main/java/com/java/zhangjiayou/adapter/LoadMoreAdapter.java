@@ -177,23 +177,6 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     Passage passageInDB = PassageDatabase.getInstance(null).getPassageDao().getPassageFromId(dataList.get(getLayoutPosition()).getId());
                     if (passageInDB == null)
                         PassageDatabase.getInstance(null).getPassageDao().insert(dataList.get(getLayoutPosition()));
-                    String title = dataList.get(getLayoutPosition()).getTitle();
-
-                    ToAnalysis.parse(title).forEach((v1) -> {
-                        if (v1 != null) {
-                            Set<String> strings = itemView.getContext().getSharedPreferences(String.valueOf(R.string.search_seg_id_map_key), Context.MODE_PRIVATE)
-                                    .getStringSet(v1.getName(), new HashSet<>());
-
-                            strings.add(dataList.get(getLayoutPosition()).getId());
-
-                            //TODO:Concurrent problem!!! use synchronized
-                            SharedPreferences sharedPreferences = itemView.getContext().getSharedPreferences(String.valueOf(R.string.search_seg_id_map_key), Context.MODE_PRIVATE);
-                            synchronized (sharedPreferences) {
-                                sharedPreferences.edit().putStringSet(v1.getName(), new HashSet<>(strings)).apply();
-                            }
-                        }
-                    });
-
                 }).start();
                 itemView.postDelayed(() -> notifyDataSetChanged(), 200);
 
