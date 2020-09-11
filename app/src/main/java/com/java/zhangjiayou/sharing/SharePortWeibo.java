@@ -95,7 +95,7 @@ public class SharePortWeibo implements ShareAPI<SharePortWeibo> {
             mWBAPI.authorize(new WbAuthListener() {
                 @Override
                 public void onComplete(Oauth2AccessToken oauth2AccessToken) {
-                    mWBAPI.shareMessage(message, false);
+                    mWBAPI.shareMessage(message, true);
                 }
                 @Override
                 public void onError(UiError uiError) {
