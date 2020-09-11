@@ -1,4 +1,4 @@
-package com.java.zhangjiayou.adapter;
+package com.java.zhangjiayou.ui.adapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,12 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.java.zhangjiayou.R;
 import com.java.zhangjiayou.database.PassageDatabase;
-import com.java.zhangjiayou.network.NoResponseError;
 import com.java.zhangjiayou.network.PassagePortal;
 import com.java.zhangjiayou.search.SearchMapManager;
 import com.java.zhangjiayou.ui.DetailActivity;
@@ -27,15 +23,11 @@ import com.java.zhangjiayou.util.PassageWithNoContent;
 
 import org.ansj.splitWord.analysis.ToAnalysis;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -131,32 +123,9 @@ public class SearchResultAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             cardView = itemView.findViewById(R.id.passage_card_view);
             cardView.setOnClickListener(v -> new Thread(() -> {
                 Process.setThreadPriority(Process.THREAD_PRIORITY_DEFAULT);
-                String rawJSON = "";
-                try {
-                    rawJSON = new PassagePortal().getNewsJSONFromId(id);
-                } catch (NoResponseError noResponseError) {
-                    noResponseError.printStackTrace();
-                }
 
-                Passage parsed = null;
-                try {
-                    Object data = new ObjectMapper().readValue(rawJSON, new TypeReference<Map<String, Object>>() {
-                    });
-                    System.out.println(data.getClass());
-                    System.out.println(data.toString());
-                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                    new ObjectMapper().writeValue(byteArrayOutputStream, data);
-                    String output = byteArrayOutputStream.toString();
-                    parsed = new ObjectMapper().readValue(output, new TypeReference<Passage>() {
-                    });
-                    parsed.rawJSON = output;
-                } catch (JsonProcessingException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                Passage parsed = new PassagePortal().getNewsFromId(id);
 
-                Passage finalParsed = parsed;
                 new Thread(() -> {
                     Process.setThreadPriority(Process.THREAD_PRIORITY_DEFAULT);
 
@@ -166,20 +135,20 @@ public class SearchResultAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
                     HashSet<String> newSet = new HashSet<>(nowSet);
 
-                    newSet.add(finalParsed.getId());
+                    newSet.add(parsed.getId());
                     itemView.getContext()
                             .getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)
                             .edit()
                             .putStringSet(String.valueOf(R.string.history_fileid_set_key), newSet)
                             .apply();
 
-                    Passage passageInDB = PassageDatabase.getInstance(null).getPassageDao().getPassageFromId(finalParsed.getId());
+                    Passage passageInDB = PassageDatabase.getInstance(null).getPassageDao().getPassageFromId(parsed.getId());
                     if (passageInDB == null)
-                        PassageDatabase.getInstance(null).getPassageDao().insert(finalParsed);
+                        PassageDatabase.getInstance(null).getPassageDao().insert(parsed);
                 }).start();
 
                 System.out.println(parsed.getId());
-                String finalRawJSON = rawJSON;
+                String finalRawJSON = parsed.rawJSON;
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

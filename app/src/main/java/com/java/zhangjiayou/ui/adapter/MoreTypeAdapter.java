@@ -1,9 +1,8 @@
-package com.java.zhangjiayou.adapter;
+package com.java.zhangjiayou.ui.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Process;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,60 +16,59 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.java.zhangjiayou.R;
 import com.java.zhangjiayou.database.PassageDatabase;
-import com.java.zhangjiayou.network.NoResponseError;
 import com.java.zhangjiayou.network.PassagePortal;
 import com.java.zhangjiayou.ui.DetailActivity;
 import com.java.zhangjiayou.ui.home.ContentFragment;
 import com.java.zhangjiayou.util.Passage;
 
-import org.ansj.splitWord.analysis.ToAnalysis;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private Integer index = 1;
+public class MoreTypeAdapter extends TypeAdapter {
     private List<Passage> dataList;
     private Set<String> historyIds;
     private ContentFragment fragment;
 
-    private final int TYPE_ITEM = 1;
-    private final int TYPE_FOOTER = 2;
+    private List<String> totalIds;
+    private int nowIndex = 0;
+
     private int loadState = 2;
 
-    public final int LOADING = 1;
-    public final int LOADING_COMPLETE = 2;
-    public final int LOADING_END = 3;
 
     public Passage getItem(int position) {
         return dataList.get(position);
     }
 
-    public LoadMoreAdapter(Set<String> map, ContentFragment fragment) {
+    public MoreTypeAdapter(Set<String> map, ContentFragment fragment) {
         this.dataList = new ArrayList<>();
         this.historyIds = map;
         this.fragment = fragment;
+        //TODO:call method to get totalIds
+        this.totalIds = new ArrayList<>(map);
     }
 
-     public void getData(final boolean mode, String type, int size) {
+
+    public void getData(final boolean mode, String type, int size) {
         if (mode) {
-            index = 1;
+            dataList.clear();
+            nowIndex = 0;
         }
         new Thread(() -> {
             Process.setThreadPriority(Process.THREAD_PRIORITY_DEFAULT);
-            try {
-                if (mode) dataList.clear();
-                dataList.addAll(new PassagePortal().getNewsFromType(type.toLowerCase(), index, size));
-                index++;
-                fragment.onDataGot();
-            } catch (NullPointerException e) {
-                System.out.println(e.getStackTrace());
-            } catch (NoResponseError noResponseError) {
-                noResponseError.printStackTrace();
+            if (nowIndex + size > totalIds.size()) {
+                for (; nowIndex < totalIds.size(); nowIndex++) {
+                    dataList.add(new PassagePortal().getNewsFromId(totalIds.get(nowIndex)));
+                }
+                fragment.onDataGot(false);
+            } else {
+                for (int i = 0; i < size; i++) {
+                    dataList.add(new PassagePortal().getNewsFromId(totalIds.get(nowIndex)));
+                    nowIndex++;
+                }
+                fragment.onDataGot(true);
             }
         }).start();
     }
@@ -95,7 +93,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         } else if (viewType == TYPE_FOOTER) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.layout_refresh_footer, parent, false);
+                    .inflate(R.layout.adapter_refresh_footer, parent, false);
             return new FootViewHolder(view);
         }
         return null;
@@ -167,6 +165,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             cardView.setOnClickListener(v -> {
                 historyIds.add(dataList.get(getLayoutPosition()).getId());
 
+                //TODO:put in history
                 new Thread(() -> {
                     Process.setThreadPriority(Process.THREAD_PRIORITY_DEFAULT);
                     itemView.getContext()
@@ -184,7 +183,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 intent.putExtra("id", -1);
                 intent.putExtra("rawJSON", rawJSON);
                 intent.setClass(fragment.getContext(), DetailActivity.class);
-                LoadMoreAdapter.this.fragment.startActivity(intent);
+                MoreTypeAdapter.this.fragment.startActivity(intent);
             });
         }
     }

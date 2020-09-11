@@ -1,4 +1,4 @@
-package com.java.zhangjiayou.adapter;
+package com.java.zhangjiayou.ui.adapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -41,12 +41,12 @@ public class HistoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 .registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
                     @Override
                     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                        refreshDataList();
+                        getData();
                     }
                 });
     }
 
-    public void refreshDataList() {
+    public void getData() {
         dataList.clear();
         historyIds = activity
                 .getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)

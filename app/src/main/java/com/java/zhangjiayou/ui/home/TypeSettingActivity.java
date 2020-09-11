@@ -32,7 +32,7 @@ public class TypeSettingActivity extends AppCompatActivity {
     private LinearLayout selectedLinearLayout;
     private LinearLayout unselectedLinearLayout;
     private List<CardView> items;
-    private static final String[] AllTypes = {"News", "Paper"};
+    private static final String[] AllTypes = {"News", "Paper","Test","HEY","What??"};
     private ArrayList<String> availableList;
 
     class MyItemView extends RelativeLayout {
@@ -99,8 +99,9 @@ public class TypeSettingActivity extends AppCompatActivity {
         unselectedLinearLayout = findViewById(R.id.unselected_layout);
         for (String item :
                 AllTypes) {
-            if (!availableList.contains(item))
+            if (!availableList.contains(item)) {
                 unselectedLinearLayout.addView(new MyItemView(this, item));
+            }
         }
         for (String item :
                 availableList) {
@@ -114,13 +115,13 @@ public class TypeSettingActivity extends AppCompatActivity {
             ViewGroup target = (ViewGroup) v;
             switch (action) {
                 case DragEvent.ACTION_DRAG_STARTED: // 拖拽开始
-                    startShakeByView(child, 1f, 1f, 5, 10);
+                    startShakeByView(child, 1f, 1f, 5, 50);
                     return event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN);
                 case DragEvent.ACTION_DRAG_ENTERED: // 被拖拽View进入目标区域
                     child.clearAnimation();
                     parent.removeView(child);
                     target.addView(child);
-                    startShakeByView(child, 1f, 1f, 5, 10000);
+                    startShakeByView(child, 1f, 1f, 5, 50);
                     if (availableList.contains(child.type)) {
                         availableList.remove(child.type);
                     }
@@ -152,13 +153,13 @@ public class TypeSettingActivity extends AppCompatActivity {
             ViewGroup target = (ViewGroup) v;
             switch (action) {
                 case DragEvent.ACTION_DRAG_STARTED: // 拖拽开始
-                    startShakeByView(child, 1f, 1f, 5, 10000);
+                    startShakeByView(child, 1f, 1f, 5, 50);
                     return event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN);
                 case DragEvent.ACTION_DRAG_ENTERED: // 被拖拽View进入目标区域
                     child.clearAnimation();
                     parent.removeView(child);
                     target.addView(child);
-                    startShakeByView(child, 1f, 1f, 5, 10000);
+                    startShakeByView(child, 1f, 1f, 5, 50);
                     if (availableList.contains(child.type)) {
                         availableList.remove(child.type);
                     }

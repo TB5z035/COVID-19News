@@ -2,7 +2,6 @@ package com.java.zhangjiayou.ui.history;
 
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.snackbar.Snackbar;
 import com.java.zhangjiayou.MainActivity;
 import com.java.zhangjiayou.R;
-import com.java.zhangjiayou.adapter.HistoryViewAdapter;
+import com.java.zhangjiayou.ui.adapter.HistoryViewAdapter;
 import com.java.zhangjiayou.util.NetworkChecker;
 
 import java.util.HashSet;
@@ -34,17 +32,10 @@ public class HistoryFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        historyViewAdapter.refreshDataList();
+        historyViewAdapter.getData();
         historyViewAdapter.notifyDataSetChanged();
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("History & Search");
     }
-
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        historyViewAdapter.refreshDataList();s
-//        historyViewAdapter.notifyDataSetChanged();
-//    }
 
     @Override
     public void onPause() {
@@ -67,7 +58,7 @@ public class HistoryFragment extends Fragment {
         historyViewAdapter = new HistoryViewAdapter(historyIds, getActivity());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(historyViewAdapter);
-        historyViewAdapter.refreshDataList();
+        historyViewAdapter.getData();
 
         searchView = root.findViewById(R.id.search_box);
 

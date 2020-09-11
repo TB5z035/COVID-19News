@@ -33,7 +33,7 @@ public class HomeFragment extends Fragment {
     private TabLayout tabLayout;
     private FloatingActionButton floatingActionButton;
     private static final Integer TYPE_SETTING_ACTIVITY = 0;
-    private static ArrayList<String> availableList;
+    private static ArrayList<String> availableList = null;
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -93,14 +93,15 @@ public class HomeFragment extends Fragment {
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("Home");
 
         if (list != null) historyIds = new HashSet<>(list);
-        availableList = new ArrayList<>();
-        availableList.add("News");
-        availableList.add("Paper");
-
+        if (availableList == null) {
+            availableList = new ArrayList<>();
+            availableList.add("News");
+            availableList.add("Paper");
+        }
         View root;
 
         if (!NetworkChecker.isNetworkConnected(getActivity())) {
-            root = inflater.inflate(R.layout.fragment_frame_no_network,container,false);
+            root = inflater.inflate(R.layout.fragment_frame_no_network, container, false);
             return root;
         }
 

@@ -9,8 +9,6 @@ import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.java.zhangjiayou.network.NoResponseError;
-import com.java.zhangjiayou.network.PassagePortal;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -28,6 +26,9 @@ public class Passage {
     @NonNull
     private String _id;
 
+
+
+    private String id;
     private String title;
     private String content;
     private Date date;
@@ -49,12 +50,14 @@ public class Passage {
      */
     @JsonCreator
     public Passage(
-            @JsonProperty("_id") String id,
+            @JsonProperty("id") String id,
+            @JsonProperty("_id") String _id,
             @JsonProperty("title") String title,
             @JsonProperty("content") String content,
             @JsonProperty("date") Date date
     ) {
-        this._id = id;
+        this.id = id;
+        this._id = _id;
         this.title = title;
         this.content = content;
         this.date = date;

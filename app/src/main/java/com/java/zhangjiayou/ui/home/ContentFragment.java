@@ -14,7 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.java.zhangjiayou.R;
-import com.java.zhangjiayou.adapter.LoadMoreAdapter;
+import com.java.zhangjiayou.ui.adapter.TypeAdapter;
+import com.java.zhangjiayou.ui.adapter.NormalTypeAdapter;
+import com.java.zhangjiayou.ui.adapter.MoreTypeAdapter;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,7 +26,7 @@ public class ContentFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private LoadMoreAdapter loadMoreAdapter;
+    private TypeAdapter loadMoreAdapter;
     private String type;
     private Integer size = 20;
     private Set<String> historyIds;
@@ -58,13 +60,10 @@ public class ContentFragment extends Fragment {
         else historyIds = new HashSet<>(arrayList);
     }
 
-    public void onDataGot() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                swipeRefreshLayout.setRefreshing(false);
-                loadMoreAdapter.setLoadState(loadMoreAdapter.LOADING_COMPLETE);
-            }
+    public void onDataGot(boolean mode) {
+        getActivity().runOnUiThread(() -> {
+            swipeRefreshLayout.setRefreshing(false);
+            loadMoreAdapter.setLoadState(mode ? loadMoreAdapter.LOADING_COMPLETE : loadMoreAdapter.LOADING_END);
         });
     }
 
@@ -82,7 +81,9 @@ public class ContentFragment extends Fragment {
         });
 
         recyclerView = root.findViewById(R.id.recycler_view);
-        loadMoreAdapter = new LoadMoreAdapter(historyIds, this);
+        if (type.equals("News") || type.equals("Paper"))
+            loadMoreAdapter = new NormalTypeAdapter(historyIds, this);
+        else loadMoreAdapter = new MoreTypeAdapter(historyIds, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(loadMoreAdapter);
         loadMoreAdapter.getData(true, type, size);
