@@ -43,7 +43,7 @@ public class HomeFragment extends Fragment {
 
             // Reset content and styles of tabs according to intent returned
             new TabLayoutMediator(tabLayout, viewPager2, (tab, position) -> {
-                TextView tabView = new TextView(getActivity());
+                TextView tabView = new TextView(requireActivity());
 
                 tabView.setText(availableList.get(position));
                 if (position == tabLayout.getSelectedTabPosition())
@@ -56,7 +56,7 @@ public class HomeFragment extends Fragment {
             }).attach();
 
             // Set up fragments inside ViewPager
-            viewPager2.setAdapter(new FragmentStateAdapter(this.getActivity()) {
+            viewPager2.setAdapter(new FragmentStateAdapter(this.requireActivity()) {
                 @NonNull
                 @Override
                 public Fragment createFragment(int position) {
@@ -81,16 +81,16 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((MainActivity) getActivity()).getSupportActionBar().setTitle("Home");
+        ((MainActivity) requireActivity()).getSupportActionBar().setTitle("Home");
     }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Set<String> list = getActivity()
+        Set<String> list = requireActivity()
                 .getSharedPreferences(String.valueOf(R.string.history_fileid_set_key), Context.MODE_PRIVATE)
                 .getStringSet(String.valueOf(R.string.history_fileid_set_key), new HashSet<String>());
 
-        ((MainActivity) getActivity()).getSupportActionBar().setTitle("Home");
+        ((MainActivity) requireActivity()).getSupportActionBar().setTitle("Home");
 
         if (list != null) historyIds = new HashSet<>(list);
         if (availableList == null) {
@@ -100,7 +100,7 @@ public class HomeFragment extends Fragment {
         }
         View root;
 
-        if (!NetworkChecker.isNetworkConnected(getActivity())) {
+        if (!NetworkChecker.isNetworkConnected(requireActivity())) {
             root = inflater.inflate(R.layout.fragment_frame_no_network, container, false);
             return root;
         }
@@ -108,9 +108,10 @@ public class HomeFragment extends Fragment {
         root = inflater.inflate(R.layout.fragment_frame, container, false);
         viewPager2 = root.findViewById(R.id.home_view_pager);
         tabLayout = root.findViewById(R.id.tabLayout);
+        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         floatingActionButton = root.findViewById(R.id.edit_button);
 
-        viewPager2.setAdapter(new FragmentStateAdapter(this.getActivity()) {
+        viewPager2.setAdapter(new FragmentStateAdapter(this.requireActivity()) {
             @NonNull
             @Override
             public Fragment createFragment(int position) {
@@ -194,7 +195,7 @@ public class HomeFragment extends Fragment {
         });
 
         new TabLayoutMediator(tabLayout, viewPager2, (tab, position) -> {
-            TextView tabView = new TextView(getActivity());
+            TextView tabView = new TextView(requireActivity());
 
             tabView.setText(availableList.get(position));
             if (position == tabLayout.getSelectedTabPosition())

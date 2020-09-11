@@ -28,9 +28,9 @@ public class ExploreFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root;
-        if (!NetworkChecker.isNetworkConnected(getActivity())) {
+        if (!NetworkChecker.isNetworkConnected(requireActivity())) {
             root = inflater.inflate(R.layout.fragment_frame_no_network, container, false);
-            ((MainActivity) getActivity()).getSupportActionBar().setTitle("Explore");
+            ((MainActivity) requireActivity()).getSupportActionBar().setTitle("Explore");
             return root;
         }
 
@@ -39,7 +39,7 @@ public class ExploreFragment extends Fragment {
         tabLayout = root.findViewById(R.id.explore_tab_layout);
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
-        viewPager2.setAdapter(new FragmentStateAdapter(this.getActivity()) {
+        viewPager2.setAdapter(new FragmentStateAdapter(this.requireActivity()) {
             @NonNull
             @Override
             public Fragment createFragment(int position) {
@@ -72,7 +72,7 @@ public class ExploreFragment extends Fragment {
         });
 
         new TabLayoutMediator(tabLayout, viewPager2, ((tab, position) -> {
-            TextView textView = new TextView(getActivity());
+            TextView textView = new TextView(requireActivity());
             textView.setText(tabNames[position]);
             textView.setTextSize(14);
             textView.setGravity(TextView.TEXT_ALIGNMENT_GRAVITY);

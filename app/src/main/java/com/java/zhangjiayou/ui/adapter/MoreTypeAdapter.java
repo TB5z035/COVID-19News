@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Process;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,10 +22,16 @@ import com.java.zhangjiayou.ui.DetailActivity;
 import com.java.zhangjiayou.ui.home.ContentFragment;
 import com.java.zhangjiayou.util.Passage;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
 import java.util.Set;
 
 public class MoreTypeAdapter extends TypeAdapter {
@@ -42,12 +49,30 @@ public class MoreTypeAdapter extends TypeAdapter {
         return dataList.get(position);
     }
 
-    public MoreTypeAdapter(Set<String> map, ContentFragment fragment) {
+    public MoreTypeAdapter(String type, Set<String> map, ContentFragment fragment) {
         this.dataList = new ArrayList<>();
         this.historyIds = map;
         this.fragment = fragment;
         //TODO:call method to get totalIds
         this.totalIds = new ArrayList<>(map);
+        Properties properties = new Properties();
+        try {
+            InputStreamReader inputStreamReader = new InputStreamReader(fragment.getActivity().getAssets().open("cluster.properties"));
+            properties.load(inputStreamReader);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        switch (type) {
+            case "经济与发展":
+                this.totalIds = Arrays.asList(properties.getProperty("cluster0").split(","));
+                break;
+            case "病毒研究进展":
+                this.totalIds = Arrays.asList(properties.getProperty("cluster1").split(","));
+                break;
+            case "新增确诊病例":
+                this.totalIds = Arrays.asList(properties.getProperty("cluster2").split(","));
+                break;
+        }
     }
 
 
@@ -58,7 +83,7 @@ public class MoreTypeAdapter extends TypeAdapter {
         }
         new Thread(() -> {
             Process.setThreadPriority(Process.THREAD_PRIORITY_DEFAULT);
-            if (nowIndex + size > totalIds.size()) {
+            if (nowIndex + size >= totalIds.size()) {
                 for (; nowIndex < totalIds.size(); nowIndex++) {
                     dataList.add(new PassagePortal().getNewsFromId(totalIds.get(nowIndex)));
                 }
@@ -112,7 +137,7 @@ public class MoreTypeAdapter extends TypeAdapter {
             recyclerViewHolder.contentView.setText(
                     new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA)
                             .format(dataList.get(position).getDate()));
-            recyclerViewHolder.originView.setText(dataList.get(position).getProperties().get("source").toString());
+//            recyclerViewHolder.originView.setText(dataList.get(position).getProperties().get("source").toString());
             recyclerViewHolder.rawJSON = dataList.get(position).rawJSON;
         } else if (holder instanceof FootViewHolder) {
             FootViewHolder footViewHolder = (FootViewHolder) holder;
