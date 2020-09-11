@@ -20,6 +20,7 @@ import com.java.zhangjiayou.ui.adapter.MoreTypeAdapter;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public class ContentFragment extends Fragment {
@@ -61,7 +62,7 @@ public class ContentFragment extends Fragment {
     }
 
     public void onDataGot(boolean mode) {
-        getActivity().runOnUiThread(() -> {
+        requireActivity().runOnUiThread(() -> {
             swipeRefreshLayout.setRefreshing(false);
             loadMoreAdapter.setLoadState(mode ? loadMoreAdapter.LOADING_COMPLETE : loadMoreAdapter.LOADING_END);
         });
@@ -83,7 +84,7 @@ public class ContentFragment extends Fragment {
         recyclerView = root.findViewById(R.id.recycler_view);
         if (type.equals("News") || type.equals("Paper"))
             loadMoreAdapter = new NormalTypeAdapter(historyIds, this);
-        else loadMoreAdapter = new MoreTypeAdapter(historyIds, this);
+        else loadMoreAdapter = new MoreTypeAdapter(type, historyIds, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(loadMoreAdapter);
         loadMoreAdapter.getData(true, type, size);

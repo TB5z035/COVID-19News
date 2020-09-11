@@ -32,7 +32,7 @@ public class TypeSettingActivity extends AppCompatActivity {
     private LinearLayout selectedLinearLayout;
     private LinearLayout unselectedLinearLayout;
     private List<CardView> items;
-    private static final String[] AllTypes = {"News", "Paper","Test","HEY","What??"};
+    private static final String[] AllTypes = {"News", "Paper","经济与发展", "病毒研究进展", "新增确诊病例"};
     private ArrayList<String> availableList;
 
     class MyItemView extends RelativeLayout {

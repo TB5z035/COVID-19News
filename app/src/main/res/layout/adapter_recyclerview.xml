@@ -32,7 +32,6 @@
                 android:layout_marginHorizontal="40dp"
                 android:layout_marginVertical="10dp"
                 android:ellipsize="end"
-                android:maxLines="3"
                 android:singleLine="false"
                 android:text="i like you very much ok im the besti like you very much ok im the besti like you very much ok im the besti like you very much ok im the best i like you very much ok im the best"
                 android:textAlignment="center"
@@ -51,7 +50,6 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     android:layout_weight="7"
-                    android:text="somewhere in the space"
                     android:textColor="@color/colorTextAccent"
                     android:textSize="10sp" />
 
