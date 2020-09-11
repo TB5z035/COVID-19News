@@ -69,7 +69,7 @@ public class MoreTypeAdapter extends TypeAdapter {
             case "病毒研究进展":
                 this.totalIds = Arrays.asList(properties.getProperty("cluster1").split(","));
                 break;
-            case "新增确诊病例":
+            case "感染形势":
                 this.totalIds = Arrays.asList(properties.getProperty("cluster2").split(","));
                 break;
         }
