@@ -20,6 +20,7 @@ import com.java.zhangjiayou.sharing.SharePortWeibo;
 import com.java.zhangjiayou.ui.explore.BackPressedHandlerMain;
 import com.java.zhangjiayou.ui.explore.BackPressedHandlerSub;
 import com.java.zhangjiayou.ui.history.HistoryFragment;
+import com.java.zhangjiayou.util.NetworkChecker;
 import com.java.zhangjiayou.util.PassageWithNoContent;
 
 import java.util.HashMap;
@@ -50,6 +51,13 @@ public class MainActivity extends AppCompatActivity implements  BackPressedHandl
             @Override
             public void run() {
 //                MainActivity.this.runOnUiThread(() -> Toast.makeText(MainActivity.this, "Start loading!", Toast.LENGTH_SHORT).show());
+                while (!NetworkChecker.isNetworkConnected(MainActivity.this)) {
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
                 new PassagePortal().getAllPassageIdTitle((key, val) -> {
                     if (SearchMapManager.getMap().containsKey(key)) {
                         HashSet<PassageWithNoContent> now = SearchMapManager.getMap().get(key);

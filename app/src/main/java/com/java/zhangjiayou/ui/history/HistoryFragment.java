@@ -20,6 +20,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.java.zhangjiayou.MainActivity;
 import com.java.zhangjiayou.R;
 import com.java.zhangjiayou.adapter.HistoryViewAdapter;
+import com.java.zhangjiayou.util.NetworkChecker;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -33,15 +34,17 @@ public class HistoryFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        historyViewAdapter.refreshDataList();
         historyViewAdapter.notifyDataSetChanged();
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("History & Search");
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        historyViewAdapter.notifyDataSetChanged();
-    }
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        historyViewAdapter.refreshDataList();s
+//        historyViewAdapter.notifyDataSetChanged();
+//    }
 
     @Override
     public void onPause() {
@@ -72,9 +75,13 @@ public class HistoryFragment extends Fragment {
         searchBoxCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!((MainActivity) HistoryFragment.this.getActivity()).searchEnable)
+                if (!NetworkChecker.isNetworkConnected(getActivity())) {
+                    searchView.setIconified(true);
+                    Snackbar.make(HistoryFragment.this.recyclerView, "Search is not available in offline mode.", Snackbar.LENGTH_SHORT).show();
+                } else if (!((MainActivity) HistoryFragment.this.getActivity()).searchEnable) {
+                    searchView.setIconified(true);
                     Snackbar.make(HistoryFragment.this.recyclerView, "Search is not ready. Please wait for a while.", Snackbar.LENGTH_SHORT).show();
-                else
+                } else
                     searchView.setIconified(false);
             }
         });
@@ -85,6 +92,9 @@ public class HistoryFragment extends Fragment {
                 if (!((MainActivity) HistoryFragment.this.getActivity()).searchEnable) {
                     searchView.setIconified(true);
                     Snackbar.make(HistoryFragment.this.recyclerView, "Search is not ready. Please wait for a while.", Snackbar.LENGTH_SHORT).show();
+                } else if (!NetworkChecker.isNetworkConnected(getActivity())) {
+                    searchView.setIconified(true);
+                    Snackbar.make(HistoryFragment.this.recyclerView, "Search is not available in offline mode.", Snackbar.LENGTH_SHORT).show();
                 }
             }
         });

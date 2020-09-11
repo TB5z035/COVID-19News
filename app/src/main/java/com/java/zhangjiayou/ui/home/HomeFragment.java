@@ -101,7 +101,6 @@ public class HomeFragment extends Fragment {
 
         if (!NetworkChecker.isNetworkConnected(getActivity())) {
             root = inflater.inflate(R.layout.fragment_frame_no_network,container,false);
-
             return root;
         }
 

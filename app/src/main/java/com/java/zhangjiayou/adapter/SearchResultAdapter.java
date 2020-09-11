@@ -135,10 +135,9 @@ public class SearchResultAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 try {
                     rawJSON = new PassagePortal().getNewsJSONFromId(id);
                 } catch (NoResponseError noResponseError) {
-                    //TODO:处理网络无连接
                     noResponseError.printStackTrace();
                 }
-                String finalRawJSON = rawJSON;
+
                 Passage parsed = null;
                 try {
                     Object data = new ObjectMapper().readValue(rawJSON, new TypeReference<Map<String, Object>>() {
@@ -147,13 +146,16 @@ public class SearchResultAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     System.out.println(data.toString());
                     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                     new ObjectMapper().writeValue(byteArrayOutputStream, data);
-                    parsed = new ObjectMapper().readValue(byteArrayOutputStream.toString(), new TypeReference<Passage>() {
+                    String output = byteArrayOutputStream.toString();
+                    parsed = new ObjectMapper().readValue(output, new TypeReference<Passage>() {
                     });
+                    parsed.rawJSON = output;
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
                 Passage finalParsed = parsed;
                 new Thread(() -> {
                     Process.setThreadPriority(Process.THREAD_PRIORITY_DEFAULT);
@@ -177,6 +179,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 }).start();
 
                 System.out.println(parsed.getId());
+                String finalRawJSON = rawJSON;
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
