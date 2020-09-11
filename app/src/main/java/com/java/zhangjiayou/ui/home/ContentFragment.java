@@ -77,7 +77,6 @@ public class ContentFragment extends Fragment {
         swipeRefreshLayout.setRefreshing(true);
         //Pull-to-refresh listener
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            Toast.makeText(getContext(), R.string.toast_test, Toast.LENGTH_SHORT).show();
             loadMoreAdapter.getData(true, type, size);
         });
 
