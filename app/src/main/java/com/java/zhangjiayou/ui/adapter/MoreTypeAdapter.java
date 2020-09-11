@@ -52,12 +52,12 @@ public class MoreTypeAdapter extends TypeAdapter {
 
 
     public void getData(final boolean mode, String type, int size) {
+        if (mode) {
+            dataList.clear();
+            nowIndex = 0;
+        }
         new Thread(() -> {
             Process.setThreadPriority(Process.THREAD_PRIORITY_DEFAULT);
-            if (mode) {
-                dataList.clear();
-                nowIndex = 0;
-            }
             if (nowIndex + size > totalIds.size()) {
                 for (; nowIndex < totalIds.size(); nowIndex++) {
                     dataList.add(new PassagePortal().getNewsFromId(totalIds.get(nowIndex)));
@@ -93,7 +93,7 @@ public class MoreTypeAdapter extends TypeAdapter {
 
         } else if (viewType == TYPE_FOOTER) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.layout_refresh_footer, parent, false);
+                    .inflate(R.layout.adapter_refresh_footer, parent, false);
             return new FootViewHolder(view);
         }
         return null;

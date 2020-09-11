@@ -32,7 +32,7 @@ public class TypeSettingActivity extends AppCompatActivity {
     private LinearLayout selectedLinearLayout;
     private LinearLayout unselectedLinearLayout;
     private List<CardView> items;
-    private static final String[] AllTypes = {"News", "Paper","Test"};
+    private static final String[] AllTypes = {"News", "Paper","Test","HEY","What??"};
     private ArrayList<String> availableList;
 
     class MyItemView extends RelativeLayout {
@@ -99,8 +99,9 @@ public class TypeSettingActivity extends AppCompatActivity {
         unselectedLinearLayout = findViewById(R.id.unselected_layout);
         for (String item :
                 AllTypes) {
-            if (!availableList.contains(item))
+            if (!availableList.contains(item)) {
                 unselectedLinearLayout.addView(new MyItemView(this, item));
+            }
         }
         for (String item :
                 availableList) {

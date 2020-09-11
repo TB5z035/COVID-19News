@@ -32,7 +32,7 @@ public class HistoryFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        historyViewAdapter.refreshDataList();
+        historyViewAdapter.getData();
         historyViewAdapter.notifyDataSetChanged();
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("History & Search");
     }
@@ -58,7 +58,7 @@ public class HistoryFragment extends Fragment {
         historyViewAdapter = new HistoryViewAdapter(historyIds, getActivity());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(historyViewAdapter);
-        historyViewAdapter.refreshDataList();
+        historyViewAdapter.getData();
 
         searchView = root.findViewById(R.id.search_box);
 

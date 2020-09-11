@@ -86,7 +86,7 @@ public class NormalTypeAdapter extends TypeAdapter {
 
         } else if (viewType == TYPE_FOOTER) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.layout_refresh_footer, parent, false);
+                    .inflate(R.layout.adapter_refresh_footer, parent, false);
             return new FootViewHolder(view);
         }
         return null;
